@@ -9,7 +9,7 @@ public final class Ids {
     public static final String NGP_MULTIPLIER_KEY = "$rbr_ngpMultiplier";
 
     /** Possible mod ids of New Game Plus - Renewed, used only to decide whether the picker shows the multiplier. */
-    public static final String[] NGP_MOD_IDS = {"ngp_renewed", "newgameplus_renewed", "new_game_plus_renewed"};
+    public static final String[] NGP_MOD_IDS = {"ngp_renewed"};
 
     /** Placeholder art until Andrzej's icons arrive. A vanilla path. */
     public static final String BOOK_ICON = "graphics/icons/intel/fleet_log.png";
