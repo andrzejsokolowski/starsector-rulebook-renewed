@@ -151,7 +151,7 @@ tasks.register('checkReleaseFiles') {
         def rulesFile = file('data/config/rulebook/rules.csv')
         def lines = rulesFile.readLines('UTF-8')
         def header = lines[0].split(',', -1) as List
-        ['id', 'name', 'type', 'levels', 'points', 'values', 'requiredMod', 'unlock', 'effect', 'icon', 'description', 'flavor', 'unlockHint', 'order'].each {
+        ['id', 'name', 'type', 'levels', 'points', 'values', 'requiredMod', 'unlock', 'effect', 'icon', 'description', 'flavor', 'unlockHint', 'order', 'pair'].each {
             if (!header.contains(it)) problems << "rules.csv has no ${it} column"
         }
         def parseCsv = { String line ->
@@ -172,6 +172,7 @@ tasks.register('checkReleaseFiles') {
             if (cells.size() != header.size()) { problems << "rules.csv row has ${cells.size()} cells, header has ${header.size()}: ${line.take(40)}"; return }
             def row = [header, cells].transpose().collectEntries { it }
             def levels = row.levels as int
+            if (levels < 1 || levels > 5) problems << "rules.csv ${row.id}: levels must be 1 to 5"
             if (row.points.split('\\|').size() != levels) problems << "rules.csv ${row.id}: points need ${levels} entries"
             if (row.values.split('\\|').size() != levels) problems << "rules.csv ${row.id}: values need ${levels} entries"
             if (!(row.type in ['hard', 'helpful'])) problems << "rules.csv ${row.id}: type must be hard or helpful"

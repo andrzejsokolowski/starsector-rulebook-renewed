@@ -22,11 +22,13 @@ public final class RuleSpec {
     public final String flavor;
     public final String unlockHint;
     public final float order;
+    /** Rules with the same pair key are mirrors of each other and sit together in the picker. */
+    public final String pair;
     public final RuleEffect effect;
 
     RuleSpec(String id, String name, boolean hard, int[] points, String[] valueTexts, String requiredMod,
              String unlock, String icon, String description, String flavor, String unlockHint, float order,
-             RuleEffect effect) {
+             String pair, RuleEffect effect) {
         this.id = id;
         this.name = name;
         this.hard = hard;
@@ -42,6 +44,7 @@ public final class RuleSpec {
         this.flavor = flavor;
         this.unlockHint = unlockHint;
         this.order = order;
+        this.pair = pair;
         this.effect = effect;
     }
 

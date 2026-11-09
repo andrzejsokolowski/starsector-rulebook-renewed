@@ -8,10 +8,15 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 
 import rulebookrenewed.RuleSpec;
 
-/** A rule that changes a stat on every ship in the player's fleet, through a RuleMemberBuff. */
+/**
+ * A rule that changes a stat on every ship in the player's fleet, through a RuleMemberBuff. The buff is
+ * part of the ship's own stats, so it shows in the refit screen and is built into the ship when it
+ * deploys, armor included.
+ */
 public abstract class MemberStatRule implements RuleEffect {
 
-    protected abstract void modify(MutableShipStatsAPI stats, String id, float value, String source);
+    /** sign: +1 when the rule helps the player, -1 when it hurts. */
+    protected abstract void modify(MutableShipStatsAPI stats, String id, float value, float sign, String source);
 
     @Override
     public void applyCampaign(RuleSpec rule, int level, float value) {
@@ -54,7 +59,7 @@ public abstract class MemberStatRule implements RuleEffect {
 
     @Override
     public void applyToMember(RuleSpec rule, FleetMemberAPI member, int level, float value) {
-        modify(member.getStats(), RuleEffect.modId(rule), value, rule.name);
+        modify(member.getStats(), RuleEffect.modId(rule), value, RuleEffect.playerSign(rule), rule.name);
     }
 
     private static void sync(CampaignFleetAPI fleet) {

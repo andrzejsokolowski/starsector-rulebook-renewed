@@ -1,8 +1,10 @@
-Version 0.1.0 (2026-11-09)
-- First test build. Not published yet.
-- Rule Book entry on the intel screen, with a button that opens the rule picker at any time.
-- Rule picker with a level button per rule and a balance meter. Changes apply at once.
-- Hard rules: Hardened Foes, Deadly Foes, Thin Insulation, Hungry Fleet, Harsh Worlds.
-- Helpful rules: Veteran Crews, Lean Logistics, Hyperspace Drifter, Ludd's Song (unlocked by finishing At the Gates), Peerless (only with Peerless Skills).
-- Feats are kept across all saves.
-- Writes the career point multiplier for New Game Plus - Renewed.
+Version 0.2.0 (2026-11-09)
+- First public release.
+- Rule Book entry on the intel screen, with a button that opens the rule picker at any time. The picker also opens a few seconds into a new game.
+- 34 rules, each with its own level (up to five), switched on, off or between levels at any time. Changes apply at once.
+- Most hard rules have a helpful mirror: enemy damage taken, enemy damage dealt, enemy armor, enemy top speed, enemy weapon range, hostile fleet burn, your damage, your armor, your top speed, your weapon range, overload time, maximum combat readiness, supply use, your fleet's burn, built-in hull mod limit and colony hazard.
+- Armor rules change each ship's armor by a percent of its own armor, so frigates and capitals change by the same share.
+- Ludd's Song (gate travel costs no fuel) unlocks by finishing At the Gates. Peerless grants a Peerless point, only with Peerless Skills.
+- Balance meter that shows how far your picks lean, for example "You're 20 points over budget - Slightly overpowered". It never blocks a pick.
+- Feats are kept across all saves. A LunaLib setting unlocks every rule.
+- Works with New Game Plus - Renewed: active rules raise or lower the career points you earn.

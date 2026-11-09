@@ -17,6 +17,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.Fonts;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.PositionAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.UIComponentAPI;
 
 import rulebookrenewed.Balance;
@@ -28,23 +29,29 @@ import rulebookrenewed.RuleState;
 import rulebookrenewed.Unlocks;
 
 /**
- * The rule picker. Every rule on one list, hard rules first, with a button per level; a click applies
- * at once, so switching mid-campaign is the same as picking at the start. The balance meter on top only
- * informs and never blocks a pick.
+ * The rule picker. Every rule on one scrolling list, each hard rule next to its helpful mirror, with a
+ * button per level; a click applies at once, so switching mid-campaign is the same as picking at the
+ * start. The balance meter on top only informs and never blocks a pick.
  *
- * Buttons are drawn and hit-tested by the panel itself, as in Gambling Den: TooltipMakerAPI buttons in
- * a custom dialog panel can render in one place and take clicks in another.
+ * The list's labels live in a panel inside a scrolling TooltipMakerAPI, so the game clips them and
+ * scrolls them with the mouse wheel. Buttons are still drawn and hit-tested by this panel, as in Gambling
+ * Den (TooltipMakerAPI buttons in a custom dialog can take clicks in the wrong place): each frame the
+ * list's real screen position is read back from the content panel, so drawing and clicks follow the
+ * scroll whatever direction the scroller counts in.
  */
 public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
 
-    public static final float PANEL_W = 1040f, PANEL_H = 700f;
+    public static final float PANEL_W = 1040f, PANEL_H = 720f;
 
-    private static final float ROW_TOP = 150f, ROW_H = 34f;
-    private static final int ROWS_PER_PAGE = 11;
-    private static final float LEVELS_X = 270f, OFF_W = 50f, LEVEL_W = 44f, GAP = 6f;
     private static final float METER_X = 170f, METER_Y = 80f, METER_W = 700f, METER_H = 12f;
     private static final int METER_RANGE = 100;
-    private static final float DETAIL_TOP = PANEL_H - 166f;
+    private static final float DETAIL_H = 118f;
+    private static final float DETAIL_TOP = PANEL_H - 56f - DETAIL_H;
+    private static final float LIST_X = 20f, LIST_TOP = 128f, LIST_W = PANEL_W - 40f;
+    private static final float LIST_H = DETAIL_TOP - 8f - LIST_TOP;
+    private static final float ROW_H = 30f, PAIR_GAP = 10f;
+    private static final float NAME_X = 16f, LEVELS_X = 232f, OFF_W = 42f, LEVEL_W = 34f, GAP = 5f;
+    private static final float POINTS_X = 480f, EFFECT_X = 532f;
 
     private static final Color BG = new Color(12, 15, 22);
     private static final Color PANEL = new Color(22, 27, 36);
@@ -55,52 +62,44 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
     private static final class Btn {
         final String action;
         final float x, y, w, h;
+        final boolean inList;
         LabelAPI label;
         boolean visible = true, enabled = true, checked, hover;
 
-        Btn(String action, float x, float y, float w, float h) {
+        Btn(String action, float x, float y, float w, float h, boolean inList) {
             this.action = action;
             this.x = x;
             this.y = y;
             this.w = w;
             this.h = h;
-        }
-
-        boolean contains(float px, float py) {
-            return visible && px >= x && px <= x + w && py >= y && py <= y + h;
+            this.inList = inList;
         }
     }
 
-    /** One line of the list: a section header or a rule. */
-    private static final class Entry {
-        final String header;
-        final boolean hard;
+    /** One rule line. y is in list content coordinates (0 = top of the list). */
+    private static final class Row {
         final RuleSpec rule;
-
-        Entry(String header, boolean hard, RuleSpec rule) {
-            this.header = header;
-            this.hard = hard;
-            this.rule = rule;
-        }
-    }
-
-    private static final class Slot {
-        float y;
+        final float y;
+        final boolean pairStart;
         LabelAPI name, points, effect;
         final Btn[] levels = new Btn[RuleSpec.MAX_LEVELS + 1];
-        Entry entry;
+
+        Row(RuleSpec rule, float y, boolean pairStart) {
+            this.rule = rule;
+            this.y = y;
+            this.pairStart = pairStart;
+        }
     }
 
     private final List<Btn> buttons = new ArrayList<>();
-    private final List<Entry> entries = new ArrayList<>();
-    private final Slot[] slots = new Slot[ROWS_PER_PAGE];
+    private final List<Row> rows = new ArrayList<>();
     private CustomPanelAPI panel;
+    private CustomPanelAPI content;
     private DialogCallbacks callbacks;
     private PositionAPI position;
-    private LabelAPI balance, multiplier, pageLabel, detailTitle, detailBody, detailFlavor;
-    private Btn prev, next;
-    private int page, pages;
-    private int hoveredSlot = -1;
+    private LabelAPI balance, multiplier, detailTitle, detailBody, detailFlavor;
+    private Row hovered;
+    private float contentTop = LIST_TOP;
     private boolean dismissed, wasMouseDown;
 
     public void init(CustomPanelAPI panel, DialogCallbacks callbacks) {
@@ -108,66 +107,68 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         this.callbacks = callbacks;
         wasMouseDown = Mouse.isCreated() && Mouse.isButtonDown(0);
 
-        buildEntries();
+        label(panel, "THE RULE BOOK", GOLD, 0f, 14f, PANEL_W, 26f, Fonts.ORBITRON_20AA, Alignment.MID);
+        balance = label(panel, "", TEXT, 0f, 50f, PANEL_W, 20f, Fonts.DEFAULT_SMALL, Alignment.MID);
+        label(panel, "Harder", RuleBookIntel.hardColor(), METER_X - 110f, METER_Y - 4f, 100f, 20f, Fonts.DEFAULT_SMALL, Alignment.RMID);
+        label(panel, "Easier", RuleBookIntel.helpfulColor(), METER_X + METER_W + 10f, METER_Y - 4f, 100f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+        multiplier = label(panel, "", DIM, 0f, 100f, PANEL_W, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
 
-        label("THE RULE BOOK", GOLD, 0f, 14f, PANEL_W, 26f, Fonts.ORBITRON_20AA, Alignment.MID);
-        balance = label("", TEXT, 0f, 50f, PANEL_W, 20f, Fonts.DEFAULT_SMALL, Alignment.MID);
-        label("Harder", RuleBookIntel.hardColor(), METER_X - 110f, METER_Y - 4f, 100f, 20f, Fonts.DEFAULT_SMALL, Alignment.RMID);
-        label("Easier", RuleBookIntel.helpfulColor(), METER_X + METER_W + 10f, METER_Y - 4f, 100f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-        multiplier = label("", DIM, 0f, 102f, PANEL_W, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
+        buildList();
 
-        for (int i = 0; i < ROWS_PER_PAGE; i++) {
-            Slot slot = new Slot();
-            slot.y = ROW_TOP + i * ROW_H;
-            slot.name = label("", TEXT, 40f, slot.y + 8f, 220f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-            float x = LEVELS_X;
-            for (int level = 0; level <= RuleSpec.MAX_LEVELS; level++) {
-                float w = level == 0 ? OFF_W : LEVEL_W;
-                slot.levels[level] = button("level:" + i + ":" + level, level == 0 ? "Off" : RuleSpec.roman(level),
-                        x, slot.y + 4f, w, ROW_H - 8f);
-                x += w + GAP;
-            }
-            slot.points = label("", TEXT, 590f, slot.y + 8f, 46f, 18f, Fonts.DEFAULT_SMALL, Alignment.RMID);
-            slot.effect = label("", DIM, 650f, slot.y + 2f, PANEL_W - 670f, ROW_H - 4f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-            slots[i] = slot;
-        }
+        detailTitle = label(panel, "", GOLD, 40f, DETAIL_TOP + 8f, PANEL_W - 80f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+        detailBody = label(panel, "", TEXT, 40f, DETAIL_TOP + 30f, PANEL_W - 80f, 62f, Fonts.DEFAULT_SMALL, Alignment.TL);
+        detailFlavor = label(panel, "", DIM, 40f, DETAIL_TOP + DETAIL_H - 26f, PANEL_W - 80f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
 
-        detailTitle = label("", GOLD, 40f, DETAIL_TOP + 8f, PANEL_W - 80f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-        detailBody = label("", TEXT, 40f, DETAIL_TOP + 30f, PANEL_W - 80f, 60f, Fonts.DEFAULT_SMALL, Alignment.TL);
-        detailFlavor = label("", DIM, 40f, DETAIL_TOP + 92f, PANEL_W - 80f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-
-        float bottom = PANEL_H - 48f;
-        prev = button("prev", "Previous", 30f, bottom, 100f, 36f);
-        pageLabel = label("", DIM, 135f, bottom + 9f, 90f, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
-        next = button("next", "Next", 230f, bottom, 100f, 36f);
-        button("close", "Close", PANEL_W - 200f, bottom, 170f, 36f);
+        button(panel, "close", "Close", PANEL_W - 200f, PANEL_H - 46f, 170f, 34f, false);
 
         refresh();
     }
 
-    private void buildEntries() {
-        entries.clear();
-        List<RuleSpec> hard = RuleCatalog.ofType(true);
-        List<RuleSpec> helpful = RuleCatalog.ofType(false);
-        if (!hard.isEmpty()) entries.add(new Entry("HARD RULES", true, null));
-        for (RuleSpec r : hard) entries.add(new Entry(null, true, r));
-        if (!helpful.isEmpty()) entries.add(new Entry("HELPFUL RULES", false, null));
-        for (RuleSpec r : helpful) entries.add(new Entry(null, false, r));
-        pages = Math.max(1, (entries.size() + ROWS_PER_PAGE - 1) / ROWS_PER_PAGE);
-        page = Math.min(page, pages - 1);
+    private void buildList() {
+        List<RuleSpec> rules = RuleCatalog.all();
+        float y = 6f;
+        String lastPair = null;
+        for (RuleSpec rule : rules) {
+            boolean pairStart = lastPair != null && !lastPair.equals(rule.pair);
+            if (pairStart) y += PAIR_GAP;
+            rows.add(new Row(rule, y, pairStart));
+            lastPair = rule.pair;
+            y += ROW_H;
+        }
+        float contentH = Math.max(LIST_H, y + 6f);
+
+        TooltipMakerAPI list = panel.createUIElement(LIST_W, LIST_H, true);
+        content = panel.createCustomPanel(LIST_W, contentH, null);
+        for (int i = 0; i < rows.size(); i++) {
+            Row row = rows.get(i);
+            row.name = label(content, "", TEXT, NAME_X, row.y + 6f, LEVELS_X - NAME_X - 8f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+            float x = LEVELS_X;
+            for (int level = 0; level <= RuleSpec.MAX_LEVELS; level++) {
+                float w = level == 0 ? OFF_W : LEVEL_W;
+                row.levels[level] = button(content, "level:" + i + ":" + level,
+                        level == 0 ? "Off" : RuleSpec.roman(level), x, row.y + 3f, w, ROW_H - 6f, true);
+                x += w + GAP;
+            }
+            row.points = label(content, "", TEXT, POINTS_X, row.y + 6f, 40f, 18f, Fonts.DEFAULT_SMALL, Alignment.RMID);
+            row.effect = label(content, "", DIM, EFFECT_X, row.y + 1f, LIST_W - EFFECT_X - 24f, ROW_H - 2f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+        }
+        list.addCustom(content, 0f);
+        list.setHeightSoFar(contentH);
+        panel.addUIElement(list).inTL(LIST_X, LIST_TOP);
     }
 
-    private LabelAPI label(String text, Color color, float x, float y, float w, float h, String font, Alignment align) {
+    private LabelAPI label(CustomPanelAPI parent, String text, Color color, float x, float y, float w, float h,
+                           String font, Alignment align) {
         LabelAPI label = Global.getSettings().createLabel(text, font);
         label.setColor(color);
         label.setAlignment(align);
-        panel.addComponent((UIComponentAPI) label).inTL(x, y).setSize(w, h);
+        parent.addComponent((UIComponentAPI) label).inTL(x, y).setSize(w, h);
         return label;
     }
 
-    private Btn button(String action, String text, float x, float y, float w, float h) {
-        Btn b = new Btn(action, x, y, w, h);
-        b.label = label(text, Color.WHITE, x, y + (h - 18f) / 2f, w, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
+    private Btn button(CustomPanelAPI parent, String action, String text, float x, float y, float w, float h, boolean inList) {
+        Btn b = new Btn(action, x, y, w, h, inList);
+        b.label = label(parent, text, Color.WHITE, x, y + (h - 18f) / 2f, w, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
         buttons.add(b);
         return b;
     }
@@ -178,86 +179,57 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         balance.setColor(RuleBookIntel.balanceColor(net));
         multiplier.setText(Balance.ngpInstalled()
                 ? "Career points " + Balance.formatMultiplier(Balance.ngpMultiplier(net)) : "");
-
-        for (int i = 0; i < ROWS_PER_PAGE; i++) fillSlot(slots[i], entryAt(i));
-
-        prev.visible = next.visible = pages > 1;
-        prev.enabled = page > 0;
-        next.enabled = page < pages - 1;
-        prev.label.setText(prev.visible ? "Previous" : "");
-        next.label.setText(next.visible ? "Next" : "");
-        prev.label.setColor(prev.enabled ? Color.WHITE : DIM.darker());
-        next.label.setColor(next.enabled ? Color.WHITE : DIM.darker());
-        pageLabel.setText(pages > 1 ? "Page " + (page + 1) + " of " + pages : "");
-
+        for (Row row : rows) fillRow(row);
         refreshDetail();
     }
 
-    private Entry entryAt(int slotIndex) {
-        int index = page * ROWS_PER_PAGE + slotIndex;
-        return index < entries.size() ? entries.get(index) : null;
+    private static Color typeColor(RuleSpec rule) {
+        return rule.hard ? RuleBookIntel.hardColor() : RuleBookIntel.helpfulColor();
     }
 
-    private void fillSlot(Slot slot, Entry entry) {
-        slot.entry = entry;
-        for (Btn b : slot.levels) {
-            b.visible = false;
-            b.label.setText("");
-        }
-        slot.points.setText("");
-        slot.effect.setText("");
-        if (entry == null) {
-            slot.name.setText("");
-            return;
-        }
-        if (entry.rule == null) {
-            slot.name.setText(entry.header);
-            slot.name.setColor(entry.hard ? RuleBookIntel.hardColor() : RuleBookIntel.helpfulColor());
-            return;
-        }
-
-        RuleSpec rule = entry.rule;
+    private void fillRow(Row row) {
+        RuleSpec rule = row.rule;
         int level = RuleState.level(rule);
         boolean unlocked = Unlocks.isUnlocked(rule) || level > 0;
-        slot.name.setText(rule.name);
-        slot.name.setColor(unlocked ? TEXT : DIM.darker());
-        if (!unlocked) {
-            slot.effect.setText(rule.unlockHint.isEmpty() ? "Locked" : "Locked. " + rule.unlockHint);
-            slot.effect.setColor(DIM.darker());
-            return;
-        }
-        for (int l = 0; l <= rule.levels; l++) {
-            Btn b = slot.levels[l];
-            b.visible = true;
+        row.name.setText(rule.name);
+        row.name.setColor(unlocked ? typeColor(rule) : DIM.darker());
+        for (int l = 0; l <= RuleSpec.MAX_LEVELS; l++) {
+            Btn b = row.levels[l];
+            b.visible = unlocked && l <= rule.levels;
             b.checked = l == level;
-            b.label.setText(l == 0 ? "Off" : RuleSpec.roman(l));
+            b.label.setText(b.visible ? (l == 0 ? "Off" : RuleSpec.roman(l)) : "");
             b.label.setColor(b.checked ? Color.WHITE : TEXT);
         }
+        if (!unlocked) {
+            row.points.setText("");
+            row.effect.setText(rule.unlockHint.isEmpty() ? "Locked" : "Locked. " + rule.unlockHint);
+            row.effect.setColor(DIM.darker());
+            return;
+        }
         int points = rule.points(level);
-        slot.points.setText(level == 0 ? "" : (points > 0 ? "+" + points : String.valueOf(points)));
-        slot.points.setColor(rule.hard ? RuleBookIntel.hardColor() : RuleBookIntel.helpfulColor());
-        slot.effect.setText(level == 0 ? "" : rule.describe(level));
-        slot.effect.setColor(TEXT);
+        row.points.setText(level == 0 ? "" : (points > 0 ? "+" + points : String.valueOf(points)));
+        row.points.setColor(typeColor(rule));
+        row.effect.setText(level == 0 ? "" : rule.describe(level));
+        row.effect.setColor(TEXT);
     }
 
     private void refreshDetail() {
-        Entry entry = hoveredSlot >= 0 ? slots[hoveredSlot].entry : null;
-        if (entry == null || entry.rule == null) {
+        if (hovered == null) {
             detailTitle.setText("");
             detailBody.setText("House rules for this voyage. The Sector will hold you to them.");
             detailBody.setColor(DIM);
             detailFlavor.setText("");
             return;
         }
-        RuleSpec rule = entry.rule;
-        detailTitle.setText(rule.name);
-        detailTitle.setColor(rule.hard ? RuleBookIntel.hardColor() : RuleBookIntel.helpfulColor());
+        RuleSpec rule = hovered.rule;
+        detailTitle.setText(rule.name + (rule.hard ? "  (hard)" : "  (helpful)"));
+        detailTitle.setColor(typeColor(rule));
         StringBuilder body = new StringBuilder();
         for (int l = 1; l <= rule.levels; l++) {
-            if (body.length() > 0) body.append('\n');
+            if (body.length() > 0) body.append(l % 2 == 0 && rule.levels > 3 ? "     " : "\n");
             int points = rule.points(l);
             if (rule.levels > 1) body.append(RuleSpec.roman(l)).append(":  ");
-            body.append(rule.describe(l)).append("   (").append(points > 0 ? "+" : "").append(points).append(')');
+            body.append(rule.describe(l)).append("  (").append(points > 0 ? "+" : "").append(points).append(')');
         }
         if (!Unlocks.isUnlocked(rule) && RuleState.level(rule) == 0 && !rule.unlockHint.isEmpty()) {
             body.append('\n').append(rule.unlockHint);
@@ -273,16 +245,10 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
             close();
             return;
         }
-        if (action.equals("prev") || action.equals("next")) {
-            page = Math.max(0, Math.min(pages - 1, page + (action.equals("next") ? 1 : -1)));
-            refresh();
-            return;
-        }
         if (action.startsWith("level:")) {
             String[] parts = action.split(":");
-            Slot slot = slots[Integer.parseInt(parts[1])];
-            if (slot.entry == null || slot.entry.rule == null) return;
-            RuleManager.setLevel(slot.entry.rule, Integer.parseInt(parts[2]));
+            Row row = rows.get(Integer.parseInt(parts[1]));
+            RuleManager.setLevel(row.rule, Integer.parseInt(parts[2]));
             Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 0.6f);
             refresh();
         }
@@ -294,25 +260,53 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         if (callbacks != null) callbacks.dismissDialog();
     }
 
+    /** Reads where the scrolled list content sits now, in this panel's top-down coordinates. */
+    private void updateContentTop() {
+        if (position == null || content == null) return;
+        PositionAPI p = content.getPosition();
+        if (p == null) return;
+        contentTop = (position.getY() + PANEL_H) - (p.getY() + p.getHeight());
+    }
+
+    private boolean inList(float my) {
+        return my >= LIST_TOP && my <= LIST_TOP + LIST_H;
+    }
+
+    private float screenX(Btn b) {
+        return b.inList ? LIST_X + b.x : b.x;
+    }
+
+    private float screenY(Btn b) {
+        return b.inList ? contentTop + b.y : b.y;
+    }
+
+    private boolean contains(Btn b, float mx, float my) {
+        if (!b.visible) return false;
+        if (b.inList && !inList(my)) return false;
+        float x = screenX(b), y = screenY(b);
+        return mx >= x && mx <= x + b.w && my >= y && my <= y + b.h;
+    }
+
     private void pointer(float mx, float my, boolean down) {
         boolean click = down && !wasMouseDown;
         wasMouseDown = down;
-        for (Btn b : buttons) b.hover = b.visible && b.enabled && b.contains(mx, my);
+        for (Btn b : buttons) b.hover = b.enabled && contains(b, mx, my);
 
-        int hover = -1;
-        if (mx >= 20f && mx <= PANEL_W - 20f) {
-            for (int i = 0; i < ROWS_PER_PAGE; i++) {
-                if (my >= slots[i].y && my < slots[i].y + ROW_H) hover = i;
+        Row over = null;
+        if (mx >= LIST_X && mx <= LIST_X + LIST_W && inList(my)) {
+            for (Row row : rows) {
+                float top = contentTop + row.y;
+                if (my >= top && my < top + ROW_H) over = row;
             }
         }
-        if (hover != hoveredSlot) {
-            hoveredSlot = hover;
+        if (over != hovered) {
+            hovered = over;
             refreshDetail();
         }
 
         if (!click || dismissed) return;
         for (Btn b : buttons) {
-            if (b.contains(mx, my)) {
+            if (contains(b, mx, my)) {
                 if (b.enabled) act(b.action);
                 return;
             }
@@ -321,6 +315,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
 
     @Override
     public void advance(float amount) {
+        updateContentTop();
         if (dismissed || position == null || !Mouse.isCreated()) return;
         float scale = Global.getSettings().getScreenScaleMult();
         if (scale <= 0f) return;
@@ -360,7 +355,9 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
     @Override
     public void renderBelow(float alpha) {
         if (position == null) return;
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_CURRENT_BIT | GL11.GL_TEXTURE_BIT | GL11.GL_LINE_BIT);
+        updateContentTop();
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_CURRENT_BIT
+                | GL11.GL_TEXTURE_BIT | GL11.GL_LINE_BIT | GL11.GL_SCISSOR_BIT);
         try {
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glEnable(GL11.GL_BLEND);
@@ -370,32 +367,42 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
             GLDraw.frame(x(0f), y(PANEL_H), PANEL_W, PANEL_H, GOLD, 2f, alpha * 0.6f);
             drawMeter(alpha);
 
-            rect(20f, ROW_TOP - 6f, PANEL_W - 40f, ROWS_PER_PAGE * ROW_H + 12f, PANEL, alpha);
-            for (int i = 0; i < ROWS_PER_PAGE; i++) {
-                Slot slot = slots[i];
-                if (slot == null || slot.entry == null) continue;
-                if (slot.entry.rule == null) {
-                    Color c = slot.entry.hard ? RuleBookIntel.hardColor() : RuleBookIntel.helpfulColor();
-                    rect(30f, slot.y + ROW_H - 6f, PANEL_W - 60f, 1f, c, alpha * 0.6f);
-                } else if (i == hoveredSlot) {
-                    rect(24f, slot.y, PANEL_W - 48f, ROW_H, new Color(40, 48, 62), alpha);
-                }
-            }
+            rect(LIST_X, LIST_TOP, LIST_W, LIST_H, PANEL, alpha);
+            GLDraw.frame(x(LIST_X), y(LIST_TOP + LIST_H), LIST_W, LIST_H, DIM, 1f, alpha * 0.3f);
 
-            rect(20f, DETAIL_TOP, PANEL_W - 40f, 120f, PANEL, alpha);
-            GLDraw.frame(x(20f), y(DETAIL_TOP + 120f), PANEL_W - 40f, 120f, DIM, 1f, alpha * 0.3f);
-
-            for (Btn b : buttons) {
-                if (!b.visible) continue;
-                Color fill = !b.enabled ? new Color(22, 26, 33)
-                        : b.checked ? new Color(98, 76, 38)
-                        : b.hover ? new Color(60, 67, 78) : new Color(32, 40, 50);
-                GLDraw.bevelledPanel(x(b.x), y(b.y + b.h), b.w, b.h, fill, 2f, alpha);
-                GLDraw.frame(x(b.x), y(b.y + b.h), b.w, b.h, b.checked ? GOLD : DIM, 1f, alpha * (b.enabled ? 0.65f : 0.2f));
+            // Everything in the list is clipped to the list's box, like its labels.
+            float scale = Global.getSettings().getScreenScaleMult();
+            GL11.glEnable(GL11.GL_SCISSOR_TEST);
+            GL11.glScissor((int) (x(LIST_X) * scale), (int) (y(LIST_TOP + LIST_H) * scale),
+                    (int) Math.ceil(LIST_W * scale), (int) Math.ceil(LIST_H * scale));
+            for (Row row : rows) {
+                float top = contentTop + row.y;
+                if (top + ROW_H < LIST_TOP || top > LIST_TOP + LIST_H) continue;
+                if (row.pairStart) rect(LIST_X + 10f, top - PAIR_GAP / 2f - 0.5f, LIST_W - 40f, 1f, DIM, alpha * 0.25f);
+                if (row == hovered) rect(LIST_X + 4f, top, LIST_W - 28f, ROW_H, new Color(40, 48, 62), alpha);
+                rect(LIST_X + 4f, top + 4f, 3f, ROW_H - 8f, typeColor(row.rule), alpha * 0.7f);
             }
+            for (Btn b : buttons) if (b.inList) drawButton(b, alpha);
+            GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+            rect(20f, DETAIL_TOP, PANEL_W - 40f, DETAIL_H, PANEL, alpha);
+            GLDraw.frame(x(20f), y(DETAIL_TOP + DETAIL_H), PANEL_W - 40f, DETAIL_H, DIM, 1f, alpha * 0.3f);
+
+            for (Btn b : buttons) if (!b.inList) drawButton(b, alpha);
         } finally {
             GL11.glPopAttrib();
         }
+    }
+
+    private void drawButton(Btn b, float alpha) {
+        if (!b.visible) return;
+        float bx = screenX(b), by = screenY(b);
+        if (b.inList && (by + b.h < LIST_TOP || by > LIST_TOP + LIST_H)) return;
+        Color fill = !b.enabled ? new Color(22, 26, 33)
+                : b.checked ? new Color(98, 76, 38)
+                : b.hover ? new Color(60, 67, 78) : new Color(32, 40, 50);
+        GLDraw.bevelledPanel(x(bx), y(by + b.h), b.w, b.h, fill, 2f, alpha);
+        GLDraw.frame(x(bx), y(by + b.h), b.w, b.h, b.checked ? GOLD : DIM, 1f, alpha * (b.enabled ? 0.65f : 0.2f));
     }
 
     private void drawMeter(float alpha) {

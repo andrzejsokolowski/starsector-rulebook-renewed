@@ -30,14 +30,24 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   Loaded merged over all mods by `RuleCatalog` at startup; rows whose required mod is off are dropped before
   their effect class is loaded.
 - `src/rulebookrenewed/rules` - `RuleEffect` hooks: campaign apply/unapply (every 0.25 days and on change),
-  `onSwitchedOn`, `applyToShip` (combat, first frame each ship is on the field), `applyToMember` (fleet buff).
+  `onSwitchedOn`, `applyToShip` (combat, first frame each ship is on the field), `applyToMember` (fleet buff),
+  `applyToEnemyMember` (enemy ships before they are built). A hard rule and its helpful mirror share one
+  effect class; `RuleEffect.enemySign` / `playerSign` turn the rule's type into the direction, values stay
+  positive in the CSV. The `pair` column groups mirrors in the picker.
   `MemberStatRule` keeps a `RuleMemberBuff` on every player ship (buffs survive stat rebuilds and expire a day
-  after the last refresh). `CombatStatRule` changes one side's ship stats.
+  after the last refresh). `CombatStatRule` changes one side's live ship stats (damage, speed, range,
+  overload). `EnemyMemberStatRule` is for stats fixed at ship creation (armor): `BattlePrep` buffs enemy
+  fleet members when the encounter dialog opens (`RuleBattleListener`) and every frame for ships still in the
+  enemy reserve (`RuleCombatPlugin`), and removes the buffs when the battle ends. The armor grid's per-cell
+  maximum is set only in its constructor (checked in the 0.98a jar), so armor cannot be raised after a
+  ship exists. `HostileFleetBurn` changes hostile fleets in the player's system and hyperspace.
 - `RuleCombatPlugin` (registered in `data/config/settings.json`) stands down outside campaign battles.
 - `RuleState` - chosen levels per save (sector persistent data). `Unlocks` - feats in saves/common
   (`rulebook_renewed_unlocks.json`). `Feats` - story flags, checked daily.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
   `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
-- `ui/RulePickerPanel` - self-drawn, self-hit-tested buttons (see Gambling Den). `RuleBookDialog` hosts it;
+- `ui/RulePickerPanel` - one scrolling list (labels in a panel inside a scrolling TooltipMakerAPI, so the game
+  clips and scrolls them) with self-drawn, self-hit-tested buttons (see Gambling Den) that follow the
+  content panel's real screen position each frame. `RuleBookDialog` hosts it;
   `RuleBookIntel` is the permanent intel entry with the open button.
 - `compat/peerless` - the only package that may name Peerless Skills (`checkPeerlessIsolated`).

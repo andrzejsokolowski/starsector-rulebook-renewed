@@ -11,7 +11,10 @@ import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
+import com.fs.starfarer.api.combat.CombatFleetManagerAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.mission.FleetSide;
 import com.fs.starfarer.api.input.InputEventAPI;
 
 /**
@@ -38,6 +41,8 @@ public final class RuleCombatPlugin extends BaseEveryFrameCombatPlugin {
 
     private final List<Active> active = new ArrayList<>();
     private final Set<ShipAPI> seen = new HashSet<>();
+    private final Set<FleetMemberAPI> preparedMembers = new HashSet<>();
+    private boolean prepareReserves;
     private CombatEngineAPI engine;
 
     @Override
@@ -45,17 +50,44 @@ public final class RuleCombatPlugin extends BaseEveryFrameCombatPlugin {
         this.engine = engine;
         active.clear();
         seen.clear();
+        preparedMembers.clear();
+        prepareReserves = false;
         if (Global.getCurrentState() != GameState.COMBAT) return; // title screen battle
         if (engine == null || !engine.isInCampaign() || engine.isInCampaignSim() || Global.getSector() == null) return;
         for (RuleSpec rule : RuleCatalog.all()) {
             int level = RuleState.level(rule);
-            if (level > 0) active.add(new Active(rule, level));
+            if (level <= 0) continue;
+            active.add(new Active(rule, level));
+            if (rule.effect.usesEnemyMemberBuff()) prepareReserves = true;
+        }
+        prepareEnemyReserves();
+    }
+
+    /**
+     * Ships still in the enemy reserve are not built yet, so a buff on them lands in the armor grid when
+     * they deploy. Ships already on the field are left alone: rebuilding their stats mid-battle would undo
+     * everything else applied to them.
+     */
+    private void prepareEnemyReserves() {
+        if (!prepareReserves || engine == null) return;
+        try {
+            CombatFleetManagerAPI enemy = engine.getFleetManager(FleetSide.ENEMY);
+            if (enemy == null) return;
+            List<FleetMemberAPI> fresh = new ArrayList<>();
+            for (FleetMemberAPI member : enemy.getReservesCopy()) {
+                if (preparedMembers.add(member)) fresh.add(member);
+            }
+            if (!fresh.isEmpty()) BattlePrep.prepareMembers(fresh);
+        } catch (Throwable t) {
+            prepareReserves = false;
+            LOG.error("Rule Book: could not prepare the enemy reserve, enemy armor rules are off for this battle", t);
         }
     }
 
     @Override
     public void advance(float amount, List<InputEventAPI> events) {
         if (active.isEmpty() || engine == null) return;
+        prepareEnemyReserves();
         for (ShipAPI ship : engine.getShips()) {
             if (!seen.add(ship)) continue;
             int owner = ship.getOwner();

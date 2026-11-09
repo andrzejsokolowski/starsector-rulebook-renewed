@@ -1,0 +1,78 @@
+Subject: [0.98a] Rule Book - Renewed 0.2.0 - house rules for one campaign, each with its own level
+
+[center][size=28pt][url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][b]Rule Book - Renewed[/b][/url][/size]
+[url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][img]https://img.shields.io/github/downloads/andrzejsokolowski/starsector-rulebook-renewed/total?style=for-the-badge&label=download[/img][/url]  [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed][img]https://img.shields.io/github/v/release/andrzejsokolowski/starsector-rulebook-renewed?display_name=tag&sort=semver&style=for-the-badge&label=source[/img][/url]
+[/center]
+[center][b]
+WHAT DOES THIS MOD DO?
+Pick house rules for your campaign: hard rules that make the Sector meaner, helpful rules that make it kinder.
+Every rule has its own level, so you tune each one on its own instead of one difficulty slider for everything.
+Change them whenever you like, mid-campaign included.
+Needs LunaLib.
+[/b][/center]
+
+[hr][center][size=12pt][b]How it works[/b][/size][/center][hr]
+[list]
+[li]The Rule Book opens a few seconds into a new game. Open it again any time from the Rule Book entry on the intel screen.[/li]
+[li]Each rule has an Off button and one button per level. A click applies it at once.[/li]
+[li]No limit on how many rules are active. Only unlocks limit what you can pick.[/li]
+[li]A balance meter adds up the points of everything you picked, for example "You're 20 points over budget - Slightly overpowered". It only informs, it never stops a pick.[/li]
+[li]Most hard rules have a helpful mirror right below them in the list.[/li]
+[/list]
+
+[hr][center][size=12pt][b]The rules[/b][/size][/center][hr]
+Values per level, from level I up.
+[list]
+[li][b]Hardened Foes / Brittle Foes[/b]: enemy ships take 5 to 25 percent less / more damage.[/li]
+[li][b]Deadly Foes / Dull Blades[/b]: enemy weapons deal 5 to 25 percent more / less damage.[/li]
+[li][b]Plated Foes / Rusted Foes[/b]: enemy ships have 10 to 50 percent more / less armor. A percent of each ship's own armor, so a frigate and a capital change by the same share.[/li]
+[li][b]Hasty Foes / Sluggish Foes[/b]: enemy ships and fighters are 5 to 25 percent faster / slower in combat.[/li]
+[li][b]Long Guns / Short Sights[/b]: enemy guns reach 5 to 25 percent farther / shorter.[/li]
+[li][b]Swift Pursuers / Lumbering Hunters[/b]: hostile fleets gain / lose 1 to 3 burn on the campaign map.[/li]
+[li][b]Worn Barrels / Sharp Gunnery[/b]: your weapons deal 5 to 25 percent less / more damage.[/li]
+[li][b]Thin Plating / Reinforced Plating[/b]: your ships have 10 to 50 percent less / more armor.[/li]
+[li][b]Clogged Engines / Tuned Engines[/b]: your ships are 5 to 25 percent slower / faster in combat.[/li]
+[li][b]Short Reach / Long Reach[/b]: your guns reach 5 to 25 percent shorter / farther.[/li]
+[li][b]Thin Insulation / Grounded Conduits[/b]: overloads on your and allied ships last up to 75 percent longer / end up to 50 percent sooner.[/li]
+[li][b]Green Crews / Veteran Crews[/b]: 3 to 15 percent less / more maximum combat readiness.[/li]
+[li][b]Hungry Fleet / Lean Logistics[/b]: up to 50 percent more / 30 percent less supply use.[/li]
+[li][b]Heavy Drives / Hyperspace Drifter[/b]: your ships lose / gain 1 to 3 burn.[/li]
+[li][b]Clumsy Shipwrights / Master Shipwrights[/b]: 1 to 2 fewer / 1 to 3 more built-in hull mods per ship.[/li]
+[li][b]Harsh Worlds / Gentle Worlds[/b]: your colonies get up to 100 percent more / 50 percent less hazard rating.[/li]
+[li][b]Ludd's Song[/b]: gate travel costs no fuel. Unlocked by finishing At the Gates.[/li]
+[li][b]Peerless[/b]: one Peerless point, once per campaign. Only with Peerless Skills installed.[/li]
+[/list]
+Combat rules apply in campaign battles only, not in missions or the simulator.
+
+[hr][center][size=12pt][b]Unlocks[/b][/size][/center][hr]
+[list]
+[li]Some rules unlock through feats, such as finishing At the Gates.[/li]
+[li]Feats are kept outside your saves, so an unlock counts for every later campaign.[/li]
+[li]A LunaLib setting unlocks every rule if you just want to play with them.[/li]
+[/list]
+
+[hr][center][size=12pt][b]Works with[/b][/size][/center][hr]
+[list]
+[li][b]New Game Plus - Renewed[/b]: active rules change the career points you earn. Each point under budget adds 1 percent, each point over budget takes 1 percent away.[/li]
+[li][b]Peerless Skills[/b]: adds the Peerless rule.[/li]
+[li]Other mods can add their own rules with one line each in data/config/rulebook/rules.csv.[/li]
+[/list]
+
+[hr][center][size=12pt][b]Credits[/b][/size][/center][hr]
+Thin Insulation, Hyperspace Drifter and Harsh Worlds (and their mirrors) are based on rules from Unofficial Rule Book by DemonX3 (MIT licence, notice in CREDITS.txt).
+
+[spoiler=AI use disclaimer]Some or all assets and code in this mod were created using AI tools:
+[list]
+[li]Code: Claude Code (Claude Opus 5.5)[/li]
+[li]Text (rule descriptions, readme and this post): Claude Code (Claude Opus 5.5)[/li][/list]
+[/spoiler]
+
+[spoiler=License]
+This mod is under the CC0 (Creative Commons Zero) License, allowing you to do whatever you want with the code, without giving any credit to anyone.
+The rules based on Unofficial Rule Book by DemonX3 keep its MIT licence notice (CREDITS.txt).
+[/spoiler]
+
+[spoiler=Version log]
+[b]0.2.0[/b]
+[list][li]First public release.[/li][li]Rule Book entry on the intel screen and a rule picker that also opens at the start of a new game.[/li][li]34 rules, each with its own level (up to five), changeable at any time. Most hard rules have a helpful mirror.[/li][li]Armor rules scale with each ship's own armor.[/li][li]Ludd's Song unlocks by finishing At the Gates. Peerless needs Peerless Skills.[/li][li]Balance meter, feats kept across saves, LunaLib setting to unlock every rule.[/li][li]Works with New Game Plus - Renewed career points.[/li][/list]
+[/spoiler]
