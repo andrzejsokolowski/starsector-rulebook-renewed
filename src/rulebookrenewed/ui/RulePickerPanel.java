@@ -21,6 +21,9 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.ui.UIComponentAPI;
 
 import rulebookrenewed.Balance;
+import rulebookrenewed.ChallengeSpec;
+import rulebookrenewed.Challenges;
+import rulebookrenewed.Feats;
 import rulebookrenewed.RuleBookIntel;
 import rulebookrenewed.RuleCatalog;
 import rulebookrenewed.RuleManager;
@@ -29,15 +32,18 @@ import rulebookrenewed.RuleState;
 import rulebookrenewed.Unlocks;
 
 /**
- * The rule picker. Every rule on one scrolling list, each hard rule next to its helpful mirror, with a
- * button per level; a click applies at once, so switching mid-campaign is the same as picking at the
- * start. The balance meter on top only informs and never blocks a pick.
+ * The rule picker. Two tabs on one scrolling list. Rules: every rule under its section heading, each hard
+ * rule next to its helpful mirror, with a button per level; a click applies at once, so switching
+ * mid-campaign is the same as picking at the start. Challenges and feats: every challenge with a button to
+ * take it on or give it up, and every feat with what it unlocks. The balance meter on top only informs and
+ * never blocks a pick.
  *
  * The list's labels live in a panel inside a scrolling TooltipMakerAPI, so the game clips them and
- * scrolls them with the mouse wheel. Buttons are still drawn and hit-tested by this panel, as in Gambling
- * Den (TooltipMakerAPI buttons in a custom dialog can take clicks in the wrong place): each frame the
- * list's real screen position is read back from the content panel, so drawing and clicks follow the
- * scroll whatever direction the scroller counts in.
+ * scrolls them with the mouse wheel. A tab switch throws that list away and builds the other one.
+ * Buttons are still drawn and hit-tested by this panel, as in Gambling Den (TooltipMakerAPI buttons in a
+ * custom dialog can take clicks in the wrong place): each frame the list's real screen position is read
+ * back from the content panel, so drawing and clicks follow the scroll whatever direction the scroller
+ * counts in.
  */
 public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
 
@@ -45,13 +51,17 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
 
     private static final float METER_X = 170f, METER_Y = 80f, METER_W = 700f, METER_H = 12f;
     private static final int METER_RANGE = 100;
+    private static final float TAB_Y = 100f, TAB_H = 24f;
     private static final float DETAIL_H = 118f;
     private static final float DETAIL_TOP = PANEL_H - 56f - DETAIL_H;
-    private static final float LIST_X = 20f, LIST_TOP = 128f, LIST_W = PANEL_W - 40f;
+    private static final float LIST_X = 20f, LIST_TOP = 132f, LIST_W = PANEL_W - 40f;
     private static final float LIST_H = DETAIL_TOP - 8f - LIST_TOP;
-    private static final float ROW_H = 30f, PAIR_GAP = 10f;
+    private static final float ROW_H = 30f, PAIR_GAP = 10f, HEADING_H = 30f, CHALLENGE_H = 54f, FEAT_H = 26f;
     private static final float NAME_X = 16f, LEVELS_X = 232f, OFF_W = 42f, LEVEL_W = 34f, GAP = 5f;
     private static final float POINTS_X = 480f, EFFECT_X = 532f;
+    private static final float ACTION_W = 124f;
+
+    private static final int TAB_RULES = 0, TAB_CHALLENGES = 1;
 
     private static final Color BG = new Color(12, 15, 22);
     private static final Color PANEL = new Color(22, 27, 36);
@@ -76,18 +86,24 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         }
     }
 
-    /** One rule line. y is in list content coordinates (0 = top of the list). */
-    private static final class Row {
-        final RuleSpec rule;
-        final float y;
-        final boolean pairStart;
-        LabelAPI name, points, effect;
-        final Btn[] levels = new Btn[RuleSpec.MAX_LEVELS + 1];
+    private enum Kind { HEADING, RULE, CHALLENGE, FEAT }
 
-        Row(RuleSpec rule, float y, boolean pairStart) {
-            this.rule = rule;
+    /** One list line. y is in list content coordinates (0 = top of the list). */
+    private static final class Row {
+        final Kind kind;
+        final float y, h;
+        boolean pairStart;
+        RuleSpec rule;
+        ChallengeSpec challenge;
+        Feats.Feat feat;
+        LabelAPI name, points, effect, extra;
+        final Btn[] levels = new Btn[RuleSpec.MAX_LEVELS + 1];
+        Btn action;
+
+        Row(Kind kind, float y, float h) {
+            this.kind = kind;
             this.y = y;
-            this.pairStart = pairStart;
+            this.h = h;
         }
     }
 
@@ -95,9 +111,12 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
     private final List<Row> rows = new ArrayList<>();
     private CustomPanelAPI panel;
     private CustomPanelAPI content;
+    private TooltipMakerAPI listElement;
     private DialogCallbacks callbacks;
     private PositionAPI position;
     private LabelAPI balance, multiplier, detailTitle, detailBody, detailFlavor;
+    private Btn tabRules, tabChallenges;
+    private int tab = TAB_RULES;
     private Row hovered;
     private float contentTop = LIST_TOP;
     private boolean dismissed, wasMouseDown;
@@ -111,9 +130,10 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         balance = label(panel, "", TEXT, 0f, 50f, PANEL_W, 20f, Fonts.DEFAULT_SMALL, Alignment.MID);
         label(panel, "Harder", RuleBookIntel.hardColor(), METER_X - 110f, METER_Y - 4f, 100f, 20f, Fonts.DEFAULT_SMALL, Alignment.RMID);
         label(panel, "Easier", RuleBookIntel.helpfulColor(), METER_X + METER_W + 10f, METER_Y - 4f, 100f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-        multiplier = label(panel, "", DIM, 0f, 100f, PANEL_W, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
+        multiplier = label(panel, "", DIM, 0f, 102f, PANEL_W, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
 
-        buildList();
+        tabRules = button(panel, "tab:" + TAB_RULES, "Rules", LIST_X, TAB_Y, 100f, TAB_H, false);
+        tabChallenges = button(panel, "tab:" + TAB_CHALLENGES, "Challenges and feats", LIST_X + 106f, TAB_Y, 180f, TAB_H, false);
 
         detailTitle = label(panel, "", GOLD, 40f, DETAIL_TOP + 8f, PANEL_W - 80f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
         detailBody = label(panel, "", TEXT, 40f, DETAIL_TOP + 30f, PANEL_W - 80f, 62f, Fonts.DEFAULT_SMALL, Alignment.TL);
@@ -121,40 +141,118 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
 
         button(panel, "close", "Close", PANEL_W - 200f, PANEL_H - 46f, 170f, 34f, false);
 
+        buildList();
         refresh();
     }
 
+    // ---- building the list ----
+
     private void buildList() {
-        List<RuleSpec> rules = RuleCatalog.all();
+        if (listElement != null) panel.removeComponent(listElement);
+        buttons.removeIf(b -> b.inList);
+        rows.clear();
+        hovered = null;
+
+        float bottom = tab == TAB_RULES ? layoutRules() : layoutChallenges();
+        float contentH = Math.max(LIST_H, bottom + 6f);
+
+        listElement = panel.createUIElement(LIST_W, LIST_H, true);
+        content = panel.createCustomPanel(LIST_W, contentH, null);
+        for (int i = 0; i < rows.size(); i++) addRowParts(rows.get(i), i);
+        listElement.addCustom(content, 0f);
+        listElement.setHeightSoFar(contentH);
+        panel.addUIElement(listElement).inTL(LIST_X, LIST_TOP);
+        contentTop = LIST_TOP;
+    }
+
+    private float layoutRules() {
         float y = 6f;
-        String lastPair = null;
-        for (RuleSpec rule : rules) {
+        String lastSection = null, lastPair = null;
+        for (RuleSpec rule : RuleCatalog.all()) {
+            if (!rule.section.equals(lastSection)) {
+                Row heading = new Row(Kind.HEADING, y, HEADING_H);
+                heading.rule = rule;
+                rows.add(heading);
+                y += HEADING_H;
+                lastSection = rule.section;
+                lastPair = null;
+            }
             boolean pairStart = lastPair != null && !lastPair.equals(rule.pair);
             if (pairStart) y += PAIR_GAP;
-            rows.add(new Row(rule, y, pairStart));
+            Row row = new Row(Kind.RULE, y, ROW_H);
+            row.rule = rule;
+            row.pairStart = pairStart;
+            rows.add(row);
             lastPair = rule.pair;
             y += ROW_H;
         }
-        float contentH = Math.max(LIST_H, y + 6f);
+        return y;
+    }
 
-        TooltipMakerAPI list = panel.createUIElement(LIST_W, LIST_H, true);
-        content = panel.createCustomPanel(LIST_W, contentH, null);
-        for (int i = 0; i < rows.size(); i++) {
-            Row row = rows.get(i);
-            row.name = label(content, "", TEXT, NAME_X, row.y + 6f, LEVELS_X - NAME_X - 8f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-            float x = LEVELS_X;
-            for (int level = 0; level <= RuleSpec.MAX_LEVELS; level++) {
-                float w = level == 0 ? OFF_W : LEVEL_W;
-                row.levels[level] = button(content, "level:" + i + ":" + level,
-                        level == 0 ? "Off" : RuleSpec.roman(level), x, row.y + 3f, w, ROW_H - 6f, true);
-                x += w + GAP;
-            }
-            row.points = label(content, "", TEXT, POINTS_X, row.y + 6f, 40f, 18f, Fonts.DEFAULT_SMALL, Alignment.RMID);
-            row.effect = label(content, "", DIM, EFFECT_X, row.y + 1f, LIST_W - EFFECT_X - 24f, ROW_H - 2f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+    private float layoutChallenges() {
+        float y = 6f;
+        rows.add(new Row(Kind.HEADING, y, HEADING_H));
+        y += HEADING_H;
+        for (ChallengeSpec spec : Challenges.all()) {
+            Row row = new Row(Kind.CHALLENGE, y, CHALLENGE_H);
+            row.challenge = spec;
+            rows.add(row);
+            y += CHALLENGE_H;
         }
-        list.addCustom(content, 0f);
-        list.setHeightSoFar(contentH);
-        panel.addUIElement(list).inTL(LIST_X, LIST_TOP);
+        y += PAIR_GAP;
+        rows.add(new Row(Kind.HEADING, y, HEADING_H));
+        y += HEADING_H;
+        for (Feats.Feat feat : Feats.all()) {
+            Row row = new Row(Kind.FEAT, y, FEAT_H);
+            row.feat = feat;
+            rows.add(row);
+            y += FEAT_H;
+        }
+        return y;
+    }
+
+    private void addRowParts(Row row, int index) {
+        switch (row.kind) {
+            case HEADING: {
+                String text = row.rule != null ? row.rule.section.toUpperCase()
+                        : rows.indexOf(row) == 0 ? "CHALLENGES" : "FEATS";
+                row.name = label(content, text, GOLD, NAME_X, row.y + 8f, 400f, 18f, Fonts.ORBITRON_12, Alignment.LMID);
+                String note = row.rule != null ? ""
+                        : rows.indexOf(row) == 0 ? "Taking one on raises its rules. Lowering them, or going over its helpful limit, ends it."
+                        : "Feats count in every campaign once done.";
+                row.extra = label(content, note, DIM, 300f, row.y + 8f, LIST_W - 300f - 24f, 18f, Fonts.DEFAULT_SMALL, Alignment.RMID);
+                break;
+            }
+            case RULE: {
+                row.name = label(content, "", TEXT, NAME_X, row.y + 6f, LEVELS_X - NAME_X - 8f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+                float x = LEVELS_X;
+                for (int level = 0; level <= RuleSpec.MAX_LEVELS; level++) {
+                    float w = level == 0 ? OFF_W : LEVEL_W;
+                    row.levels[level] = button(content, "level:" + index + ":" + level,
+                            level == 0 ? "Off" : RuleSpec.roman(level), x, row.y + 3f, w, ROW_H - 6f, true);
+                    x += w + GAP;
+                }
+                row.points = label(content, "", TEXT, POINTS_X, row.y + 6f, 40f, 18f, Fonts.DEFAULT_SMALL, Alignment.RMID);
+                row.effect = label(content, "", DIM, EFFECT_X, row.y + 1f, LIST_W - EFFECT_X - 24f, ROW_H - 2f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+                break;
+            }
+            case CHALLENGE: {
+                float actionX = LIST_W - 24f - ACTION_W - 8f;
+                row.name = label(content, "", GOLD, NAME_X, row.y + 5f, 360f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+                row.points = label(content, "", DIM, 380f, row.y + 5f, actionX - 380f - 12f, 18f, Fonts.DEFAULT_SMALL, Alignment.RMID);
+                row.effect = label(content, "", DIM, NAME_X, row.y + 28f, actionX - NAME_X - 12f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+                row.action = button(content, "challenge:" + index, "Take it on", actionX, row.y + 14f, ACTION_W, 26f, true);
+                break;
+            }
+            case FEAT: {
+                row.name = label(content, "", TEXT, NAME_X, row.y + 4f, 380f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+                row.points = label(content, "", DIM, 400f, row.y + 4f, 110f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+                row.effect = label(content, "", DIM, 520f, row.y + 4f, LIST_W - 520f - 24f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+                break;
+            }
+            default:
+                break;
+        }
     }
 
     private LabelAPI label(CustomPanelAPI parent, String text, Color color, float x, float y, float w, float h,
@@ -173,13 +271,21 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         return b;
     }
 
+    // ---- filling in ----
+
     private void refresh() {
         int net = Balance.net();
         balance.setText(Balance.describe(net));
         balance.setColor(RuleBookIntel.balanceColor(net));
         multiplier.setText(Balance.ngpInstalled()
                 ? "Career points " + Balance.formatMultiplier(Balance.ngpMultiplier(net)) : "");
-        for (Row row : rows) fillRow(row);
+        tabRules.checked = tab == TAB_RULES;
+        tabChallenges.checked = tab == TAB_CHALLENGES;
+        for (Row row : rows) {
+            if (row.kind == Kind.RULE) fillRule(row);
+            else if (row.kind == Kind.CHALLENGE) fillChallenge(row);
+            else if (row.kind == Kind.FEAT) fillFeat(row);
+        }
         refreshDetail();
     }
 
@@ -187,11 +293,12 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         return rule.hard ? RuleBookIntel.hardColor() : RuleBookIntel.helpfulColor();
     }
 
-    private void fillRow(Row row) {
+    private void fillRule(Row row) {
         RuleSpec rule = row.rule;
         int level = RuleState.level(rule);
         boolean unlocked = Unlocks.isUnlocked(rule) || level > 0;
-        row.name.setText(rule.name);
+        boolean held = !Challenges.activeRequiring(rule).isEmpty();
+        row.name.setText(held ? rule.name + "  *" : rule.name);
         row.name.setColor(unlocked ? typeColor(rule) : DIM.darker());
         for (int l = 0; l <= RuleSpec.MAX_LEVELS; l++) {
             Btn b = row.levels[l];
@@ -213,15 +320,96 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         row.effect.setColor(TEXT);
     }
 
+    private void fillChallenge(Row row) {
+        ChallengeSpec spec = row.challenge;
+        boolean complete = Challenges.isComplete(spec);
+        boolean active = Challenges.isActive(spec);
+        String why = active ? null : Challenges.whyNot(spec);
+        row.name.setText(spec.name);
+        row.name.setColor(complete ? RuleBookIntel.helpfulColor() : GOLD);
+        if (complete) {
+            row.points.setText("Completed");
+            row.points.setColor(RuleBookIntel.helpfulColor());
+        } else if (active) {
+            row.points.setText("Under way: " + Challenges.progressText(spec));
+            row.points.setColor(GOLD);
+        } else if (why != null) {
+            row.points.setText(why);
+            row.points.setColor(DIM);
+        } else {
+            row.points.setText("Reward: " + rewardNames(spec));
+            row.points.setColor(DIM);
+        }
+        row.effect.setText("Needs " + spec.requirementsText() + ".  Goal: " + spec.goalText() + ".  " + spec.limitText() + ".");
+        row.action.visible = !complete;
+        row.action.enabled = active || why == null;
+        row.action.checked = active;
+        row.action.label.setText(complete ? "" : active ? "Give up" : "Take it on");
+        row.action.label.setColor(row.action.enabled ? Color.WHITE : DIM.darker());
+    }
+
+    private void fillFeat(Row row) {
+        Feats.Feat feat = row.feat;
+        boolean done = Unlocks.hasFeat(feat.id);
+        row.name.setText(feat.name);
+        row.name.setColor(done ? RuleBookIntel.helpfulColor() : TEXT);
+        String status = done ? "Done" : "Not yet";
+        if (feat.repeatable && Global.getSector() != null) {
+            int count = feat.count();
+            if (count > 0) status = (done ? "Done, " : "") + count + " this campaign";
+        }
+        row.points.setText(status);
+        row.points.setColor(done ? RuleBookIntel.helpfulColor() : DIM);
+        row.effect.setText(featUses(feat));
+    }
+
+    private static String rewardNames(ChallengeSpec spec) {
+        StringBuilder out = new StringBuilder();
+        for (RuleSpec rule : Challenges.rewards(spec)) {
+            if (out.length() > 0) out.append(", ");
+            out.append(rule.name);
+        }
+        return out.length() == 0 ? "none" : out.toString();
+    }
+
+    private static String featUses(Feats.Feat feat) {
+        StringBuilder rules = new StringBuilder();
+        for (RuleSpec rule : RuleCatalog.all()) {
+            if (!feat.id.equals(rule.featId())) continue;
+            if (rules.length() > 0) rules.append(", ");
+            rules.append(rule.name);
+        }
+        StringBuilder challenges = new StringBuilder();
+        for (ChallengeSpec spec : Challenges.all()) {
+            if (spec.goalFeat != feat) continue;
+            if (challenges.length() > 0) challenges.append(", ");
+            challenges.append(spec.name);
+        }
+        StringBuilder out = new StringBuilder();
+        if (rules.length() > 0) out.append("Unlocks ").append(rules);
+        if (challenges.length() > 0) {
+            if (out.length() > 0) out.append(".  ");
+            out.append("Goal of ").append(challenges);
+        }
+        return out.toString();
+    }
+
     private void refreshDetail() {
-        if (hovered == null) {
+        if (hovered == null || hovered.kind == Kind.HEADING) {
             detailTitle.setText("");
-            detailBody.setText("House rules for this voyage. The Sector will hold you to them.");
+            detailBody.setText(tab == TAB_RULES
+                    ? "House rules for this voyage. The Sector will hold you to them."
+                    : "Challenges ask you to keep hard rules on until you reach a goal. Finishing one opens new rules in every campaign.");
             detailBody.setColor(DIM);
             detailFlavor.setText("");
             return;
         }
-        RuleSpec rule = hovered.rule;
+        if (hovered.kind == Kind.RULE) ruleDetail(hovered.rule);
+        else if (hovered.kind == Kind.CHALLENGE) challengeDetail(hovered.challenge);
+        else featDetail(hovered.feat);
+    }
+
+    private void ruleDetail(RuleSpec rule) {
         detailTitle.setText(rule.name + (rule.hard ? "  (hard)" : "  (helpful)"));
         detailTitle.setColor(typeColor(rule));
         StringBuilder body = new StringBuilder();
@@ -231,6 +419,11 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
             if (rule.levels > 1) body.append(RuleSpec.roman(l)).append(":  ");
             body.append(rule.describe(l)).append("  (").append(points > 0 ? "+" : "").append(points).append(')');
         }
+        for (ChallengeSpec spec : Challenges.activeRequiring(rule)) {
+            int need = spec.levelFor(rule);
+            body.append('\n').append("* Held by the challenge ").append(spec.name).append(" at ")
+                    .append(RuleSpec.roman(need)).append(" or higher. Lowering it ends the challenge.");
+        }
         if (!Unlocks.isUnlocked(rule) && RuleState.level(rule) == 0 && !rule.unlockHint.isEmpty()) {
             body.append('\n').append(rule.unlockHint);
         }
@@ -239,19 +432,71 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         detailFlavor.setText(rule.flavor);
     }
 
+    private void challengeDetail(ChallengeSpec spec) {
+        detailTitle.setText(spec.name + "  (challenge)");
+        detailTitle.setColor(GOLD);
+        StringBuilder body = new StringBuilder(spec.description);
+        body.append("\nNeeds ").append(spec.requirementsText()).append(".  ").append(spec.limitText()).append('.');
+        body.append("\nGoal: ").append(spec.goalText()).append('.');
+        if (Challenges.isActive(spec)) body.append("  Progress: ").append(Challenges.progressText(spec)).append('.');
+        for (RuleSpec reward : Challenges.rewards(spec)) {
+            body.append("\nReward: ").append(reward.name).append(" - ").append(reward.describe(1));
+            if (reward.levels > 1) body.append(" (level I)");
+        }
+        detailBody.setText(body.toString());
+        detailBody.setColor(TEXT);
+        detailFlavor.setText(spec.flavor);
+    }
+
+    private void featDetail(Feats.Feat feat) {
+        boolean done = Unlocks.hasFeat(feat.id);
+        detailTitle.setText(feat.name + (done ? "  (done)" : "  (feat)"));
+        detailTitle.setColor(done ? RuleBookIntel.helpfulColor() : GOLD);
+        String uses = featUses(feat);
+        String body = (uses.isEmpty() ? "Recorded for every campaign once done." : uses + ".")
+                + (feat.repeatable ? "\nCounts every battle it happens in, so challenges can ask for it more than once." : "");
+        detailBody.setText(body);
+        detailBody.setColor(TEXT);
+        detailFlavor.setText("");
+    }
+
+    // ---- input ----
+
     private void act(String action) {
         if (dismissed) return;
         if (action.equals("close")) {
             close();
             return;
         }
+        if (action.startsWith("tab:")) {
+            int next = Integer.parseInt(action.substring(4));
+            if (next != tab) {
+                tab = next;
+                buildList();
+                click();
+                refresh();
+            }
+            return;
+        }
         if (action.startsWith("level:")) {
             String[] parts = action.split(":");
             Row row = rows.get(Integer.parseInt(parts[1]));
             RuleManager.setLevel(row.rule, Integer.parseInt(parts[2]));
-            Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 0.6f);
+            click();
+            refresh();
+            return;
+        }
+        if (action.startsWith("challenge:")) {
+            Row row = rows.get(Integer.parseInt(action.substring(10)));
+            if (Challenges.isActive(row.challenge)) Challenges.giveUp(row.challenge);
+            else Challenges.start(row.challenge);
+            click();
             refresh();
         }
+    }
+
+    private static void click() {
+        Global.getSoundPlayer().playUISound("ui_button_pressed", 1f, 0.6f);
     }
 
     private void close() {
@@ -296,7 +541,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         if (mx >= LIST_X && mx <= LIST_X + LIST_W && inList(my)) {
             for (Row row : rows) {
                 float top = contentTop + row.y;
-                if (my >= top && my < top + ROW_H) over = row;
+                if (my >= top && my < top + row.h) over = row;
             }
         }
         if (over != hovered) {
@@ -305,7 +550,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         }
 
         if (!click || dismissed) return;
-        for (Btn b : buttons) {
+        for (Btn b : new ArrayList<>(buttons)) {
             if (contains(b, mx, my)) {
                 if (b.enabled) act(b.action);
                 return;
@@ -339,6 +584,8 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
     public void positionChanged(PositionAPI p) {
         position = p;
     }
+
+    // ---- drawing ----
 
     private float x(float n) {
         return position.getX() + n;
@@ -377,10 +624,8 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
                     (int) Math.ceil(LIST_W * scale), (int) Math.ceil(LIST_H * scale));
             for (Row row : rows) {
                 float top = contentTop + row.y;
-                if (top + ROW_H < LIST_TOP || top > LIST_TOP + LIST_H) continue;
-                if (row.pairStart) rect(LIST_X + 10f, top - PAIR_GAP / 2f - 0.5f, LIST_W - 40f, 1f, DIM, alpha * 0.25f);
-                if (row == hovered) rect(LIST_X + 4f, top, LIST_W - 28f, ROW_H, new Color(40, 48, 62), alpha);
-                rect(LIST_X + 4f, top + 4f, 3f, ROW_H - 8f, typeColor(row.rule), alpha * 0.7f);
+                if (top + row.h < LIST_TOP || top > LIST_TOP + LIST_H) continue;
+                drawRow(row, top, alpha);
             }
             for (Btn b : buttons) if (b.inList) drawButton(b, alpha);
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
@@ -392,6 +637,21 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         } finally {
             GL11.glPopAttrib();
         }
+    }
+
+    private void drawRow(Row row, float top, float alpha) {
+        if (row.kind == Kind.HEADING) {
+            rect(LIST_X + 10f, top + row.h - 4f, LIST_W - 40f, 1f, GOLD, alpha * 0.35f);
+            return;
+        }
+        if (row.pairStart) rect(LIST_X + 10f, top - PAIR_GAP / 2f - 0.5f, LIST_W - 40f, 1f, DIM, alpha * 0.25f);
+        if (row == hovered) rect(LIST_X + 4f, top, LIST_W - 28f, row.h, new Color(40, 48, 62), alpha);
+        Color bar;
+        if (row.kind == Kind.RULE) bar = typeColor(row.rule);
+        else if (row.kind == Kind.CHALLENGE) bar = Challenges.isComplete(row.challenge) ? RuleBookIntel.helpfulColor() : GOLD;
+        else bar = Unlocks.hasFeat(row.feat.id) ? RuleBookIntel.helpfulColor() : DIM;
+        rect(LIST_X + 4f, top + 4f, 3f, row.h - 8f, bar, alpha * 0.7f);
+        if (row.kind == Kind.CHALLENGE) rect(LIST_X + 10f, top + row.h - 1f, LIST_W - 40f, 1f, DIM, alpha * 0.15f);
     }
 
     private void drawButton(Btn b, float alpha) {

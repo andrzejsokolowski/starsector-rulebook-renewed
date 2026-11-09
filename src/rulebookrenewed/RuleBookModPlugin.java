@@ -9,6 +9,7 @@ public final class RuleBookModPlugin extends BaseModPlugin {
     @Override
     public void onApplicationLoad() {
         RuleCatalog.load();
+        Challenges.load();
         loadIcon(Ids.BOOK_ICON);
         for (RuleSpec rule : RuleCatalog.all()) loadIcon(rule.icon);
     }
@@ -34,5 +35,6 @@ public final class RuleBookModPlugin extends BaseModPlugin {
         // Applies this save's rules and undoes the last save's (Ludd's Song changes a game-wide value).
         RuleManager.refreshAll();
         Feats.check();
+        Challenges.check();
     }
 }

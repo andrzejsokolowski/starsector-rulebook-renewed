@@ -1,13 +1,19 @@
 package rulebookrenewed;
 
+import java.util.List;
+
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 
-/** Prepares enemy ships when an encounter opens and cleans them up when the battle ends. Transient. */
+/**
+ * Prepares enemy ships when an encounter opens, cleans them up when the battle ends, and counts the
+ * player's wins for feats and challenges. Transient.
+ */
 public final class RuleBattleListener extends BaseCampaignEventListener {
 
     public RuleBattleListener() {
@@ -36,5 +42,33 @@ public final class RuleBattleListener extends BaseCampaignEventListener {
         } catch (Throwable ignored) {
             // The buffs run out on their own after two days.
         }
+        try {
+            recordWin(primaryWinner, battle);
+        } catch (Throwable t) {
+            Global.getLogger(RuleBattleListener.class).error("Rule Book: could not record a battle", t);
+        }
+    }
+
+    /** Counts a won battle, and what it was won against, for feats and challenge goals. */
+    private static void recordWin(CampaignFleetAPI primaryWinner, BattleAPI battle) {
+        if (battle == null || primaryWinner == null || !battle.isPlayerInvolved()) return;
+        if (!battle.onPlayerSide(primaryWinner)) return;
+        List<CampaignFleetAPI> enemies = battle.getNonPlayerSideSnapshot();
+        if (enemies == null || enemies.isEmpty()) enemies = battle.getNonPlayerSide();
+        if (enemies == null || enemies.isEmpty()) return;
+        boolean remnant = false, abyss = false, station = false;
+        for (CampaignFleetAPI fleet : enemies) {
+            if (fleet == null) continue;
+            String faction = fleet.getFaction() == null ? "" : fleet.getFaction().getId();
+            if (Factions.REMNANTS.equals(faction)) remnant = true;
+            if (Factions.OMEGA.equals(faction) || Factions.THREAT.equals(faction) || Factions.DWELLER.equals(faction)) abyss = true;
+            if (fleet.isStationMode()) station = true;
+        }
+        Counters.add(Counters.WINS);
+        if (remnant) Counters.add(Counters.REMNANT);
+        if (abyss) Counters.add(Counters.ABYSS);
+        if (station) Counters.add(Counters.STATION);
+        Feats.check();
+        Challenges.check();
     }
 }

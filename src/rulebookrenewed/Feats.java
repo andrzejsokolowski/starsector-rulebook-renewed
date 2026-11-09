@@ -1,45 +1,84 @@
 package rulebookrenewed;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 
 /**
- * Story feats, checked from the game's own story flags. The flags are the ones Quality Perks reads
- * (dal.plugins.Perks_Utils.checkMilestones); New Game Plus - Renewed keeps its own copy of this list,
- * so neither mod needs the other.
+ * Feats: things done in a campaign. A feat done once in any save is kept in saves/common (Unlocks) and
+ * opens the rules that name it. Story feats read the game's own story flags, the ones Quality Perks reads
+ * (dal.plugins.Perks_Utils.checkMilestones); New Game Plus - Renewed keeps its own copy of that list, so
+ * neither mod needs the other. Battle feats count wins in this save (Counters, filled by
+ * RuleBattleListener). Every feat gives a count, so a challenge can ask for it to rise by some amount.
  */
 public final class Feats {
 
-    private interface Check {
-        boolean done();
+    private interface Count {
+        int get();
     }
 
-    private static final class Feat {
-        final String id;
-        final Check check;
+    public static final class Feat {
+        public final String id;
+        /** What the player has to do, as a short instruction. */
+        public final String name;
+        /** True when the count can keep rising (battles won); false for one-time story flags. */
+        public final boolean repeatable;
+        private final Count count;
 
-        Feat(String id, Check check) {
+        Feat(String id, String name, boolean repeatable, Count count) {
             this.id = id;
-            this.check = check;
+            this.name = name;
+            this.repeatable = repeatable;
+            this.count = count;
+        }
+
+        /** How many times it is done in this save; 0 or 1 for one-time feats. */
+        public int count() {
+            try {
+                return Global.getSector() == null ? 0 : count.get();
+            } catch (Throwable t) {
+                return 0;
+            }
         }
     }
 
     private static final List<Feat> FEATS = new ArrayList<>();
 
     static {
-        FEATS.add(new Feat("academy", () -> sector("$gaKA_missionCompleted")));
-        FEATS.add(new Feat("ziggurat", () -> sector("$defeatedZiggurat")));
-        FEATS.add(new Feat("atg", () -> sector("$gaATG_missionCompleted")));
-        FEATS.add(new Feat("usurpers", () -> sector("$sdtu_missionCompleted")));
-        FEATS.add(new Feat("duel", () -> character("$soe_wonDuel")));
-        FEATS.add(new Feat("knight", () -> sector("$lke_missionCompleted")));
-        FEATS.add(new Feat("planetkiller", () -> sector("$pk_recovered")));
-        FEATS.add(new Feat("kanta", () -> character("$everHadKantaProtection")));
-        FEATS.add(new Feat("level15", () -> Global.getSector().getPlayerStats().getLevel() >= 15));
+        add("academy", "Finish the Galatia Academy story", () -> sector("$gaKA_missionCompleted"));
+        add("ziggurat", "Defeat the Ziggurat", () -> sector("$defeatedZiggurat"));
+        add("atg", "Finish At the Gates", () -> sector("$gaATG_missionCompleted"));
+        add("usurpers", "Finish the Usurpers story", () -> sector("$sdtu_missionCompleted"));
+        add("duel", "Win the duel of honour", () -> character("$soe_wonDuel"));
+        add("knight", "Finish the Knight Errant story", () -> sector("$lke_missionCompleted"));
+        add("planetkiller", "Recover the planetkiller", () -> sector("$pk_recovered"));
+        add("kanta", "Earn Kanta's protection", () -> character("$everHadKantaProtection"));
+        add("level15", "Reach level 15", () -> Global.getSector().getPlayerStats().getLevel() >= 15);
+        add("colony", "Found a colony", () -> colonyOfSize(1));
+        add("colony6", "Grow a colony to size 6", () -> colonyOfSize(6));
+        add("millionaire", "Hold a million credits", () -> Global.getSector().getPlayerFleet() != null
+                && Global.getSector().getPlayerFleet().getCargo().getCredits().get() >= 1000000f);
+        counter(Counters.WINS, "Win a battle");
+        counter(Counters.REMNANT, "Defeat a Remnant fleet");
+        counter(Counters.ABYSS, "Defeat Omega, the Threat or the Dwellers");
+        counter(Counters.STATION, "Win a battle against an orbital station");
+    }
+
+    private interface Flag {
+        boolean done();
+    }
+
+    private static void add(String id, String name, Flag flag) {
+        FEATS.add(new Feat(id, name, false, () -> flag.done() ? 1 : 0));
+    }
+
+    private static void counter(String id, String name) {
+        FEATS.add(new Feat(id, name, true, () -> Counters.get(id)));
     }
 
     private Feats() {}
@@ -54,25 +93,37 @@ public final class Feats {
         return memory != null && memory.contains(key);
     }
 
+    private static boolean colonyOfSize(int size) {
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+            if (market.isPlayerOwned() && market.getSize() >= size) return true;
+        }
+        return false;
+    }
+
+    public static List<Feat> all() {
+        return Collections.unmodifiableList(FEATS);
+    }
+
+    public static Feat get(String id) {
+        for (Feat feat : FEATS) if (feat.id.equals(id)) return feat;
+        return null;
+    }
+
     /** Records every feat done in this save, and names the rules that just opened up. */
     public static void check() {
         for (Feat feat : FEATS) {
-            boolean done;
-            try {
-                done = feat.check.done();
-            } catch (Throwable t) {
-                continue;
-            }
-            if (!done || !Unlocks.addFeat(feat.id)) continue;
+            if (feat.count() <= 0 || !Unlocks.addFeat(feat.id)) continue;
             for (RuleSpec rule : RuleCatalog.all()) {
-                if (!feat.id.equals(rule.featId())) continue;
-                try {
-                    Global.getSector().getCampaignUI().addMessage(
-                            "A new page in the Rule Book: " + rule.name, Misc.getHighlightColor());
-                } catch (Throwable ignored) {
-                    // No campaign UI yet; the unlock is saved all the same.
-                }
+                if (feat.id.equals(rule.featId())) message("A new page in the Rule Book: " + rule.name);
             }
+        }
+    }
+
+    static void message(String text) {
+        try {
+            Global.getSector().getCampaignUI().addMessage(text, Misc.getHighlightColor());
+        } catch (Throwable ignored) {
+            // No campaign UI yet; the unlock is saved all the same.
         }
     }
 }

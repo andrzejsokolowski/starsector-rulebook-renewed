@@ -14,7 +14,10 @@ import com.fs.starfarer.api.util.Misc;
 
 import rulebookrenewed.ui.RuleBookDialog;
 
-/** The Rule Book's permanent intel entry: the rules in force, the balance, and a button to change them. */
+/**
+ * The Rule Book's permanent intel entry: the rules in force, the balance, challenges under way, and a
+ * button to change them.
+ */
 public final class RuleBookIntel extends BaseIntelPlugin {
 
     public static final String TAG = "Rule Book";
@@ -68,6 +71,16 @@ public final class RuleBookIntel extends BaseIntelPlugin {
             info.addPara(rule.describe(level), Misc.getGrayColor(), 1f);
         }
         if (!any) info.addPara("None. The Sector plays by its own rules.", Misc.getGrayColor(), 5f);
+
+        boolean anyChallenge = false;
+        for (ChallengeSpec spec : Challenges.all()) {
+            if (!Challenges.isActive(spec)) continue;
+            if (!anyChallenge) info.addSectionHeading("Challenges under way", Alignment.MID, pad);
+            anyChallenge = true;
+            info.addPara(spec.name + "   " + Challenges.progressText(spec), Misc.getHighlightColor(), 5f);
+            info.addPara("Goal: " + spec.goalText() + ". Keep " + spec.requirementsText() + ". " + spec.limitText() + ".",
+                    Misc.getGrayColor(), 1f);
+        }
 
         info.addButton("Open the Rule Book", BUTTON_OPEN, width, 24f, pad * 2f);
     }

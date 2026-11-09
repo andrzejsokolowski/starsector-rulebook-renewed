@@ -151,7 +151,7 @@ tasks.register('checkReleaseFiles') {
         def rulesFile = file('data/config/rulebook/rules.csv')
         def lines = rulesFile.readLines('UTF-8')
         def header = lines[0].split(',', -1) as List
-        ['id', 'name', 'type', 'levels', 'points', 'values', 'requiredMod', 'unlock', 'effect', 'icon', 'description', 'flavor', 'unlockHint', 'order', 'pair'].each {
+        ['id', 'name', 'type', 'levels', 'points', 'values', 'requiredMod', 'unlock', 'effect', 'icon', 'description', 'flavor', 'unlockHint', 'order', 'pair', 'section'].each {
             if (!header.contains(it)) problems << "rules.csv has no ${it} column"
         }
         def parseCsv = { String line ->
@@ -167,10 +167,18 @@ tasks.register('checkReleaseFiles') {
             }
             out << cur.toString(); out
         }
+        def ruleLevels = [:]
+        def ruleUnlocks = [:]
+        def ids = [] as Set
         lines.drop(1).findAll { it.trim() && !it.startsWith('#') }.each { line ->
             def cells = parseCsv(line)
             if (cells.size() != header.size()) { problems << "rules.csv row has ${cells.size()} cells, header has ${header.size()}: ${line.take(40)}"; return }
             def row = [header, cells].transpose().collectEntries { it }
+            if (!ids.add(row.id)) problems << "rules.csv ${row.id}: id used twice"
+            ruleLevels[row.id] = row.levels as int
+            ruleUnlocks[row.id] = row.unlock
+            if (!row.section) problems << "rules.csv ${row.id}: no section"
+            if (!row.description.contains('{value}') && !(row.values in ['0'])) problems << "rules.csv ${row.id}: description has no {value}"
             def levels = row.levels as int
             if (levels < 1 || levels > 5) problems << "rules.csv ${row.id}: levels must be 1 to 5"
             if (row.points.split('\\|').size() != levels) problems << "rules.csv ${row.id}: points need ${levels} entries"
@@ -178,6 +186,36 @@ tasks.register('checkReleaseFiles') {
             if (!(row.type in ['hard', 'helpful'])) problems << "rules.csv ${row.id}: type must be hard or helpful"
             def src = file("src/${row.effect.replace('.', '/')}.java")
             if (!src.isFile()) problems << "rules.csv ${row.id}: effect class ${row.effect} not found"
+        }
+
+        // Challenges: required rules exist at a level they have, goals name a known feat, and every
+        // challenge unlocks at least one rule (and every challenge unlock names a real challenge).
+        def featIds = (file('src/rulebookrenewed/Feats.java').getText('UTF-8') =~ /(?:add|counter)\(\s*"([a-z0-9_]+)"/).collect { it[1] } as Set
+        (file('src/rulebookrenewed/Counters.java').getText('UTF-8') =~ /String [A-Z_]+ = "([a-z0-9_]+)"/).each { featIds << it[1] }
+        def challengeLines = file('data/config/rulebook/challenges.csv').readLines('UTF-8')
+        def challengeHeader = challengeLines[0].split(',', -1) as List
+        ['id', 'name', 'rules', 'goal', 'helpfulLimit', 'description', 'flavor', 'order', 'requiredMod'].each {
+            if (!challengeHeader.contains(it)) problems << "challenges.csv has no ${it} column"
+        }
+        def challengeIds = [] as Set
+        challengeLines.drop(1).findAll { it.trim() && !it.startsWith('#') }.each { line ->
+            def cells = parseCsv(line)
+            if (cells.size() != challengeHeader.size()) { problems << "challenges.csv row has ${cells.size()} cells, header has ${challengeHeader.size()}: ${line.take(40)}"; return }
+            def row = [challengeHeader, cells].transpose().collectEntries { it }
+            if (!challengeIds.add(row.id)) problems << "challenges.csv ${row.id}: id used twice"
+            row.rules.split('\\|').each { part ->
+                def bits = part.trim().split(':')
+                if (!ruleLevels.containsKey(bits[0])) problems << "challenges.csv ${row.id}: unknown rule ${bits[0]}"
+                else if (bits.size() > 1 && (bits[1] as int) > ruleLevels[bits[0]]) problems << "challenges.csv ${row.id}: ${bits[0]} has no level ${bits[1]}"
+            }
+            def goal = row.goal.split(':')
+            if (goal[0] == 'feat') { if (!(goal[1] in featIds)) problems << "challenges.csv ${row.id}: unknown feat ${goal[1]}" }
+            else if (!(goal[0] in ['wins', 'days']) || goal.size() != 2 || !(goal[1] ==~ /\d+/)) problems << "challenges.csv ${row.id}: bad goal ${row.goal}"
+            if (!ruleUnlocks.values().contains("challenge:${row.id}".toString())) problems << "challenges.csv ${row.id}: no rule unlocks from it"
+        }
+        ruleUnlocks.each { id, unlock ->
+            if (unlock.startsWith('challenge:') && !(unlock.substring(10) in challengeIds)) problems << "rules.csv ${id}: unknown challenge ${unlock}"
+            if (unlock.startsWith('feat:') && !(unlock.substring(5) in featIds)) problems << "rules.csv ${id}: unknown feat ${unlock}"
         }
 
         if (problems) throw new GradleException("Release files are not ready:\n  " + problems.join('\n  '))

@@ -1,3 +1,15 @@
+Version 0.3.0 (2026-11-10)
+- 117 rules, up from 34, grouped in sections: enemy ships, your ships, fleet and logistics, the Sector, colonies, and special rules.
+- New enemy rules, each with a mirror: enemy hull, flux dissipation, rate of fire, fighter replacement, ship systems, phase ships and peak performance time.
+- New rules for your ships, each with a mirror: hull, flux, weapon flux cost, shield damage, peak performance time, fighter replacement, ship systems, crew losses, D-mod severity and the chance to lose disabled ships. New hard rules: Jinxed (malfunctions at any combat readiness) and Blight (armor corrodes in combat).
+- New fleet rules, each with a mirror: fuel use, repair speed, deployment cost, ordnance points, officer count, command points, how far other fleets see you, sensor range and salvage. New single rules: Dead Weight, Famine and Fox's Patience.
+- New Sector rules, each with a mirror: size and ship quality of other factions' fleets, and tariffs.
+- New colony rules, each with a mirror: income, upkeep, stability and accessibility.
+- Challenges: nine challenges in a new tab of the Rule Book. Each names hard rules to keep on and a goal. Finishing one unlocks a reward rule for every campaign.
+- New feats: found a colony, grow a colony to size 6, hold a million credits, win battles, defeat Remnant fleets, defeat Omega, the Threat or the Dwellers, and beat orbital stations. The new tab lists every feat and what it unlocks.
+- New unlockable rules: Mentor's Legacy, Charter of Governors and Abyss Ward from feats, and nine challenge rewards.
+- The Rule Book intel entry shows the challenges under way and their progress.
+
 Version 0.2.0 (2026-11-09)
 - First public release.
 - Rule Book entry on the intel screen, with a button that opens the rule picker at any time. The picker also opens a few seconds into a new game.

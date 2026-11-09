@@ -9,7 +9,8 @@ import rulebookrenewed.ui.RuleBookDialog;
 
 /**
  * Campaign upkeep, added as a transient script on every load: re-applies rules every few hours of game
- * time (new ships, new colonies), checks feats once a day, and opens the picker once on a new game.
+ * time (new ships, new colonies), checks feats and challenges once a day, and opens the picker once on a
+ * new game.
  */
 public final class RuleBookScript implements EveryFrameScript {
 
@@ -47,6 +48,7 @@ public final class RuleBookScript implements EveryFrameScript {
         if (featDays >= FEAT_DAYS) {
             featDays = 0f;
             Feats.check();
+            Challenges.check();
         }
     }
 

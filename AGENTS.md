@@ -26,9 +26,16 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
 ## Layout
 
 - `data/config/rulebook/rules.csv` - one row per rule: levels, points and values per level (`|` separated),
-  required mod, unlock (`feat:<id>`), effect class, icon, description with `{value}`, flavor, unlock hint, order.
-  Loaded merged over all mods by `RuleCatalog` at startup; rows whose required mod is off are dropped before
-  their effect class is loaded.
+  required mod, unlock (`feat:<id>` or `challenge:<id>`), effect class, icon, description with `{value}`, flavor,
+  unlock hint, order, pair, section (the picker heading). Loaded merged over all mods by `RuleCatalog` at
+  startup; rows whose required mod is off are dropped before their effect class is loaded. Sections sort by
+  their lowest order, so keep each section's orders together.
+- `data/config/rulebook/challenges.csv` - one row per challenge: required rules (`rule_id:level|...`), goal
+  (`feat:<id>[:<count>]`, `wins:<n>` or `days:<n>`), helpful limit (points, 0 = none allowed, empty = no cap).
+  `Challenges` loads it after the rules. A run is kept in the save with its start time and the goal feat's
+  count at the start, so only progress during the run counts. Lowering a required rule or going over the
+  helpful limit ends the run (`Challenges.validate`, called from `RuleManager.setLevel`). Completion is the
+  feat `challenge_<id>` in `Unlocks`, which opens rules whose unlock is `challenge:<id>`.
 - `src/rulebookrenewed/rules` - `RuleEffect` hooks: campaign apply/unapply (every 0.25 days and on change),
   `onSwitchedOn`, `applyToShip` (combat, first frame each ship is on the field), `applyToMember` (fleet buff),
   `applyToEnemyMember` (enemy ships before they are built). A hard rule and its helpful mirror share one
@@ -41,12 +48,20 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   enemy reserve (`RuleCombatPlugin`), and removes the buffs when the battle ends. The armor grid's per-cell
   maximum is set only in its constructor (checked in the 0.98a jar), so armor cannot be raised after a
   ship exists. `HostileFleetBurn` changes hostile fleets in the player's system and hyperspace.
+  Other bases: `FleetStatRule` (the player fleet's campaign stats), `CharacterStatRule` (the player's
+  character stats: officers, command points, ordnance points), `MarketRule` (the player's colonies or every
+  other market), `EnemyKindDamage` (one kind of enemy ship takes more damage). `Scale.by` does the percent
+  push: a rise is a percent bonus, a cut is a multiplier with a 0.05 floor.
 - `RuleCombatPlugin` (registered in `data/config/settings.json`) stands down outside campaign battles.
 - `RuleState` - chosen levels per save (sector persistent data). `Unlocks` - feats in saves/common
-  (`rulebook_renewed_unlocks.json`). `Feats` - story flags, checked daily.
+  (`rulebook_renewed_unlocks.json`). `Feats` - every feat with a count: story flags (0 or 1), colonies,
+  credits, and battle counters from `Counters` (per save, filled by `RuleBattleListener` when the player's
+  side wins). Checked daily and after battles; the build reads the feat ids from `Feats.java` and
+  `Counters.java` to check the CSV files.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
   `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
-- `ui/RulePickerPanel` - one scrolling list (labels in a panel inside a scrolling TooltipMakerAPI, so the game
+- `ui/RulePickerPanel` - two tabs (Rules; Challenges and feats), each one scrolling list rebuilt on a tab
+  switch (labels in a panel inside a scrolling TooltipMakerAPI, so the game
   clips and scrolls them) with self-drawn, self-hit-tested buttons (see Gambling Den) that follow the
   content panel's real screen position each frame. `RuleBookDialog` hosts it;
   `RuleBookIntel` is the permanent intel entry with the open button.

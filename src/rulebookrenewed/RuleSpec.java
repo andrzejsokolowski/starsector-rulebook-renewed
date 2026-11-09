@@ -15,7 +15,7 @@ public final class RuleSpec {
     private final float[] values;
     private final String[] valueTexts;
     public final String requiredMod;
-    /** "feat:<id>" or empty. */
+    /** "feat:<id>", "challenge:<id>" or empty. */
     public final String unlock;
     public final String icon;
     public final String description;
@@ -24,11 +24,13 @@ public final class RuleSpec {
     public final float order;
     /** Rules with the same pair key are mirrors of each other and sit together in the picker. */
     public final String pair;
+    /** Heading the rule sits under in the picker. */
+    public final String section;
     public final RuleEffect effect;
 
     RuleSpec(String id, String name, boolean hard, int[] points, String[] valueTexts, String requiredMod,
              String unlock, String icon, String description, String flavor, String unlockHint, float order,
-             String pair, RuleEffect effect) {
+             String pair, String section, RuleEffect effect) {
         this.id = id;
         this.name = name;
         this.hard = hard;
@@ -45,6 +47,7 @@ public final class RuleSpec {
         this.unlockHint = unlockHint;
         this.order = order;
         this.pair = pair;
+        this.section = section;
         this.effect = effect;
     }
 
@@ -63,8 +66,11 @@ public final class RuleSpec {
         return description.replace("{value}", valueTexts[Math.min(level, levels) - 1]);
     }
 
+    /** The feat that opens this rule: a feat id, "challenge_<id>" for a challenge reward, or null. */
     public String featId() {
-        return unlock.startsWith("feat:") ? unlock.substring(5) : null;
+        if (unlock.startsWith("feat:")) return unlock.substring(5);
+        if (unlock.startsWith("challenge:")) return "challenge_" + unlock.substring(10);
+        return null;
     }
 
     public static String roman(int level) {

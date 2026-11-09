@@ -46,10 +46,17 @@ public final class RuleCatalog {
         } catch (Throwable t) {
             LOG.error("Rule Book: could not read " + Ids.RULES_CSV, t);
         }
-        // Mirrored rules sit together: pairs in the order of their first rule, hard before helpful.
+        // Sections in the order of their first rule; inside one, mirrored rules sit together: pairs in the
+        // order of their first rule, hard before helpful.
+        Map<String, Float> sectionOrder = new LinkedHashMap<>();
         Map<String, Float> pairOrder = new LinkedHashMap<>();
-        for (RuleSpec r : loaded) pairOrder.merge(r.pair, r.order, Math::min);
-        loaded.sort(Comparator.comparingDouble((RuleSpec r) -> pairOrder.get(r.pair))
+        for (RuleSpec r : loaded) {
+            sectionOrder.merge(r.section, r.order, Math::min);
+            pairOrder.merge(r.pair, r.order, Math::min);
+        }
+        loaded.sort(Comparator.comparingDouble((RuleSpec r) -> sectionOrder.get(r.section))
+                .thenComparing(r -> r.section)
+                .thenComparingDouble(r -> pairOrder.get(r.pair))
                 .thenComparing(r -> r.pair)
                 .thenComparing(r -> !r.hard)
                 .thenComparingDouble(r -> r.order)
@@ -87,7 +94,8 @@ public final class RuleCatalog {
 
         return new RuleSpec(id, str(row, "name"), type.equals("hard"), points, valueTexts, requiredMod,
                 str(row, "unlock"), icon, str(row, "description"), str(row, "flavor"), str(row, "unlockHint"),
-                order, str(row, "pair").isEmpty() ? id : str(row, "pair"), (RuleEffect) effect);
+                order, str(row, "pair").isEmpty() ? id : str(row, "pair"),
+                str(row, "section").isEmpty() ? "Other" : str(row, "section"), (RuleEffect) effect);
     }
 
     /** The bundled org.json returns the string "null" for a JSON null, so check isNull first. */
