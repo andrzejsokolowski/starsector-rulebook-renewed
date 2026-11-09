@@ -1,0 +1,8 @@
+{
+	# Merged into the core settings.json "plugins" map. Every EveryFrameCombatPlugin listed here is
+	# added to every combat engine, the title screen's background battle included. The plugin stands
+	# down on its own outside campaign battles.
+	"plugins": {
+		"ruleBookRenewedCombat": "rulebookrenewed.RuleCombatPlugin",
+	},
+}

@@ -1,0 +1,8 @@
+Version 0.1.0 (2026-11-09)
+- First test build. Not published yet.
+- Rule Book entry on the intel screen, with a button that opens the rule picker at any time.
+- Rule picker with a level button per rule and a balance meter. Changes apply at once.
+- Hard rules: Hardened Foes, Deadly Foes, Thin Insulation, Hungry Fleet, Harsh Worlds.
+- Helpful rules: Veteran Crews, Lean Logistics, Hyperspace Drifter, Ludd's Song (unlocked by finishing At the Gates), Peerless (only with Peerless Skills).
+- Feats are kept across all saves.
+- Writes the career point multiplier for New Game Plus - Renewed.

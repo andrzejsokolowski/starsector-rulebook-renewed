@@ -1,0 +1,213 @@
+plugins {
+    id 'java'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+sourceSets.main.java.srcDirs = ['src']
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Starsector core (obfuscated game classes + bundled libs: lwjgl, json, log4j, ...)
+    compileOnly fileTree(dir: "${starsectorPath}/starsector-core", include: '*.jar')
+    // LunaLib supplies the settings page. Found wherever the mod happens to be installed.
+    compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/LunaLib.jar')
+    // Peerless Skills is optional. Only rulebookrenewed.compat.peerless may name its classes, and that
+    // package is loaded only when the Peerless rule is in the catalog, which needs the mod enabled.
+    compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/PeerlessSkills*.jar')
+}
+
+jar {
+    destinationDirectory = file('jars')
+    archiveFileName = 'RuleBookRenewed.jar'
+}
+
+def compiledClasses = { -> layout.buildDirectory.dir('classes/java/main').get().asFile }
+
+// Starsector's classloader refuses java.io, java.nio.file and java.lang.reflect to mod code, and the
+// refusal happens at class-resolution time - so a stray import surfaces as a crash somewhere else
+// entirely. Catch it at build time instead by scanning every compiled class's constant pool.
+tasks.register('checkNoForbiddenApis') {
+    dependsOn tasks.named('classes')
+    outputs.upToDateWhen { false }
+    doLast {
+        def forbidden = ['java/io/', 'java/nio/file/', 'java/lang/reflect/']
+        def offenders = []
+        fileTree(dir: compiledClasses(), include: '**/*.class').each { f ->
+            def text = new String(f.bytes, 'ISO-8859-1')
+            forbidden.each { needle ->
+                if (text.contains(needle)) offenders << "${f.name} references ${needle}"
+            }
+        }
+        if (!offenders.isEmpty()) {
+            throw new GradleException("Forbidden API used (Starsector will refuse to load it):\n  " +
+                    offenders.join('\n  '))
+        }
+    }
+}
+
+// Peerless Skills is optional: only the compat package may name it, or the mod breaks without it.
+tasks.register('checkPeerlessIsolated') {
+    dependsOn tasks.named('classes')
+    outputs.upToDateWhen { false }
+    doLast {
+        def offenders = []
+        def root = compiledClasses()
+        fileTree(dir: root, include: '**/*.class').each { f ->
+            def path = root.toPath().relativize(f.toPath()).toString().replace('\\', '/')
+            if (path.startsWith('rulebookrenewed/compat/peerless/')) return
+            def text = new String(f.bytes, 'ISO-8859-1')
+            if (text.contains('peerless/api/') || text.contains('rulebookrenewed/compat/peerless/')) offenders << path
+        }
+        if (!offenders.isEmpty()) {
+            throw new GradleException("Only rulebookrenewed.compat.peerless may refer to Peerless Skills:\n  " +
+                    offenders.join('\n  '))
+        }
+    }
+}
+
+tasks.named('jar') { dependsOn tasks.named('checkNoForbiddenApis'), tasks.named('checkPeerlessIsolated') }
+
+/** mod_info.json, the .version file and the Version Checker registration must agree. */
+tasks.register('checkVersionMetadata') {
+    doLast {
+        def infoFile = file('mod_info.json')
+        def versionFile = file('rulebook_renewed.version')
+        def registrationFile = file('data/config/version/version_files.csv')
+        [infoFile, versionFile, registrationFile].each { metadata ->
+            if (!metadata.isFile()) throw new GradleException("Missing update metadata: ${metadata.name}")
+        }
+        def parser = new groovy.json.JsonSlurper()
+        def info = parser.parse(infoFile, 'UTF-8')
+        def remote = parser.parse(versionFile, 'UTF-8')
+        def parts = ['major', 'minor', 'patch'].collect { remote.modVersion?.get(it)?.toString() }
+        if (parts.any { it == null || !(it ==~ /\d+/) } || info.version != parts.join('.'))
+            throw new GradleException('mod_info.json and rulebook_renewed.version must have the same numeric version')
+        def masterUrl = 'https://raw.githubusercontent.com/andrzejsokolowski/starsector-rulebook-renewed/main/rulebook_renewed.version'
+        def downloadUrl = 'https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest/download/RuleBookRenewed.zip'
+        if (info.id != 'rulebook_renewed' || info.name != remote.modName)
+            throw new GradleException('Update metadata must identify Rule Book - Renewed')
+        if (info.updateCheckURL != masterUrl || remote.masterVersionFile != masterUrl)
+            throw new GradleException('Both update URLs must point to the published rulebook_renewed.version file')
+        if (remote.directDownloadURL != downloadUrl)
+            throw new GradleException('The update download must point to the RuleBookRenewed.zip release asset')
+        if (info.modThreadId?.toString() != remote.modThreadId?.toString())
+            throw new GradleException('mod_info.json and the .version file must name the same forum topic')
+        if (info.gameVersion != remote.starsectorVersion)
+            throw new GradleException('The supported Starsector versions do not match')
+        if (registrationFile.readLines('UTF-8').findAll { !it.trim().isEmpty() } != ['version file', 'rulebook_renewed.version'])
+            throw new GradleException('Version Checker must register rulebook_renewed.version')
+        logger.lifecycle("Update metadata verified for Rule Book - Renewed ${info.version}")
+    }
+}
+
+/**
+ * Checks the files that ship: no UTF-8 BOM (it breaks every Starsector JSON and CSV), every art path
+ * exists, LunaLib text has no %, and every effect class named in the rule list is in the source tree.
+ */
+tasks.register('checkReleaseFiles') {
+    doLast {
+        def problems = []
+        fileTree(projectDir) {
+            include 'mod_info.json', '*.version', 'data/**/*.json', 'data/**/*.csv'
+        }.each { f ->
+            def bytes = f.bytes
+            if (bytes.length >= 3 && (bytes[0] & 0xFF) == 0xEF && (bytes[1] & 0xFF) == 0xBB && (bytes[2] & 0xFF) == 0xBF)
+                problems << "UTF-8 BOM in ${projectDir.toPath().relativize(f.toPath())}"
+        }
+
+        def core = file("${starsectorPath}/starsector-core")
+        def artRef = ~/graphics\/[A-Za-z0-9_\-\/. ]+?\.(png|jpg|webp)/
+        fileTree(projectDir) { include 'data/**', 'src/**/*.java' }.each { f ->
+            (f.getText('UTF-8') =~ artRef).each { match ->
+                def path = match[0]
+                if (!file(path).isFile() && !new File(core, path).isFile())
+                    problems << "${projectDir.toPath().relativize(f.toPath())} names missing art ${path}"
+            }
+        }
+        // LunaLib runs setting names and descriptions through String.format: a bare % crashes the
+        // game the moment that settings tab opens. Write "percent" instead.
+        file('data/config/LunaSettings.csv').readLines('UTF-8').eachWithIndex { line, i ->
+            if (line.contains('%')) problems << "LunaSettings.csv line ${i + 1} contains % (crashes LunaLib): write \"percent\""
+        }
+        def luna = new groovy.json.JsonSlurper().parse(file('data/config/LunaSettingsConfig.json'))
+        if (!luna.containsKey('rulebook_renewed')) problems << 'LunaLib icon is not keyed by the mod id'
+        luna.each { modId, config ->
+            if (!file(config.iconPath).isFile() && !new File(core, config.iconPath).isFile())
+                problems << "LunaLib icon missing: ${config.iconPath}"
+        }
+
+        // Every rule row: effect class exists, levels match the point and value lists.
+        def rulesFile = file('data/config/rulebook/rules.csv')
+        def lines = rulesFile.readLines('UTF-8')
+        def header = lines[0].split(',', -1) as List
+        ['id', 'name', 'type', 'levels', 'points', 'values', 'requiredMod', 'unlock', 'effect', 'icon', 'description', 'flavor', 'unlockHint', 'order'].each {
+            if (!header.contains(it)) problems << "rules.csv has no ${it} column"
+        }
+        def parseCsv = { String line ->
+            def out = []; def cur = new StringBuilder(); boolean q = false
+            for (int i = 0; i < line.length(); i++) {
+                char c = line.charAt(i)
+                if (q) {
+                    if (c == '"' as char) { if (i + 1 < line.length() && line.charAt(i + 1) == '"' as char) { cur.append('"'); i++ } else q = false }
+                    else cur.append(c)
+                } else if (c == '"' as char) q = true
+                else if (c == ',' as char) { out << cur.toString(); cur = new StringBuilder() }
+                else cur.append(c)
+            }
+            out << cur.toString(); out
+        }
+        lines.drop(1).findAll { it.trim() && !it.startsWith('#') }.each { line ->
+            def cells = parseCsv(line)
+            if (cells.size() != header.size()) { problems << "rules.csv row has ${cells.size()} cells, header has ${header.size()}: ${line.take(40)}"; return }
+            def row = [header, cells].transpose().collectEntries { it }
+            def levels = row.levels as int
+            if (row.points.split('\\|').size() != levels) problems << "rules.csv ${row.id}: points need ${levels} entries"
+            if (row.values.split('\\|').size() != levels) problems << "rules.csv ${row.id}: values need ${levels} entries"
+            if (!(row.type in ['hard', 'helpful'])) problems << "rules.csv ${row.id}: type must be hard or helpful"
+            def src = file("src/${row.effect.replace('.', '/')}.java")
+            if (!src.isFile()) problems << "rules.csv ${row.id}: effect class ${row.effect} not found"
+        }
+
+        if (problems) throw new GradleException("Release files are not ready:\n  " + problems.join('\n  '))
+        logger.lifecycle('Release files verified')
+    }
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('checkNoForbiddenApis'), tasks.named('checkPeerlessIsolated'),
+            tasks.named('checkVersionMetadata'), tasks.named('checkReleaseFiles')
+}
+
+// Only what the game loads, plus the credits file the MIT licence asks for.
+def releaseFiles = copySpec {
+    from(projectDir) {
+        include 'mod_info.json', 'rulebook_renewed.version', 'CREDITS.txt'
+        include 'data/**', 'graphics/**', 'jars/RuleBookRenewed.jar'
+    }
+}
+
+// Sync, not Copy: files that no longer ship must not linger in the staging folder.
+tasks.register('stageRelease', Sync) {
+    dependsOn tasks.named('jar')
+    with releaseFiles
+    into layout.projectDirectory.dir('RuleBookRenewed')
+}
+
+// Package directly from the source files so stale staging contents cannot enter a release.
+tasks.register('releaseZip', Zip) {
+    dependsOn tasks.named('stageRelease'), tasks.named('check')
+    destinationDirectory = layout.projectDirectory
+    archiveFileName = 'RuleBookRenewed.zip'
+    into('RuleBookRenewed') { with releaseFiles }
+}
