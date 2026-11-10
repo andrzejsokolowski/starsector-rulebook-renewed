@@ -22,6 +22,7 @@ public final class RuleBookIntel extends BaseIntelPlugin {
 
     public static final String TAG = "Rule Book";
     private static final String BUTTON_OPEN = "rbr_open";
+    private static final String BUTTON_ACHIEVEMENTS = "rbr_achievements";
 
     @Override
     public String getName() {
@@ -81,10 +82,15 @@ public final class RuleBookIntel extends BaseIntelPlugin {
         }
 
         info.addButton("Open the Rule Book", BUTTON_OPEN, width, 24f, pad * 2f);
+        info.addButton("Achievements", BUTTON_ACHIEVEMENTS, width, 24f, 5f);
     }
 
     @Override
     public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+        if (BUTTON_ACHIEVEMENTS.equals(buttonId)) {
+            achievementsrenewed.api.Achievements.openList(ui);
+            return;
+        }
         if (!BUTTON_OPEN.equals(buttonId)) return;
         SectorEntityToken target = Global.getSector().getPlayerFleet();
         ui.showDialog(target, new RuleBookDialog());
