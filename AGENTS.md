@@ -97,10 +97,11 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   battles; the build reads the feat ids from `Feats.java` and `Counters.java` to check the CSV files.
   Challenge column `deadlineDays` is a time limit. Challenges only unlock Rule Book rules; they never pay
   New Game Plus career points (Andrzej, 2026-11-10). Rule Book writes one thing for New Game Plus - Renewed:
-  `$rbr_ngpMultiplier`. New Game Plus - Renewed 0.6.0 pays its own career points, through its own listener,
-  when these achievements of ours are done, so never rename them or change their conditions: `rbr_atg`,
-  `rbr_planetkiller`, `rbr_ziggurat`, `rbr_academy`, `rbr_usurpers`, `rbr_knight`, `rbr_duel`, `rbr_kanta`,
-  `rbr_sol_crisis`, `rbr_sol_quest`. Our `rbr_ngp_ledger` reads its hull mod id `ngp_ledger_refit`.
+  `$rbr_ngpMultiplier`. New Game Plus - Renewed (0.7.0 on) pays its own career points, through its own
+  listener, for every achievement except our challenges, which it recognises by the id prefix
+  `rbr_challenge_` and the category `Challenges`. So never rename an `rbr_*` achievement or change its
+  condition, and keep that prefix and category for challenges. Our `rbr_ngp_ledger` reads its hull mod id
+  `ngp_ledger_refit`.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
   `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
 - `ui/RulePickerPanel` - UNGP's picker layout with native UI: positive grid over negative grid (or the
