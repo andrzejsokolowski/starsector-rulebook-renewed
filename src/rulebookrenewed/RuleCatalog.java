@@ -98,7 +98,8 @@ public final class RuleCatalog {
         String pair = str(row, "pair");
         return new RuleSpec(id, str(row, "name"), hard, points, valueTexts, requiredMod, str(row, "unlock"), icon,
                 str(row, "description"), order, pair.isEmpty() ? id : pair,
-                str(row, "section").isEmpty() ? "Other" : str(row, "section"), (RuleEffect) effect);
+                str(row, "section").isEmpty() ? "Other" : str(row, "section"),
+                str(row, "golden").equalsIgnoreCase("true"), (RuleEffect) effect);
     }
 
 

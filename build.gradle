@@ -154,7 +154,7 @@ tasks.register('checkReleaseFiles') {
         def rulesFile = file('data/config/rulebook/rules.csv')
         def lines = rulesFile.readLines('UTF-8')
         def header = lines[0].split(',', -1) as List
-        ['id', 'name', 'type', 'levels', 'points', 'values', 'requiredMod', 'unlock', 'effect', 'icon', 'description', 'order', 'pair', 'section'].each {
+        ['id', 'name', 'type', 'levels', 'points', 'values', 'requiredMod', 'unlock', 'effect', 'icon', 'description', 'order', 'pair', 'section', 'golden'].each {
             if (!header.contains(it)) problems << "rules.csv has no ${it} column"
         }
         def parseCsv = { String line ->
@@ -182,7 +182,8 @@ tasks.register('checkReleaseFiles') {
             ruleLevels[row.id] = row.levels as int
             ruleUnlocks[row.id] = row.unlock
             if (!row.section) problems << "rules.csv ${row.id}: no section"
-            if (!row.description.contains('{value}') && !(row.values in ['0'])) problems << "rules.csv ${row.id}: description has no {value}"
+            // A rule with several levels names its number, unless it has a text per level (||).
+            if (!row.description.contains('{value}') && (row.levels as int) > 1 && !row.description.contains('||')) problems << "rules.csv ${row.id}: description has no {value}"
             def levels = row.levels as int
             if (levels < 1 || levels > 5) problems << "rules.csv ${row.id}: levels must be 1 to 5"
             if (row.points.split('\\|').size() != levels) problems << "rules.csv ${row.id}: points need ${levels} entries"

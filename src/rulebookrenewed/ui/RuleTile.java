@@ -48,6 +48,7 @@ public final class RuleTile extends BaseCustomUIPanelPlugin {
     }
 
     public static Color color(RuleSpec rule) {
+        if (rule.golden) return RulePickerPanel.GOLD;
         return rule.hard ? RulePickerPanel.NEGATIVE : RulePickerPanel.POSITIVE;
     }
 

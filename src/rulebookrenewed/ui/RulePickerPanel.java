@@ -155,6 +155,13 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         return Unlocks.isUnlocked(rule) || level(rule) > 0;
     }
 
+    /** The golden rule that is picked, when this is a different golden rule; otherwise null. */
+    private RuleSpec otherGolden(RuleSpec rule) {
+        if (!rule.golden) return null;
+        for (RuleSpec other : working.keySet()) if (other != rule && other.golden) return other;
+        return null;
+    }
+
     private static RuleSpec mirror(RuleSpec rule) {
         for (RuleSpec other : RuleCatalog.all()) {
             if (other != rule && other.hard != rule.hard && other.pair.equals(rule.pair)) return other;
@@ -287,6 +294,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
             if (level == null || level <= 0 || !Unlocks.isUnlocked(rule)) continue;
             RuleSpec mirror = mirror(rule);
             if (mirror != null && working.containsKey(mirror)) continue;
+            if (otherGolden(rule) != null) continue;
             working.put(rule, Math.min(level, rule.levels));
         }
         tracked = null;
@@ -314,7 +322,8 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         List<RuleSpec> positive = new ArrayList<>(), negative = new ArrayList<>();
         for (RuleSpec rule : RuleCatalog.all()) (rule.hard ? negative : positive).add(rule);
         // Dearest first: the highest cost among positive rules, the most points given among negative ones.
-        java.util.Comparator<RuleSpec> byCost = (a, b) -> Integer.compare(Math.abs(b.points(1)), Math.abs(a.points(1)));
+        java.util.Comparator<RuleSpec> byCost = (a, b) -> a.golden != b.golden ? (a.golden ? -1 : 1)
+                : Integer.compare(Math.abs(b.points(1)), Math.abs(a.points(1)));
         positive.sort(byCost);
         negative.sort(byCost);
 
@@ -403,7 +412,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         for (RuleTile tile : tiles) {
             RuleSpec rule = tile.rule;
             RuleSpec mirror = mirror(rule);
-            tile.sync(level(rule), !usable(rule), mirror != null && level(mirror) > 0);
+            tile.sync(level(rule), !usable(rule), (mirror != null && level(mirror) > 0) || otherGolden(rule) != null);
             if (level(rule) > 0) {
                 if (rule.hard) negative++;
                 else positive++;
@@ -559,6 +568,9 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         if (mirror != null && level(mirror) > 0) {
             tip.addPara("Conflict with " + mirror.name, Misc.getNegativeHighlightColor(), 10f);
         }
+        RuleSpec golden = otherGolden(rule);
+        if (golden != null) tip.addPara("Only one golden rule. Picked: " + golden.name, Misc.getNegativeHighlightColor(), 10f);
+        else if (rule.golden) tip.addPara("Golden rule: only one can be picked.", GOLD, 10f);
         if (source != null) tip.addPara("Unlocked by: " + source, Misc.getGrayColor(), 10f);
         sub.addUIElement(tip);
     }

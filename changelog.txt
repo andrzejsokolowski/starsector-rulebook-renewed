@@ -1,3 +1,10 @@
+Version 0.8.0 (2026-11-10)
+- Most rules now have three levels instead of five, at 1x, 1.5x and 2.5x, with larger effects: for example enemy ship quality at 20/30/50 percent.
+- Minor rules became single, stronger ones: Calm Currents (no damage from hyperspace storms), Greedy Crews (wages doubled), Fox, and Loyal Hands (half pay, or no pay at the cost of 10 percent combat readiness).
+- Clumsy Shipwrights has a third level: your ships cannot be S-modded.
+- Rewards of challenges from other mods are now about that mod: Super Sol (Sol Renewed) improves a resource deposit on every planet in Sol, Lucky Streak (Gambling Den) pays extra credits on slot wins, Omega Shard (Omega Core Everywhere) grants an Omega core, Ascendant Worlds (Astral Ascension Renewed) adds stability to ascended colonies.
+- Golden rules are supported: only one can be picked.
+
 Version 0.7.2 (2026-11-10)
 - Fixed: pointing at a rule or right clicking it often did nothing, or showed and lowered a different rule. Both now work anywhere on the tile.
 - Tiles are sorted by cost, the dearest first.

@@ -35,6 +35,11 @@ public final class RuleManager {
     public static void setLevel(RuleSpec rule, int level) {
         int old = RuleState.level(rule);
         if (level > 0 && old == 0 && !Unlocks.isUnlocked(rule)) return;
+        if (level > 0 && rule.golden) {
+            for (RuleSpec other : RuleCatalog.all()) {
+                if (other != rule && other.golden && RuleState.level(other) > 0) setLevel(other, 0);
+            }
+        }
         if (level > 0) {
             for (RuleSpec mirror : RuleCatalog.all()) {
                 if (mirror != rule && mirror.hard != rule.hard && mirror.pair.equals(rule.pair) && RuleState.level(mirror) > 0) {

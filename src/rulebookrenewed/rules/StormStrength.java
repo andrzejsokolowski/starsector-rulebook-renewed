@@ -22,7 +22,8 @@ public final class StormStrength implements RuleEffect {
             maxStrike = HyperspaceTerrainPlugin.STORM_MAX_STRIKE_DAMAGE;
             changed = true;
         }
-        float mult = Scale.mult(value, RuleEffect.enemySign(rule));
+        // A full cut switches storm damage off; Scale.mult alone would stop at its floor.
+        float mult = !rule.hard && value >= 100f ? 0f : Scale.mult(value, RuleEffect.enemySign(rule));
         HyperspaceTerrainPlugin.STORM_DAMAGE_FRACTION = damageFraction * mult;
         HyperspaceTerrainPlugin.STORM_MIN_STRIKE_DAMAGE = Math.min(1f, minStrike * mult);
         HyperspaceTerrainPlugin.STORM_MAX_STRIKE_DAMAGE = Math.min(1f, maxStrike * mult);

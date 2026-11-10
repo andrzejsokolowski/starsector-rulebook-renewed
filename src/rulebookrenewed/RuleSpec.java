@@ -20,7 +20,11 @@ public final class RuleSpec {
     /** `feat:<id>`, `challenge:<id>`, `achievement:<id of any mod's achievement>` or empty. */
     public final String unlock;
     public final String icon;
+    /** The effect text; `||` separates a text per level (the last one serves the levels after it). */
     public final String description;
+    private final String[] descriptions;
+    /** A golden rule: only one of them can be on. */
+    public final boolean golden;
     public final float order;
     /** Shared by a negative rule and its positive mirror; the two are never on together. */
     public final String pair;
@@ -29,7 +33,7 @@ public final class RuleSpec {
 
     RuleSpec(String id, String name, boolean hard, int[] points, String[] valueTexts, String requiredMod,
              String unlock, String icon, String description, float order, String pair, String section,
-             RuleEffect effect) {
+             boolean golden, RuleEffect effect) {
         this.id = id;
         this.name = name;
         this.hard = hard;
@@ -42,6 +46,8 @@ public final class RuleSpec {
         this.unlock = unlock;
         this.icon = icon;
         this.description = description;
+        this.descriptions = description.split("\\|\\|");
+        this.golden = golden;
         this.order = order;
         this.pair = pair;
         this.section = section;
@@ -65,7 +71,8 @@ public final class RuleSpec {
     /** The effect line for a level, with {value} filled in. */
     public String describe(int level) {
         if (level <= 0) return "";
-        return description.replace("{value}", valueTexts[Math.min(level, levels) - 1]);
+        int index = Math.min(level, levels) - 1;
+        return descriptions[Math.min(index, descriptions.length - 1)].trim().replace("{value}", valueTexts[index]);
     }
 
     /** The feat that opens this rule: a feat id, "challenge_<id>" for a challenge reward, or null. */

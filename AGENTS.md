@@ -28,6 +28,17 @@ board during the work, not only at release time.
 Player-facing text is short and plain, worded like the game: "Enemy armor increased by {value}%." No flavour
 lines, no explaining paragraphs (Andrzej, 2026-11-10).
 
+## Balance rules (Andrzej, 2026-11-10)
+
+- At most three levels. The standard curve is 1x, 1.5x, 2.5x of the level 1 number (20/30/50, 10/15/25),
+  with points on the same curve. Count rules (burn level, officers, stability) go 1/2/3.
+- A minor effect is not worth three small levels: make it one strong single-level rule (Calm Currents: no
+  storm damage; Greedy Crews: wages doubled), or two levels where the top one has a price (Loyal Hands).
+- A rule locked behind another mod (its challenge or achievement) must be about that mod: Super Sol for Sol
+  Renewed, Lucky Streak for Gambling Den. Never lock a general rule behind an unrelated mod.
+- Golden rules (`golden` column) are the strong, strange ones; only one can be on.
+- A text per level is written with `||` in the description (Clumsy Shipwrights level 3).
+
 ## Build
 
 `./gradlew releaseZip` compiles against the game, LunaLib, Achievements - Renewed (its jar in the folder next
