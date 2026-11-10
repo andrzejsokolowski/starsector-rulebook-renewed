@@ -436,10 +436,6 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
             if (out.length() > 0) out.append(", ");
             out.append(rule.name);
         }
-        if (spec.careerPoints > 0 && Balance.ngpInstalled()) {
-            if (out.length() > 0) out.append(", ");
-            out.append('+').append(spec.careerPoints).append(" career points");
-        }
         return out.length() == 0 ? "none" : out.toString();
     }
 
@@ -517,9 +513,6 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         for (RuleSpec reward : Challenges.rewards(spec)) {
             body.append("\nReward: ").append(reward.name).append(" - ").append(reward.describe(1));
             if (reward.levels > 1) body.append(" (level I)");
-        }
-        if (spec.careerPoints > 0 && Balance.ngpInstalled()) {
-            body.append("  Also +").append(spec.careerPoints).append(" New Game Plus career points.");
         }
         detailBody.setText(body.toString());
         detailBody.setColor(TEXT);

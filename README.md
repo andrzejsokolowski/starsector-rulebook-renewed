@@ -15,15 +15,14 @@ kinder. Every rule has its own level, and you can change any of them at any time
 - **Challenges**: the second tab of the Rule Book lists challenges. A challenge names hard rules to keep
   on and a goal, such as winning 20 battles; some have a time limit. Taking one on raises its rules to the
   required levels. Lowering one of them, going over the challenge's limit on helpful rules, or running
-  out of time ends the challenge. Reaching the goal unlocks a reward rule, and with New Game Plus -
-  Renewed it also pays career points. Only progress made while the challenge runs counts.
+  out of time ends the challenge. Reaching the goal unlocks a reward rule. Only progress made while
+  the challenge runs counts.
 - **Feats and unlocks**: some rules open up through feats, such as finishing At the Gates, defeating
   Omega or growing a colony to size 6. Feats and finished challenges are kept in `saves/common`, so they
   count for every later campaign. The second tab lists every feat and what it unlocks. The LunaLib
   setting "Every rule unlocked" opens all rules without touching the real unlocks.
 - **New Game Plus - Renewed**: the Rule Book writes a career point multiplier that New Game Plus -
   Renewed reads. Each point under budget adds 1 percent, each point over budget takes 1 percent away.
-  Finished challenges add career points on top.
 
 ## Rules
 
@@ -153,25 +152,25 @@ change each officer once, the first time you meet their fleet.
 
 ## Challenges
 
-| Challenge | Keep these rules on | Goal | Helpful rules | Unlocks | Career points |
-| --- | --- | --- | --- | --- | --- |
-| The Ziggurat Gambit | Plated Foes III, Phase Shadows III | Defeat the Ziggurat | none | Phase Hunter | 30 |
-| Iron Gauntlet | Hardened Foes II, Deadly Foes II, Plated Foes II | Win 20 battles | none | Iron Hulls | 25 |
-| The Lone Admiral | Short-Staffed II, Green Crews II, Garbled Orders II | Win 10 battles | none | Lone Legend | 20 |
-| Blitz | Hasty Foes II, Deadly Foes II | Win 10 battles within 90 days | none | Blitz Doctrine | 20 |
-| Big Game | Seasoned Officers II, Antagonism I | Beat a fleet twice the size of your side, 3 times within 180 days | none | Giant Killer | 25 |
-| Junkyard Baron | Festering Damage II, Shattering Hulls II, Slow Repairs II | Win 15 battles | up to 10 points | Scarred Veterans | 20 |
-| The Long Night | Swelling Ranks III, Pristine Foes II, Swift Pursuers II | Hold out for 365 days | none | Shadow Fleet | 30 |
-| Lean Years | Famine II, Hungry Fleet III, Leaky Tanks II | Hold out for 180 days | none | Iron Quartermaster | 20 |
-| Merchant's Gauntlet | Price Gouging III, Skimming Clerks II | Hold a million credits | none | Merchant Prince | 20 |
-| Colonial Empire | Restless Colonists II, Crumbling Works II, Remote Colonies II | Own five colonies | none | Imperial Charter | 25 |
-| Ordo Hunt | Overclocked Foes II, Tireless Foes II, Hardened Foes II | Defeat a Remnant fleet, 3 times | none | Ordo Breaker | 25 |
-| Fortress Breaker | Plated Foes II, Thick-Hulled Foes II, Long Guns II | Win a battle against an orbital station, 3 times | none | Station Breaker | 25 |
-| Pilgrim's Ordeal | Famine I, Heavy Drives I, Slow Repairs II | Walk the Pilgrim's Path | none | Pilgrim's Blessing | 15 |
-| Sol Expedition (needs Sol Renewed) | Swelling Ranks II, Long Guns II, Heavy Drives I | Finish the Translocator quest in Sol | none | Sol Plating | 30 |
-| High Roller (needs Gambling Den or Coalesced Little Mods) | Price Gouging II, Skimming Clerks II | Win a spin at the Gambling Den, 10 times | none | Lucky Streak | 10 |
-| Omega Apprentice (needs Omega Core Everywhere) | Phase Shadows II, Rapid Loaders II | Train an officer under an Omega core | none | Omega Insight | 20 |
-| Ascendant (needs Astral Ascension Renewed) | Restless Colonists II, Crumbling Works II, Harsh Worlds II | Ascend a colony past size 10 | none | Ascendant Worlds | 25 |
+| Challenge | Keep these rules on | Goal | Helpful rules | Unlocks |
+| --- | --- | --- | --- | --- |
+| The Ziggurat Gambit | Plated Foes III, Phase Shadows III | Defeat the Ziggurat | none | Phase Hunter |
+| Iron Gauntlet | Hardened Foes II, Deadly Foes II, Plated Foes II | Win 20 battles | none | Iron Hulls |
+| The Lone Admiral | Short-Staffed II, Green Crews II, Garbled Orders II | Win 10 battles | none | Lone Legend |
+| Blitz | Hasty Foes II, Deadly Foes II | Win 10 battles within 90 days | none | Blitz Doctrine |
+| Big Game | Seasoned Officers II, Antagonism I | Beat a fleet twice the size of your side, 3 times within 180 days | none | Giant Killer |
+| Junkyard Baron | Festering Damage II, Shattering Hulls II, Slow Repairs II | Win 15 battles | up to 10 points | Scarred Veterans |
+| The Long Night | Swelling Ranks III, Pristine Foes II, Swift Pursuers II | Hold out for 365 days | none | Shadow Fleet |
+| Lean Years | Famine II, Hungry Fleet III, Leaky Tanks II | Hold out for 180 days | none | Iron Quartermaster |
+| Merchant's Gauntlet | Price Gouging III, Skimming Clerks II | Hold a million credits | none | Merchant Prince |
+| Colonial Empire | Restless Colonists II, Crumbling Works II, Remote Colonies II | Own five colonies | none | Imperial Charter |
+| Ordo Hunt | Overclocked Foes II, Tireless Foes II, Hardened Foes II | Defeat a Remnant fleet, 3 times | none | Ordo Breaker |
+| Fortress Breaker | Plated Foes II, Thick-Hulled Foes II, Long Guns II | Win a battle against an orbital station, 3 times | none | Station Breaker |
+| Pilgrim's Ordeal | Famine I, Heavy Drives I, Slow Repairs II | Walk the Pilgrim's Path | none | Pilgrim's Blessing |
+| Sol Expedition (needs Sol Renewed) | Swelling Ranks II, Long Guns II, Heavy Drives I | Finish the Translocator quest in Sol | none | Sol Plating |
+| High Roller (needs Gambling Den or Coalesced Little Mods) | Price Gouging II, Skimming Clerks II | Win a spin at the Gambling Den, 10 times | none | Lucky Streak |
+| Omega Apprentice (needs Omega Core Everywhere) | Phase Shadows II, Rapid Loaders II | Train an officer under an Omega core | none | Omega Insight |
+| Ascendant (needs Astral Ascension Renewed) | Restless Colonists II, Crumbling Works II, Harsh Worlds II | Ascend a colony past size 10 | none | Ascendant Worlds |
 
 ## Feats
 
@@ -201,7 +200,7 @@ share one row in the picker, under their `section`. A rule with `challenge:<id>`
 is the reward of that challenge. `requiredMod` may name several mods with `|` between them; one of them
 must be enabled.
 
-New Game Plus - Renewed reads two sector memory keys: `$rbr_ngpMultiplier` (the career point
-multiplier) and `$rbr_ngpBonusPoints` (career points from finished challenges, not paid out yet).
+New Game Plus - Renewed reads one sector memory key: `$rbr_ngpMultiplier`, the career point
+multiplier.
 
 Requires LunaLib. Credits in `CREDITS.txt`.

@@ -95,7 +95,7 @@ public final class Challenges {
         String orderText = str(row, "order");
         float order = orderText.isEmpty() ? 1000f : Float.parseFloat(orderText);
         return new ChallengeSpec(id, str(row, "name"), requirements, feat, Math.max(1, amount), limit,
-                intOr(str(row, "deadlineDays"), 0), intOr(str(row, "careerPoints"), 0),
+                intOr(str(row, "deadlineDays"), 0),
                 str(row, "description"), str(row, "flavor"), order);
     }
 
@@ -271,10 +271,6 @@ public final class Challenges {
             Unlocks.addFeat(spec.featId());
             Feats.message("Challenge complete: " + spec.name + "!");
             for (RuleSpec reward : rewards(spec)) Feats.message("A new page in the Rule Book: " + reward.name);
-            if (spec.careerPoints > 0) {
-                Balance.addCareerPoints(spec.careerPoints);
-                if (Balance.ngpInstalled()) Feats.message("New Game Plus: +" + spec.careerPoints + " career points.");
-            }
         }
     }
 

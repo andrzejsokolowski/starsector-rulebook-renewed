@@ -31,14 +31,12 @@ public final class ChallengeSpec {
     public final int helpfulLimit;
     /** Days to reach the goal after taking it on, or 0 for no time limit (a days goal never has one). */
     public final int deadlineDays;
-    /** New Game Plus - Renewed career points paid when the challenge is done. */
-    public final int careerPoints;
     public final String description;
     public final String flavor;
     public final float order;
 
     ChallengeSpec(String id, String name, List<Requirement> requirements, Feats.Feat goalFeat, int goalAmount,
-                  int helpfulLimit, int deadlineDays, int careerPoints, String description, String flavor, float order) {
+                  int helpfulLimit, int deadlineDays, String description, String flavor, float order) {
         this.id = id;
         this.name = name;
         this.requirements = Collections.unmodifiableList(requirements);
@@ -46,7 +44,6 @@ public final class ChallengeSpec {
         this.goalAmount = goalAmount;
         this.helpfulLimit = helpfulLimit;
         this.deadlineDays = goalFeat == null ? 0 : Math.max(0, deadlineDays);
-        this.careerPoints = Math.max(0, careerPoints);
         this.description = description;
         this.flavor = flavor;
         this.order = order;

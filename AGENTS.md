@@ -63,8 +63,9 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   side wins). Feats from Oddisz's other mods (`modFlag`/`modCount`) read only state those mods leave in the
   save, never their classes, and exist only while one of their mod ids is enabled. Checked daily and after
   battles; the build reads the feat ids from `Feats.java` and `Counters.java` to check the CSV files.
-  Challenge columns `deadlineDays` (time limit) and `careerPoints`: on completion the points are added to
-  sector memory `$rbr_ngpBonusPoints`, which New Game Plus - Renewed pays out and sets back to 0.
+  Challenge column `deadlineDays` is a time limit. Challenges only unlock Rule Book rules; they never pay
+  New Game Plus career points (Andrzej, 2026-11-10). The only link to New Game Plus - Renewed is
+  `$rbr_ngpMultiplier`.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
   `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
 - `ui/RulePickerPanel` - two tabs (Rules; Challenges and feats), each one scrolling list rebuilt on a tab

@@ -58,14 +58,6 @@ public final class Balance {
         Global.getSector().getMemoryWithoutUpdate().set(Ids.NGP_MULTIPLIER_KEY, ngpMultiplier(net()));
     }
 
-    /** Adds challenge career points to the amount New Game Plus - Renewed has still to pay. */
-    public static void addCareerPoints(int points) {
-        if (Global.getSector() == null || points <= 0) return;
-        Object stored = Global.getSector().getMemoryWithoutUpdate().get(Ids.NGP_BONUS_POINTS_KEY);
-        float pending = stored instanceof Number ? ((Number) stored).floatValue() : 0f;
-        Global.getSector().getMemoryWithoutUpdate().set(Ids.NGP_BONUS_POINTS_KEY, pending + points);
-    }
-
     public static boolean ngpInstalled() {
         for (String id : Ids.NGP_MOD_IDS) {
             if (Global.getSettings().getModManager().isModEnabled(id)) return true;

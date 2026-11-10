@@ -1,3 +1,6 @@
+Version 0.4.1 (2026-11-10)
+- Challenges no longer pay New Game Plus - Renewed career points. They only unlock Rule Book rules.
+
 Version 0.4.0 (2026-11-10)
 - 141 rules, up from 34, grouped in sections: enemy ships, your ships, fleet and logistics, the Sector, colonies, and special rules.
 - The picker shows each hard rule and its helpful mirror on one row: hard levels left of Off, helpful levels right of it. Only one side can be on.

@@ -194,7 +194,7 @@ tasks.register('checkReleaseFiles') {
         (file('src/rulebookrenewed/Counters.java').getText('UTF-8') =~ /String [A-Z_]+ = "([a-z0-9_]+)"/).each { featIds << it[1] }
         def challengeLines = file('data/config/rulebook/challenges.csv').readLines('UTF-8')
         def challengeHeader = challengeLines[0].split(',', -1) as List
-        ['id', 'name', 'rules', 'goal', 'helpfulLimit', 'deadlineDays', 'careerPoints', 'description', 'flavor', 'order', 'requiredMod'].each {
+        ['id', 'name', 'rules', 'goal', 'helpfulLimit', 'deadlineDays', 'description', 'flavor', 'order', 'requiredMod'].each {
             if (!challengeHeader.contains(it)) problems << "challenges.csv has no ${it} column"
         }
         def challengeIds = [] as Set

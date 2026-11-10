@@ -1,4 +1,4 @@
-Subject: [0.98a] Rule Book - Renewed 0.4.0 - house rules for one campaign, each with its own level
+Subject: [0.98a] Rule Book - Renewed 0.4.1 - house rules for one campaign, each with its own level
 
 [center][size=28pt][url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][b]Rule Book - Renewed[/b][/url][/size]
 [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][img]https://img.shields.io/github/downloads/andrzejsokolowski/starsector-rulebook-renewed/total?style=for-the-badge&label=download[/img][/url]  [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed][img]https://img.shields.io/github/v/release/andrzejsokolowski/starsector-rulebook-renewed?display_name=tag&sort=semver&style=for-the-badge&label=source[/img][/url]
@@ -129,7 +129,7 @@ Values per level, from level I up. Each hard rule shares a row with its helpful 
 Combat rules apply in campaign battles only, not in missions or the simulator.
 
 [hr][center][size=12pt][b]Challenges[/b][/size][/center][hr]
-A challenge names hard rules to keep on and a goal, some with a time limit. Taking one on raises its rules to the required levels. Lowering one of them, going over its limit on helpful rules, or running out of time ends it. Finishing it unlocks a reward rule for every later campaign, and pays New Game Plus - Renewed career points.
+A challenge names hard rules to keep on and a goal, some with a time limit. Taking one on raises its rules to the required levels. Lowering one of them, going over its limit on helpful rules, or running out of time ends it. Finishing it unlocks a reward rule for every later campaign.
 [list]
 [li][b]The Ziggurat Gambit[/b]: keep Plated Foes III, Phase Shadows III on and defeat the Ziggurat. Helpful rules: none. Unlocks [b]Phase Hunter[/b].[/li]
 [li][b]Iron Gauntlet[/b]: keep Hardened Foes II, Deadly Foes II, Plated Foes II on and win 20 battles. Helpful rules: none. Unlocks [b]Iron Hulls[/b].[/li]
@@ -173,7 +173,7 @@ Vanilla: Finish The Kallichore Archive, Return the ISS Hamatsu, Find Coureuse, F
 
 [hr][center][size=12pt][b]Works with[/b][/size][/center][hr]
 [list]
-[li][b]New Game Plus - Renewed[/b]: active rules change the career points you earn. Each point under budget adds 1 percent, each point over budget takes 1 percent away. Finished challenges pay career points too.[/li]
+[li][b]New Game Plus - Renewed[/b]: active rules change the career points you earn. Each point under budget adds 1 percent, each point over budget takes 1 percent away.[/li]
 [li][b]Oddisz's other mods[/b]: Sol Renewed, Gambling Den, Starsector Cloning, Reverse Engineered Private Arsenal, StarterPack, Missions - Renewed, Astral Ascension Renewed, Omega Core Everywhere, Chicken's Tech Shop and Extra Submarkets add feats, and some add challenges.[/li]
 [li][b]Peerless Skills[/b]: adds the Peerless rule.[/li]
 [li]Other mods can add their own rules and challenges with one line each in data/config/rulebook/rules.csv and challenges.csv.[/li]
@@ -194,6 +194,8 @@ The rules based on Unofficial Rule Book by DemonX3 keep its MIT licence notice (
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.4.1[/b]
+[list][li]Challenges no longer pay New Game Plus - Renewed career points. They only unlock Rule Book rules.[/li][/list]
 [b]0.4.0[/b]
 [list][li]141 rules, up from 34, grouped in sections: enemy ships, your ships, fleet and logistics, the Sector, colonies, and special rules.[/li][li]The picker shows each hard rule and its helpful mirror on one row: hard levels left of Off, helpful levels right of it. Only one side can be on.[/li][li]New enemy rules, each with a mirror: enemy hull, flux dissipation, rate of fire, fighter replacement, ship systems, phase ships, peak performance time and officer skills. New hard rule Antagonism: enemy ships fight with extra random hull mods.[/li][li]New rules for your ships, each with a mirror: hull, flux, weapon flux cost, shield damage, peak performance time, fighter replacement, ship systems, crew losses, D-mod severity and the chance to lose disabled ships. New single rules: Jinxed, Blight, Doomslayer and Last Stand.[/li][li]New fleet rules, each with a mirror: fuel use, repair speed, deployment cost, ordnance points, officer count, command points, how far other fleets see you, sensor range, salvage, crew pay and battle experience. New single rules: Dead Weight, Famine, Fox's Patience and Ironman (your lost ships can never be recovered).[/li][li]New Sector rules, each with a mirror: size and ship quality of other factions' fleets, tariffs, bounty payouts, ship and weapon prices, and hyperspace storm strength.[/li][li]New colony rules, each with a mirror: income, upkeep, stability and accessibility.[/li][li]Challenges: 17 challenges in a new tab of the Rule Book, four of them only with Sol Renewed, Gambling Den, Omega Core Everywhere or Astral Ascension Renewed. Each names hard rules to keep on and a goal, some with a time limit. Finishing one unlocks a reward rule for every campaign and pays New Game Plus - Renewed career points.[/li][li]Feats: 45 in all. New story feats for the Galatia Academy, Luddic and other missions; new feats for colonies, wealth, Remnant, Omega, station and outnumbered battles; and feats from Sol Renewed, Gambling Den, Starsector Cloning, Reverse Engineered Private Arsenal, StarterPack, Missions - Renewed, Astral Ascension Renewed, Omega Core Everywhere, Chicken's Tech Shop, Extra Submarkets and New Game Plus - Renewed. The new tab lists every feat and what it unlocks.[/li][li]New unlockable rules: Mentor's Legacy, Charter of Governors and Abyss Ward from feats, and 17 challenge rewards.[/li][li]The Rule Book intel entry shows the challenges under way and their progress.[/li][/list]
 [b]0.2.0[/b]
