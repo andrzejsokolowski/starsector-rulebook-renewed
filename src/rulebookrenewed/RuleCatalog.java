@@ -67,7 +67,7 @@ public final class RuleCatalog {
 
     private static RuleSpec parse(JSONObject row, String id) {
         String requiredMod = str(row, "requiredMod");
-        if (!requiredMod.isEmpty() && !Global.getSettings().getModManager().isModEnabled(requiredMod)) return null;
+        if (!anyModEnabled(requiredMod)) return null;
 
         String type = str(row, "type").toLowerCase();
         if (!type.equals("hard") && !type.equals("helpful")) throw new IllegalArgumentException("type must be hard or helpful");
@@ -96,6 +96,15 @@ public final class RuleCatalog {
                 str(row, "unlock"), icon, str(row, "description"), str(row, "flavor"), str(row, "unlockHint"),
                 order, str(row, "pair").isEmpty() ? id : str(row, "pair"),
                 str(row, "section").isEmpty() ? "Other" : str(row, "section"), (RuleEffect) effect);
+    }
+
+    /** True when the column is empty or names (with | between them) at least one enabled mod. */
+    public static boolean anyModEnabled(String mods) {
+        if (mods == null || mods.trim().isEmpty()) return true;
+        for (String mod : mods.split("[|]")) {
+            if (!mod.trim().isEmpty() && Global.getSettings().getModManager().isModEnabled(mod.trim())) return true;
+        }
+        return false;
     }
 
     /** The bundled org.json returns the string "null" for a JSON null, so check isNull first. */

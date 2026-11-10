@@ -190,11 +190,11 @@ tasks.register('checkReleaseFiles') {
 
         // Challenges: required rules exist at a level they have, goals name a known feat, and every
         // challenge unlocks at least one rule (and every challenge unlock names a real challenge).
-        def featIds = (file('src/rulebookrenewed/Feats.java').getText('UTF-8') =~ /(?:add|counter)\(\s*"([a-z0-9_]+)"/).collect { it[1] } as Set
+        def featIds = (file('src/rulebookrenewed/Feats.java').getText('UTF-8') =~ /(?:add|counter|modFlag|modCount)\(\s*"([a-z0-9_]+)"/).collect { it[1] } as Set
         (file('src/rulebookrenewed/Counters.java').getText('UTF-8') =~ /String [A-Z_]+ = "([a-z0-9_]+)"/).each { featIds << it[1] }
         def challengeLines = file('data/config/rulebook/challenges.csv').readLines('UTF-8')
         def challengeHeader = challengeLines[0].split(',', -1) as List
-        ['id', 'name', 'rules', 'goal', 'helpfulLimit', 'description', 'flavor', 'order', 'requiredMod'].each {
+        ['id', 'name', 'rules', 'goal', 'helpfulLimit', 'deadlineDays', 'careerPoints', 'description', 'flavor', 'order', 'requiredMod'].each {
             if (!challengeHeader.contains(it)) problems << "challenges.csv has no ${it} column"
         }
         def challengeIds = [] as Set

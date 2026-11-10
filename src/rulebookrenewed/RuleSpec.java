@@ -66,6 +66,21 @@ public final class RuleSpec {
         return description.replace("{value}", valueTexts[Math.min(level, levels) - 1]);
     }
 
+    /** The effect line with every level's value, e.g. "Enemy ships have 10/20/30/40/50% more armor." */
+    public String describeAllLevels() {
+        return description.replace("{value}", String.join("/", valueTexts));
+    }
+
+    /** Points of every level, e.g. "-5/-10/-15". */
+    public String pointsText() {
+        StringBuilder out = new StringBuilder();
+        for (int p : points) {
+            if (out.length() > 0) out.append('/');
+            out.append(p > 0 ? "+" : "").append(p);
+        }
+        return out.toString();
+    }
+
     /** The feat that opens this rule: a feat id, "challenge_<id>" for a challenge reward, or null. */
     public String featId() {
         if (unlock.startsWith("feat:")) return unlock.substring(5);

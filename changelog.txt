@@ -1,13 +1,14 @@
-Version 0.3.0 (2026-11-10)
-- 117 rules, up from 34, grouped in sections: enemy ships, your ships, fleet and logistics, the Sector, colonies, and special rules.
-- New enemy rules, each with a mirror: enemy hull, flux dissipation, rate of fire, fighter replacement, ship systems, phase ships and peak performance time.
-- New rules for your ships, each with a mirror: hull, flux, weapon flux cost, shield damage, peak performance time, fighter replacement, ship systems, crew losses, D-mod severity and the chance to lose disabled ships. New hard rules: Jinxed (malfunctions at any combat readiness) and Blight (armor corrodes in combat).
-- New fleet rules, each with a mirror: fuel use, repair speed, deployment cost, ordnance points, officer count, command points, how far other fleets see you, sensor range and salvage. New single rules: Dead Weight, Famine and Fox's Patience.
-- New Sector rules, each with a mirror: size and ship quality of other factions' fleets, and tariffs.
+Version 0.4.0 (2026-11-10)
+- 141 rules, up from 34, grouped in sections: enemy ships, your ships, fleet and logistics, the Sector, colonies, and special rules.
+- The picker shows each hard rule and its helpful mirror on one row: hard levels left of Off, helpful levels right of it. Only one side can be on.
+- New enemy rules, each with a mirror: enemy hull, flux dissipation, rate of fire, fighter replacement, ship systems, phase ships, peak performance time and officer skills. New hard rule Antagonism: enemy ships fight with extra random hull mods.
+- New rules for your ships, each with a mirror: hull, flux, weapon flux cost, shield damage, peak performance time, fighter replacement, ship systems, crew losses, D-mod severity and the chance to lose disabled ships. New single rules: Jinxed, Blight, Doomslayer and Last Stand.
+- New fleet rules, each with a mirror: fuel use, repair speed, deployment cost, ordnance points, officer count, command points, how far other fleets see you, sensor range, salvage, crew pay and battle experience. New single rules: Dead Weight, Famine, Fox's Patience and Ironman (your lost ships can never be recovered).
+- New Sector rules, each with a mirror: size and ship quality of other factions' fleets, tariffs, bounty payouts, ship and weapon prices, and hyperspace storm strength.
 - New colony rules, each with a mirror: income, upkeep, stability and accessibility.
-- Challenges: nine challenges in a new tab of the Rule Book. Each names hard rules to keep on and a goal. Finishing one unlocks a reward rule for every campaign.
-- New feats: found a colony, grow a colony to size 6, hold a million credits, win battles, defeat Remnant fleets, defeat Omega, the Threat or the Dwellers, and beat orbital stations. The new tab lists every feat and what it unlocks.
-- New unlockable rules: Mentor's Legacy, Charter of Governors and Abyss Ward from feats, and nine challenge rewards.
+- Challenges: 17 challenges in a new tab of the Rule Book, four of them only with Sol Renewed, Gambling Den, Omega Core Everywhere or Astral Ascension Renewed. Each names hard rules to keep on and a goal, some with a time limit. Finishing one unlocks a reward rule for every campaign and pays New Game Plus - Renewed career points.
+- Feats: 45 in all. New story feats for the Galatia Academy, Luddic and other missions; new feats for colonies, wealth, Remnant, Omega, station and outnumbered battles; and feats from Sol Renewed, Gambling Den, Starsector Cloning, Reverse Engineered Private Arsenal, StarterPack, Missions - Renewed, Astral Ascension Renewed, Omega Core Everywhere, Chicken's Tech Shop, Extra Submarkets and New Game Plus - Renewed. The new tab lists every feat and what it unlocks.
+- New unlockable rules: Mentor's Legacy, Charter of Governors and Abyss Ward from feats, and 17 challenge rewards.
 - The Rule Book intel entry shows the challenges under way and their progress.
 
 Version 0.2.0 (2026-11-09)

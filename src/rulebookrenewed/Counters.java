@@ -15,6 +15,7 @@ public final class Counters {
     public static final String REMNANT = "remnant";
     public static final String ABYSS = "abyss";
     public static final String STATION = "station";
+    public static final String GIANT = "giant";
 
     private static final String KEY = "rbr_counters";
 

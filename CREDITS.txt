@@ -15,6 +15,9 @@ Some rule effects are adapted from Unofficial Rule Book by DemonX3, used under t
 - Famine (from Famine)
 - Fox's Patience (from Fox)
 - Scarred Veterans (idea from Metalize)
+- Antagonism (from Antagonism; extra hull mods instead of S-mods)
+- Doomslayer (from Doomslayer)
+- Last Stand (from The Unyielding)
 - The challenge Junkyard Baron (idea from Junkyard Baron's Curse)
 
 Unofficial Rule Book licence:

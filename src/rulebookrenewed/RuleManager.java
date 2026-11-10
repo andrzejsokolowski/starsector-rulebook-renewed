@@ -28,10 +28,20 @@ public final class RuleManager {
         }
     }
 
-    /** The picker's one entry point: sets a level (0 = off) and applies it at once. */
+    /**
+     * The picker's one entry point: sets a level (0 = off) and applies it at once. A hard rule and its
+     * helpful mirror cannot both be on, so switching one on switches the other off.
+     */
     public static void setLevel(RuleSpec rule, int level) {
         int old = RuleState.level(rule);
         if (level > 0 && old == 0 && !Unlocks.isUnlocked(rule)) return;
+        if (level > 0) {
+            for (RuleSpec mirror : RuleCatalog.all()) {
+                if (mirror != rule && mirror.hard != rule.hard && mirror.pair.equals(rule.pair) && RuleState.level(mirror) > 0) {
+                    setLevel(mirror, 0);
+                }
+            }
+        }
         RuleState.setLevel(rule, level);
         if (old != level) {
             try {

@@ -38,13 +38,28 @@ public final class BattlePrep {
         return out;
     }
 
-    /** Buffs every ship of every fleet on the side fighting the player. */
+    /**
+     * Lets every active rule change the fleets on the side fighting the player (enemy officers), then buffs
+     * every ship of those fleets.
+     */
     public static void prepareBattle(BattleAPI battle) {
-        if (battle == null) return;
-        List<RuleSpec> rules = activeEnemyRules();
-        if (rules.isEmpty()) return;
+        if (battle == null || Global.getSector() == null) return;
         List<CampaignFleetAPI> enemies = battle.getNonPlayerSide();
         if (enemies == null) return;
+        for (RuleSpec rule : RuleCatalog.all()) {
+            int level = RuleState.level(rule);
+            if (level <= 0) continue;
+            for (CampaignFleetAPI fleet : enemies) {
+                if (fleet == null || fleet.isPlayerFleet()) continue;
+                try {
+                    rule.effect.prepareEnemyFleet(rule, fleet, level, rule.value(level));
+                } catch (Throwable t) {
+                    LOG.error("Rule Book: rule " + rule.id + " failed on an enemy fleet", t);
+                }
+            }
+        }
+        List<RuleSpec> rules = activeEnemyRules();
+        if (rules.isEmpty()) return;
         for (CampaignFleetAPI fleet : enemies) {
             if (fleet == null || fleet.isPlayerFleet()) continue;
             for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) prepare(member, rules);

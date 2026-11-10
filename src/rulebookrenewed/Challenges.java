@@ -57,8 +57,7 @@ public final class Challenges {
     }
 
     private static ChallengeSpec parse(JSONObject row, String id) {
-        String requiredMod = str(row, "requiredMod");
-        if (!requiredMod.isEmpty() && !Global.getSettings().getModManager().isModEnabled(requiredMod)) return null;
+        if (!RuleCatalog.anyModEnabled(str(row, "requiredMod"))) return null;
 
         List<ChallengeSpec.Requirement> requirements = new ArrayList<>();
         for (String part : str(row, "rules").split("[|]")) {
@@ -85,6 +84,7 @@ public final class Challenges {
             case "feat":
                 feat = Feats.get(goal[1].trim());
                 if (feat == null) throw new IllegalArgumentException("unknown feat " + goal[1]);
+                if (!feat.available()) return null; // the feat's mod is off
                 amount = goal.length > 2 ? Integer.parseInt(goal[2].trim()) : 1;
                 break;
             default:
@@ -95,7 +95,12 @@ public final class Challenges {
         String orderText = str(row, "order");
         float order = orderText.isEmpty() ? 1000f : Float.parseFloat(orderText);
         return new ChallengeSpec(id, str(row, "name"), requirements, feat, Math.max(1, amount), limit,
+                intOr(str(row, "deadlineDays"), 0), intOr(str(row, "careerPoints"), 0),
                 str(row, "description"), str(row, "flavor"), order);
+    }
+
+    private static int intOr(String text, int fallback) {
+        return text.isEmpty() ? fallback : Integer.parseInt(text);
     }
 
     private static String str(JSONObject row, String key) {
@@ -221,18 +226,25 @@ public final class Challenges {
         if (spec.helpfulLimit >= 0 && helpfulPoints() > spec.helpfulLimit) {
             return "Helpful rules went over " + spec.helpfulLimit + " points.";
         }
+        if (spec.deadlineDays > 0 && daysRunning(spec) > spec.deadlineDays && progress(spec) < spec.goalAmount) {
+            return "Time ran out.";
+        }
         return null;
+    }
+
+    /** Days since the challenge was taken on. */
+    public static float daysRunning(ChallengeSpec spec) {
+        Map<String, Object> run = runs().get(spec.id);
+        Object start = run == null ? null : run.get("start");
+        if (!(start instanceof Long)) return 0f;
+        return Global.getSector().getClock().getElapsedDaysSince((Long) start);
     }
 
     /** Progress toward the goal in this save, 0 when the challenge is not running. */
     public static int progress(ChallengeSpec spec) {
         if (!isActive(spec)) return 0;
         Map<String, Object> run = runs().get(spec.id);
-        if (spec.goalFeat == null) {
-            Object start = run.get("start");
-            if (!(start instanceof Long)) return 0;
-            return (int) Global.getSector().getClock().getElapsedDaysSince((Long) start);
-        }
+        if (spec.goalFeat == null) return (int) daysRunning(spec);
         Object base = run.get("base");
         int baseCount = base instanceof Integer ? (Integer) base : 0;
         return Math.max(0, spec.goalFeat.count() - baseCount);
@@ -241,8 +253,12 @@ public final class Challenges {
     public static String progressText(ChallengeSpec spec) {
         int done = Math.min(progress(spec), spec.goalAmount);
         if (spec.goalFeat == null) return done + " of " + spec.goalAmount + " days";
-        if (spec.goalAmount == 1) return "Not yet";
-        return done + " of " + spec.goalAmount;
+        String text = spec.goalAmount == 1 ? "Not yet" : done + " of " + spec.goalAmount;
+        if (spec.deadlineDays > 0) {
+            int left = Math.max(0, spec.deadlineDays - (int) daysRunning(spec));
+            text += ", " + left + (left == 1 ? " day left" : " days left");
+        }
+        return text;
     }
 
     /** Completes every active challenge whose goal is met. Called daily and after battles. */
@@ -255,6 +271,10 @@ public final class Challenges {
             Unlocks.addFeat(spec.featId());
             Feats.message("Challenge complete: " + spec.name + "!");
             for (RuleSpec reward : rewards(spec)) Feats.message("A new page in the Rule Book: " + reward.name);
+            if (spec.careerPoints > 0) {
+                Balance.addCareerPoints(spec.careerPoints);
+                if (Balance.ngpInstalled()) Feats.message("New Game Plus: +" + spec.careerPoints + " career points.");
+            }
         }
     }
 

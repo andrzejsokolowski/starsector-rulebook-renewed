@@ -88,6 +88,15 @@ public final class RuleCombatPlugin extends BaseEveryFrameCombatPlugin {
     public void advance(float amount, List<InputEventAPI> events) {
         if (active.isEmpty() || engine == null) return;
         prepareEnemyReserves();
+        if (!engine.isPaused()) {
+            for (Active a : active) {
+                try {
+                    a.rule.effect.advanceCombat(a.rule, engine, amount, a.level, a.value);
+                } catch (Throwable t) {
+                    LOG.error("Rule Book: rule " + a.rule.id + " failed in combat", t);
+                }
+            }
+        }
         for (ShipAPI ship : engine.getShips()) {
             if (!seen.add(ship)) continue;
             int owner = ship.getOwner();

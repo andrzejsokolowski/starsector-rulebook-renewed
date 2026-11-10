@@ -29,18 +29,24 @@ public final class ChallengeSpec {
     public final int goalAmount;
     /** Most helpful points allowed while the challenge runs; -1 for no cap. */
     public final int helpfulLimit;
+    /** Days to reach the goal after taking it on, or 0 for no time limit (a days goal never has one). */
+    public final int deadlineDays;
+    /** New Game Plus - Renewed career points paid when the challenge is done. */
+    public final int careerPoints;
     public final String description;
     public final String flavor;
     public final float order;
 
     ChallengeSpec(String id, String name, List<Requirement> requirements, Feats.Feat goalFeat, int goalAmount,
-                  int helpfulLimit, String description, String flavor, float order) {
+                  int helpfulLimit, int deadlineDays, int careerPoints, String description, String flavor, float order) {
         this.id = id;
         this.name = name;
         this.requirements = Collections.unmodifiableList(requirements);
         this.goalFeat = goalFeat;
         this.goalAmount = goalAmount;
         this.helpfulLimit = helpfulLimit;
+        this.deadlineDays = goalFeat == null ? 0 : Math.max(0, deadlineDays);
+        this.careerPoints = Math.max(0, careerPoints);
         this.description = description;
         this.flavor = flavor;
         this.order = order;
@@ -57,10 +63,12 @@ public final class ChallengeSpec {
     }
 
     public String goalText() {
+        String text;
         if (goalFeat == null) return "Hold out for " + goalAmount + " days";
-        if (goalFeat.id.equals(Counters.WINS)) return "Win " + goalAmount + (goalAmount == 1 ? " battle" : " battles");
-        if (goalAmount <= 1) return goalFeat.name;
-        return goalFeat.name + ", " + goalAmount + " times";
+        if (goalFeat.id.equals(Counters.WINS)) text = "Win " + goalAmount + (goalAmount == 1 ? " battle" : " battles");
+        else if (goalAmount <= 1) text = goalFeat.name;
+        else text = goalFeat.name + ", " + goalAmount + " times";
+        return deadlineDays > 0 ? text + " within " + deadlineDays + " days" : text;
     }
 
     public String requirementsText() {

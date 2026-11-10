@@ -50,18 +50,25 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   ship exists. `HostileFleetBurn` changes hostile fleets in the player's system and hyperspace.
   Other bases: `FleetStatRule` (the player fleet's campaign stats), `CharacterStatRule` (the player's
   character stats: officers, command points, ordnance points), `MarketRule` (the player's colonies or every
-  other market), `EnemyKindDamage` (one kind of enemy ship takes more damage). `Scale.by` does the percent
-  push: a rise is a percent bonus, a cut is a multiplier with a 0.05 floor.
+  other market), `EnemyKindDamage` (one kind of enemy ship takes more damage), `SettingRule` (scales
+  settings.json values the game reads live: bounties, battle XP, ship prices; originals kept and put back).
+  `Scale.by` does the percent push: a rise is a percent bonus, a cut is a multiplier with a 0.05 floor.
+  More hooks: `advanceCombat` (every unpaused frame of a campaign battle: Doomslayer, Last Stand) and
+  `prepareEnemyFleet` (once per enemy fleet when an encounter opens: enemy officer skills, marked per officer).
+  A hard rule and its mirror are never on together: `RuleManager.setLevel` switches the other side off.
 - `RuleCombatPlugin` (registered in `data/config/settings.json`) stands down outside campaign battles.
 - `RuleState` - chosen levels per save (sector persistent data). `Unlocks` - feats in saves/common
   (`rulebook_renewed_unlocks.json`). `Feats` - every feat with a count: story flags (0 or 1), colonies,
   credits, and battle counters from `Counters` (per save, filled by `RuleBattleListener` when the player's
-  side wins). Checked daily and after battles; the build reads the feat ids from `Feats.java` and
-  `Counters.java` to check the CSV files.
+  side wins). Feats from Oddisz's other mods (`modFlag`/`modCount`) read only state those mods leave in the
+  save, never their classes, and exist only while one of their mod ids is enabled. Checked daily and after
+  battles; the build reads the feat ids from `Feats.java` and `Counters.java` to check the CSV files.
+  Challenge columns `deadlineDays` (time limit) and `careerPoints`: on completion the points are added to
+  sector memory `$rbr_ngpBonusPoints`, which New Game Plus - Renewed pays out and sets back to 0.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
   `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
 - `ui/RulePickerPanel` - two tabs (Rules; Challenges and feats), each one scrolling list rebuilt on a tab
-  switch (labels in a panel inside a scrolling TooltipMakerAPI, so the game
+  switch. A rule row holds a pair: hard levels left of Off, helpful levels right of it (labels in a panel inside a scrolling TooltipMakerAPI, so the game
   clips and scrolls them) with self-drawn, self-hit-tested buttons (see Gambling Den) that follow the
   content panel's real screen position each frame. `RuleBookDialog` hosts it;
   `RuleBookIntel` is the permanent intel entry with the open button.

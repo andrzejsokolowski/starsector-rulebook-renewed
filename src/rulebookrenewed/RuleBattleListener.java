@@ -57,8 +57,13 @@ public final class RuleBattleListener extends BaseCampaignEventListener {
         if (enemies == null || enemies.isEmpty()) enemies = battle.getNonPlayerSide();
         if (enemies == null || enemies.isEmpty()) return;
         boolean remnant = false, abyss = false, station = false;
+        float enemyPoints = 0f, ownPoints = 0f;
+        List<CampaignFleetAPI> own = battle.getPlayerSideSnapshot();
+        if (own == null || own.isEmpty()) own = battle.getPlayerSide();
+        if (own != null) for (CampaignFleetAPI fleet : own) if (fleet != null) ownPoints += fleet.getFleetPoints();
         for (CampaignFleetAPI fleet : enemies) {
             if (fleet == null) continue;
+            enemyPoints += fleet.getFleetPoints();
             String faction = fleet.getFaction() == null ? "" : fleet.getFaction().getId();
             if (Factions.REMNANTS.equals(faction)) remnant = true;
             if (Factions.OMEGA.equals(faction) || Factions.THREAT.equals(faction) || Factions.DWELLER.equals(faction)) abyss = true;
@@ -68,6 +73,7 @@ public final class RuleBattleListener extends BaseCampaignEventListener {
         if (remnant) Counters.add(Counters.REMNANT);
         if (abyss) Counters.add(Counters.ABYSS);
         if (station) Counters.add(Counters.STATION);
+        if (ownPoints > 0f && enemyPoints >= ownPoints * 2f) Counters.add(Counters.GIANT);
         Feats.check();
         Challenges.check();
     }

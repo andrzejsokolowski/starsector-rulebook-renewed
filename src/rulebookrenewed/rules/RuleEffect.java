@@ -1,5 +1,7 @@
 package rulebookrenewed.rules;
 
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 
@@ -27,6 +29,9 @@ public interface RuleEffect {
     /** Combat side. Called once for every ship and fighter in a campaign battle, on the first frame it is on the field. */
     default void applyToShip(RuleSpec rule, ShipAPI ship, boolean enemy, int level, float value) {}
 
+    /** Combat side, every frame of a campaign battle while the game is not paused. For auras and conditions. */
+    default void advanceCombat(RuleSpec rule, CombatEngineAPI engine, float amount, int level, float value) {}
+
     /** Called by the fleet buff that MemberStatRule keeps on every ship in the player's fleet. */
     default void applyToMember(RuleSpec rule, FleetMemberAPI member, int level, float value) {}
 
@@ -34,6 +39,9 @@ public interface RuleEffect {
     default boolean usesEnemyMemberBuff() {
         return false;
     }
+
+    /** Called once for every fleet on the enemy side when an encounter with the player opens (BattlePrep). */
+    default void prepareEnemyFleet(RuleSpec rule, CampaignFleetAPI fleet, int level, float value) {}
 
     /** Called by the buff BattlePrep puts on every enemy ship before a battle. */
     default void applyToEnemyMember(RuleSpec rule, FleetMemberAPI member, int level, float value) {}
