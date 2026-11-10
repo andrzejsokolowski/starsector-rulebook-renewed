@@ -68,9 +68,12 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   `$rbr_ngpMultiplier`.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
   `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
-- `ui/RulePickerPanel` - two tabs (Rules; Challenges and feats), each one scrolling list rebuilt on a tab
-  switch. A rule row holds a pair: hard levels left of Off, helpful levels right of it (labels in a panel inside a scrolling TooltipMakerAPI, so the game
-  clips and scrolls them) with self-drawn, self-hit-tested buttons (see Gambling Den) that follow the
-  content panel's real screen position each frame. `RuleBookDialog` hosts it;
+- `ui/RulePickerPanel` - tile grids on the left (tabs Rules, Challenges, Feats; Rules has a helpful grid
+  over a hard grid), a side panel on the right (balance, summary, hovered tile's details, challenge button).
+  Size follows the screen. Each tab is a container panel built once; a tab switch moves the others off
+  screen (never remove a scrolling TooltipMakerAPI with removeComponent: the panel holds its external
+  scroller, so the labels stay). Tile labels sit in a content panel inside a scrolling TooltipMakerAPI;
+  tiles and buttons are self drawn and hit tested (see Gambling Den) and follow the content panel's real
+  screen position each frame. Left click raises a rule, right click lowers it. `RuleBookDialog` hosts it;
   `RuleBookIntel` is the permanent intel entry with the open button.
 - `compat/peerless` - the only package that may name Peerless Skills (`checkPeerlessIsolated`).

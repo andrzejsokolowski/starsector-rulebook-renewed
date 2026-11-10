@@ -7,19 +7,20 @@ kinder. Every rule has its own level, and you can change any of them at any time
   again from the **Rule Book** entry on the intel screen. Rules are grouped by section: enemy ships,
   your ships, fleet and logistics, the Sector, colonies, and special rules. There is no limit on how many
   rules are active.
-- **One row per pair**: a hard rule and its helpful mirror share one row. The hard levels sit left of
-  **Off**, the helpful levels right of it, so you pick one side or the other. A click applies at once.
+- **Tiles**: every rule is a tile. Helpful rules fill the top grid, hard rules the bottom grid. Left
+  click raises a rule's level, right click lowers it; pips on the tile show the level. A hard rule and
+  its helpful mirror are never on together: picking one switches the other off. A click applies at once.
 - **Balance meter**: every rule level has points, negative for hard rules and positive for helpful ones.
   The meter shows the total, for example "You're 20 points over budget - Slightly overpowered". It never
   stops a pick.
-- **Challenges**: the second tab of the Rule Book lists challenges. A challenge names hard rules to keep
+- **Challenges**: the Challenges tab of the Rule Book lists challenges. A challenge names hard rules to keep
   on and a goal, such as winning 20 battles; some have a time limit. Taking one on raises its rules to the
   required levels. Lowering one of them, going over the challenge's limit on helpful rules, or running
   out of time ends the challenge. Reaching the goal unlocks a reward rule. Only progress made while
   the challenge runs counts.
 - **Feats and unlocks**: some rules open up through feats, such as finishing At the Gates, defeating
   Omega or growing a colony to size 6. Feats and finished challenges are kept in `saves/common`, so they
-  count for every later campaign. The second tab lists every feat and what it unlocks. The LunaLib
+  count for every later campaign. The Feats tab lists every feat and what it unlocks. The LunaLib
   setting "Every rule unlocked" opens all rules without touching the real unlocks.
 - **New Game Plus - Renewed**: the Rule Book writes a career point multiplier that New Game Plus -
   Renewed reads. Each point under budget adds 1 percent, each point over budget takes 1 percent away.
@@ -196,7 +197,7 @@ mods show only while that mod is enabled.
 One row per rule in `data/config/rulebook/rules.csv` and one row per challenge in
 `data/config/rulebook/challenges.csv` (other mods can add rows to the same paths). The rule `effect`
 column names a class implementing `rulebookrenewed.rules.RuleEffect`; rules with the same `pair` key
-share one row in the picker, under their `section`. A rule with `challenge:<id>` in its `unlock` column
+are mirrors: only one of them can be on. A rule with `challenge:<id>` in its `unlock` column
 is the reward of that challenge. `requiredMod` may name several mods with `|` between them; one of them
 must be enabled.
 

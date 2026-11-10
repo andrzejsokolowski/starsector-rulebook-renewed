@@ -1,4 +1,4 @@
-Subject: [0.98a] Rule Book - Renewed 0.4.1 - house rules for one campaign, each with its own level
+Subject: [0.98a] Rule Book - Renewed 0.5.0 - house rules for one campaign, each with its own level
 
 [center][size=28pt][url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][b]Rule Book - Renewed[/b][/url][/size]
 [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][img]https://img.shields.io/github/downloads/andrzejsokolowski/starsector-rulebook-renewed/total?style=for-the-badge&label=download[/img][/url]  [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed][img]https://img.shields.io/github/v/release/andrzejsokolowski/starsector-rulebook-renewed?display_name=tag&sort=semver&style=for-the-badge&label=source[/img][/url]
@@ -14,14 +14,14 @@ Needs LunaLib.
 [hr][center][size=12pt][b]How it works[/b][/size][/center][hr]
 [list]
 [li]The Rule Book opens a few seconds into a new game. Open it again any time from the Rule Book entry on the intel screen.[/li]
-[li]Each rule has an Off button and one button per level. A click applies it at once.[/li]
+[li]Every rule is a tile. Left click raises its level, right click lowers it. A click applies at once.[/li]
 [li]No limit on how many rules are active. Only unlocks limit what you can pick.[/li]
 [li]A balance meter adds up the points of everything you picked, for example "You're 20 points over budget - Slightly overpowered". It only informs, it never stops a pick.[/li]
-[li]Most hard rules have a helpful mirror right below them in the list.[/li]
+[li]Most hard rules have a helpful mirror. Picking one switches the other off.[/li]
 [/list]
 
 [hr][center][size=12pt][b]The rules[/b][/size][/center][hr]
-Values per level, from level I up. Each hard rule shares a row with its helpful mirror: pick one side or the other.
+Values per level, from level I up. Each hard rule is listed with its helpful mirror: only one of the two can be on.
 [b]Enemy ships[/b]
 [list]
 [li][b]Hardened Foes | Brittle Foes[/b]: enemy ships take less damage to shields, armor and hull / enemy ships take more damage to shields, armor and hull (5, 10, 15, 20, 25 percent).[/li]
@@ -167,7 +167,7 @@ Vanilla: Finish The Kallichore Archive, Return the ISS Hamatsu, Find Coureuse, F
 [/list]
 [list]
 [li]Feats and finished challenges are kept outside your saves, so an unlock counts for every later campaign.[/li]
-[li]The Challenges and feats tab lists every feat and what it unlocks.[/li]
+[li]The Feats tab lists every feat and what it opens.[/li]
 [li]A LunaLib setting unlocks every rule if you just want to play with them.[/li]
 [/list]
 
@@ -194,6 +194,8 @@ The rules based on Unofficial Rule Book by DemonX3 keep its MIT licence notice (
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.5.0[/b]
+[list][li]New Rule Book screen: rules are tiles in two grids, helpful rules on top and hard rules below, with a side panel for the balance, a summary and the details of the tile under the mouse.[/li][li]Left click on a tile raises its level, right click lowers it. Pips on the tile show the level.[/li][li]Challenges and feats have their own tabs, also as tiles. Click a challenge, then take it on from the side panel.[/li][li]Fixed: after switching tabs, the old list stayed on screen under the new one.[/li][/list]
 [b]0.4.1[/b]
 [list][li]Challenges no longer pay New Game Plus - Renewed career points. They only unlock Rule Book rules.[/li][/list]
 [b]0.4.0[/b]

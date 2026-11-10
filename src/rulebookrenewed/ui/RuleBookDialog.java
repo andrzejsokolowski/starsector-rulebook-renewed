@@ -33,7 +33,7 @@ public final class RuleBookDialog implements InteractionDialogPlugin {
 
     private void showPicker() {
         RulePickerPanel picker = new RulePickerPanel();
-        dialog.showCustomVisualDialog(RulePickerPanel.PANEL_W, RulePickerPanel.PANEL_H,
+        dialog.showCustomVisualDialog(picker.width(), picker.height(),
                 new RulePickerDelegate(picker, () -> closeRequested = true));
     }
 

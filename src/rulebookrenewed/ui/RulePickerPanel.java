@@ -2,7 +2,9 @@ package rulebookrenewed.ui;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -11,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCustomUIPanelPlugin;
 import com.fs.starfarer.api.campaign.CustomVisualDialogDelegate.DialogCallbacks;
+import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.CustomPanelAPI;
@@ -24,6 +27,7 @@ import rulebookrenewed.Balance;
 import rulebookrenewed.ChallengeSpec;
 import rulebookrenewed.Challenges;
 import rulebookrenewed.Feats;
+import rulebookrenewed.Ids;
 import rulebookrenewed.RuleBookIntel;
 import rulebookrenewed.RuleCatalog;
 import rulebookrenewed.RuleManager;
@@ -32,40 +36,35 @@ import rulebookrenewed.RuleState;
 import rulebookrenewed.Unlocks;
 
 /**
- * The rule picker. Two tabs on one scrolling list. Rules: one row per mirrored pair under its section
- * heading, hard levels left of Off and helpful levels right of it, so only one side can be on; a click
- * applies at once, so switching mid-campaign is the same as picking at the start. Challenges and feats: every challenge with a button to
- * take it on or give it up, and every feat with what it unlocks. The balance meter on top only informs and
- * never blocks a pick.
+ * The rule picker: grids of tiles on the left, a side panel on the right.
  *
- * The list's labels live in a panel inside a scrolling TooltipMakerAPI, so the game clips them and
- * scrolls them with the mouse wheel. A tab switch throws that list away and builds the other one.
- * Buttons are still drawn and hit-tested by this panel, as in Gambling Den (TooltipMakerAPI buttons in a
- * custom dialog can take clicks in the wrong place): each frame the list's real screen position is read
- * back from the content panel, so drawing and clicks follow the scroll whatever direction the scroller
- * counts in.
+ * Rules tab: helpful rules in the top grid, hard rules in the bottom grid. Left click on a tile raises
+ * its level, right click lowers it; pips on the tile show the level. A hard rule and its helpful mirror
+ * are never on together (RuleManager.setLevel switches the other side off). Challenges tab: one tile per
+ * challenge; a click selects it and the side panel's button takes it on or gives it up. Feats tab: one
+ * tile per feat. The side panel holds the balance meter, a summary, and the hovered tile's details.
+ *
+ * Each tab is one container panel built once. A tab switch moves the other containers off screen, so no
+ * label of another tab can stay behind. Every grid is a scrolling TooltipMakerAPI holding a content panel
+ * with the tile labels; tiles and buttons are drawn and hit-tested by this panel (as in Gambling Den), and
+ * each frame reads back where the scrolled content really is on screen.
  */
 public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
 
-    public static final float PANEL_W = 1040f, PANEL_H = 720f;
-
-    private static final float METER_X = 170f, METER_Y = 80f, METER_W = 700f, METER_H = 12f;
+    private static final float PAD = 16f, SIDE_W = 380f, TAB_H = 28f, HEADER_H = 30f;
+    private static final float TILE_W = 112f, TILE_H = 120f, TILE_GAP = 8f, GRID_PAD = 8f, SCROLLBAR_W = 22f;
+    private static final float ICON = 52f, DETAIL_ICON = 64f;
+    private static final float PIP_W = 14f, PIP_H = 5f, PIP_GAP = 4f;
+    private static final float HIDDEN_X = -20000f;
     private static final int METER_RANGE = 100;
-    private static final float TAB_Y = 100f, TAB_H = 24f;
-    private static final float DETAIL_H = 118f;
-    private static final float DETAIL_TOP = PANEL_H - 56f - DETAIL_H;
-    private static final float LIST_X = 20f, LIST_TOP = 132f, LIST_W = PANEL_W - 40f;
-    private static final float LIST_H = DETAIL_TOP - 8f - LIST_TOP;
-    private static final float PAIR_H = 46f, PAIR_GAP = 6f, HEADING_H = 30f, CHALLENGE_H = 54f, FEAT_H = 26f;
-    private static final float NAME_X = 16f, NAME_W = 200f, OFF_X = 412f, OFF_W = 42f, LEVEL_W = 34f, GAP = 5f;
-    private static final float HELP_NAME_X = OFF_X + OFF_W + GAP + 3f + 5f * (LEVEL_W + GAP) + 6f;
-    private static final float POINTS_X = 880f;
-    private static final float ACTION_W = 124f;
 
-    private static final int TAB_RULES = 0, TAB_CHALLENGES = 1;
+    private static final int TAB_RULES = 0, TAB_CHALLENGES = 1, TAB_FEATS = 2;
 
-    private static final Color BG = new Color(12, 15, 22);
-    private static final Color PANEL = new Color(22, 27, 36);
+    private static final Color BG = new Color(10, 13, 19);
+    private static final Color PANEL = new Color(20, 25, 34);
+    private static final Color TILE_OFF = new Color(24, 30, 40);
+    private static final Color TILE_LOCKED = new Color(15, 18, 24);
+    private static final Color PIP_OFF = new Color(48, 56, 68);
     private static final Color GOLD = new Color(235, 185, 100);
     private static final Color DIM = new Color(150, 157, 173);
     private static final Color TEXT = new Color(220, 224, 232);
@@ -73,212 +72,253 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
     private static final class Btn {
         final String action;
         final float x, y, w, h;
-        final boolean inList;
+        /** The tab the button belongs to, or -1 for every tab. */
+        final int tab;
         LabelAPI label;
         boolean visible = true, enabled = true, checked, hover;
 
-        Btn(String action, float x, float y, float w, float h, boolean inList) {
+        Btn(String action, float x, float y, float w, float h, int tab) {
             this.action = action;
             this.x = x;
             this.y = y;
             this.w = w;
             this.h = h;
-            this.inList = inList;
+            this.tab = tab;
         }
     }
 
-    private enum Kind { HEADING, PAIR, CHALLENGE, FEAT }
+    /** One scrolling grid of tiles. x, y, w, h: the grid's box in panel coordinates (top-down). */
+    private static final class Grid {
+        final int tab;
+        final float x, y, w, h;
+        final List<Tile> tiles = new ArrayList<>();
+        CustomPanelAPI content;
+        float contentLeft, contentTop;
 
-    /**
-     * One list line. y is in list content coordinates (0 = top of the list). A PAIR row holds a hard rule
-     * and its helpful mirror (either may be missing for a rule without a mirror): hard levels to the left of
-     * Off, helpful levels to the right, so only one side can be on.
-     */
-    private static final class Row {
-        final Kind kind;
-        final float y, h;
-        boolean pairStart;
-        /** HEADING rows of the Rules tab carry the first rule of their section, for its name. */
+        Grid(int tab, float x, float y, float w, float h) {
+            this.tab = tab;
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            contentLeft = x;
+            contentTop = y;
+        }
+    }
+
+    /** One tile. x, y: its top left in grid content coordinates. Exactly one of rule, challenge, feat is set. */
+    private static final class Tile {
+        final Grid grid;
+        final float x, y;
         RuleSpec rule;
-        RuleSpec hard, helpful;
         ChallengeSpec challenge;
         Feats.Feat feat;
-        LabelAPI name, name2, points, effect, extra;
-        final Btn[] hardLevels = new Btn[RuleSpec.MAX_LEVELS + 1];
-        final Btn[] helpfulLevels = new Btn[RuleSpec.MAX_LEVELS + 1];
-        Btn off, action;
+        String iconPath;
+        LabelAPI name, status;
 
-        Row(Kind kind, float y, float h) {
-            this.kind = kind;
+        Tile(Grid grid, float x, float y) {
+            this.grid = grid;
+            this.x = x;
             this.y = y;
-            this.h = h;
         }
     }
 
+    private final float panelW, panelH, sideX, leftW, pageTop;
     private final List<Btn> buttons = new ArrayList<>();
-    private final List<Row> rows = new ArrayList<>();
+    private final List<Grid> grids = new ArrayList<>();
+    private final CustomPanelAPI[] pages = new CustomPanelAPI[3];
+    private final Map<String, SpriteAPI> sprites = new HashMap<>();
     private CustomPanelAPI panel;
-    private CustomPanelAPI content;
-    private TooltipMakerAPI listElement;
     private DialogCallbacks callbacks;
     private PositionAPI position;
-    private LabelAPI balance, multiplier, detailTitle, detailBody, detailFlavor;
-    private Btn tabRules, tabChallenges;
+
+    private LabelAPI balance, hardSummary, helpfulSummary, career, hint;
+    private LabelAPI detailTitle, detailKind, detailBody, detailFlavor;
+    private LabelAPI helpfulCount, hardCount, challengeCount, featCount;
+    private Btn challengeAction;
+    private float detailTop, detailBottom, meterX, meterY, meterW;
+
     private int tab = TAB_RULES;
-    private Row hovered;
-    private float contentTop = LIST_TOP;
-    private boolean dismissed, wasMouseDown;
+    private Tile hovered, shown, selectedChallenge;
+    private boolean dismissed, wasLeftDown, wasRightDown;
+
+    public RulePickerPanel() {
+        float screenW = Global.getSettings().getScreenWidth();
+        float screenH = Global.getSettings().getScreenHeight();
+        panelW = Math.max(Math.min(1720f, screenW - 80f), Math.min(1100f, screenW - 10f));
+        panelH = Math.max(Math.min(980f, screenH - 80f), Math.min(680f, screenH - 10f));
+        sideX = panelW - PAD - SIDE_W;
+        leftW = sideX - PAD - PAD;
+        pageTop = PAD + TAB_H + 8f;
+    }
+
+    public float width() {
+        return panelW;
+    }
+
+    public float height() {
+        return panelH;
+    }
 
     public void init(CustomPanelAPI panel, DialogCallbacks callbacks) {
         this.panel = panel;
         this.callbacks = callbacks;
-        wasMouseDown = Mouse.isCreated() && Mouse.isButtonDown(0);
+        wasLeftDown = Mouse.isCreated() && Mouse.isButtonDown(0);
+        wasRightDown = Mouse.isCreated() && Mouse.isButtonDown(1);
 
-        label(panel, "THE RULE BOOK", GOLD, 0f, 14f, PANEL_W, 26f, Fonts.ORBITRON_20AA, Alignment.MID);
-        balance = label(panel, "", TEXT, 0f, 50f, PANEL_W, 20f, Fonts.DEFAULT_SMALL, Alignment.MID);
-        label(panel, "Harder", RuleBookIntel.hardColor(), METER_X - 110f, METER_Y - 4f, 100f, 20f, Fonts.DEFAULT_SMALL, Alignment.RMID);
-        label(panel, "Easier", RuleBookIntel.helpfulColor(), METER_X + METER_W + 10f, METER_Y - 4f, 100f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-        multiplier = label(panel, "", DIM, 0f, 102f, PANEL_W, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
+        button(panel, "tab:" + TAB_RULES, "Rules", PAD, PAD, 120f, TAB_H, -1);
+        button(panel, "tab:" + TAB_CHALLENGES, "Challenges", PAD + 126f, PAD, 140f, TAB_H, -1);
+        button(panel, "tab:" + TAB_FEATS, "Feats", PAD + 272f, PAD, 120f, TAB_H, -1);
 
-        tabRules = button(panel, "tab:" + TAB_RULES, "Rules", LIST_X, TAB_Y, 100f, TAB_H, false);
-        tabChallenges = button(panel, "tab:" + TAB_CHALLENGES, "Challenges and feats", LIST_X + 106f, TAB_Y, 180f, TAB_H, false);
-
-        detailTitle = label(panel, "", GOLD, 40f, DETAIL_TOP + 8f, PANEL_W - 80f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-        detailBody = label(panel, "", TEXT, 40f, DETAIL_TOP + 30f, PANEL_W - 80f, 62f, Fonts.DEFAULT_SMALL, Alignment.TL);
-        detailFlavor = label(panel, "", DIM, 40f, DETAIL_TOP + DETAIL_H - 26f, PANEL_W - 80f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-
-        button(panel, "close", "Close", PANEL_W - 200f, PANEL_H - 46f, 170f, 34f, false);
-
-        buildList();
-        refresh();
+        buildSide();
+        buildRulesPage();
+        buildChallengesPage();
+        buildFeatsPage();
+        showTab(TAB_RULES);
     }
 
-    // ---- building the list ----
+    // ---- building ----
 
-    private void buildList() {
-        if (listElement != null) panel.removeComponent(listElement);
-        buttons.removeIf(b -> b.inList);
-        rows.clear();
-        hovered = null;
+    private void buildSide() {
+        float x = sideX + 12f, w = SIDE_W - 24f;
+        label(panel, "THE RULE BOOK", GOLD, sideX, PAD + 2f, SIDE_W, 26f, Fonts.ORBITRON_20AA, Alignment.MID);
+        balance = label(panel, "", TEXT, x, PAD + 34f, w, 20f, Fonts.DEFAULT_SMALL, Alignment.MID);
 
-        float bottom = tab == TAB_RULES ? layoutRules() : layoutChallenges();
-        float contentH = Math.max(LIST_H, bottom + 6f);
+        meterX = sideX + 62f;
+        meterW = SIDE_W - 124f;
+        meterY = PAD + 64f;
+        label(panel, "Harder", RuleBookIntel.hardColor(), sideX + 4f, meterY - 5f, 54f, 20f, Fonts.DEFAULT_SMALL, Alignment.RMID);
+        label(panel, "Easier", RuleBookIntel.helpfulColor(), meterX + meterW + 4f, meterY - 5f, 54f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
 
-        listElement = panel.createUIElement(LIST_W, LIST_H, true);
-        content = panel.createCustomPanel(LIST_W, contentH, null);
-        for (int i = 0; i < rows.size(); i++) addRowParts(rows.get(i), i);
-        listElement.addCustom(content, 0f);
-        listElement.setHeightSoFar(contentH);
-        panel.addUIElement(listElement).inTL(LIST_X, LIST_TOP);
-        contentTop = LIST_TOP;
+        float y = meterY + 24f;
+        hardSummary = label(panel, "", RuleBookIntel.hardColor(), x, y, w / 2f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+        helpfulSummary = label(panel, "", RuleBookIntel.helpfulColor(), x + w / 2f, y, w / 2f, 20f, Fonts.DEFAULT_SMALL, Alignment.RMID);
+        career = label(panel, "", DIM, x, y + 20f, w, 20f, Fonts.DEFAULT_SMALL, Alignment.MID);
+
+        detailTop = y + 48f;
+        detailBottom = panelH - PAD - 36f - 34f;
+        float textX = x + DETAIL_ICON + 12f, textW = w - DETAIL_ICON - 12f;
+        detailTitle = label(panel, "", GOLD, textX, detailTop + 12f, textW, 24f, Fonts.INSIGNIA_LARGE, Alignment.LMID);
+        detailKind = label(panel, "", DIM, textX, detailTop + 40f, textW, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+        detailBody = label(panel, "", TEXT, x, detailTop + DETAIL_ICON + 22f, w, 20f, Fonts.DEFAULT_SMALL, Alignment.TL);
+        detailFlavor = label(panel, "", DIM, x, detailBottom - 34f, w, 20f, Fonts.DEFAULT_SMALL, Alignment.TL);
+        challengeAction = button(panel, "challenge", "Take it on", x, detailBottom - 76f, w, 32f, TAB_CHALLENGES);
+
+        hint = label(panel, "", DIM, sideX, panelH - PAD - 36f - 26f, SIDE_W, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
+        button(panel, "close", "Close", sideX, panelH - PAD - 36f, SIDE_W, 36f, -1);
     }
 
-    private float layoutRules() {
-        float y = 6f;
-        String lastSection = null;
-        Row current = null;
-        for (RuleSpec rule : RuleCatalog.all()) {
-            if (!rule.section.equals(lastSection)) {
-                Row heading = new Row(Kind.HEADING, y, HEADING_H);
-                heading.rule = rule;
-                rows.add(heading);
-                y += HEADING_H;
-                lastSection = rule.section;
-                current = null;
-            }
-            // The catalog keeps a pair together, hard first: join the mirror to the row of its twin.
-            boolean joins = current != null && current.hard != null && current.helpful == null
-                    && !rule.hard && current.hard.pair.equals(rule.pair);
-            if (joins) {
-                current.helpful = rule;
-                continue;
-            }
-            Row row = new Row(Kind.PAIR, y + (current != null ? PAIR_GAP : 0f), PAIR_H);
-            if (current != null) y += PAIR_GAP;
-            row.pairStart = current != null;
-            if (rule.hard) row.hard = rule;
-            else row.helpful = rule;
-            rows.add(row);
-            current = row;
-            y += PAIR_H;
-        }
-        return y;
+    private CustomPanelAPI page(int tab) {
+        CustomPanelAPI page = panel.createCustomPanel(leftW, panelH - pageTop - PAD, null);
+        panel.addComponent(page).inTL(PAD, pageTop);
+        pages[tab] = page;
+        return page;
     }
 
-    private static float hardX(int level) {
-        return OFF_X - level * (LEVEL_W + GAP);
+    /** A header bar over a grid: title on the left, a count next to it. Returns the count label. */
+    private LabelAPI header(CustomPanelAPI page, String title, Color color, float top) {
+        label(page, title, color, 10f, top + 6f, 240f, 18f, Fonts.ORBITRON_12, Alignment.LMID);
+        return label(page, "", DIM, 220f, top + 6f, 300f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
     }
 
-    private static float helpfulX(int level) {
-        return OFF_X + OFF_W + GAP + 3f + (level - 1) * (LEVEL_W + GAP);
+    private void buildRulesPage() {
+        CustomPanelAPI page = page(TAB_RULES);
+        float pageH = panelH - pageTop - PAD;
+        float block = (pageH - 10f) / 2f;
+
+        helpfulCount = header(page, "HELPFUL RULES", RuleBookIntel.helpfulColor(), 0f);
+        button(page, "clear:helpful", "Clear all", leftW - 110f, 3f, 104f, HEADER_H - 6f, TAB_RULES);
+        Grid helpful = grid(page, TAB_RULES, HEADER_H, block - HEADER_H);
+        for (RuleSpec rule : RuleCatalog.ofType(false)) addRuleTile(helpful, rule);
+        finish(page, helpful);
+
+        float top = block + 10f;
+        hardCount = header(page, "HARD RULES", RuleBookIntel.hardColor(), top);
+        button(page, "clear:hard", "Clear all", leftW - 110f, top + 3f, 104f, HEADER_H - 6f, TAB_RULES);
+        Grid hard = grid(page, TAB_RULES, top + HEADER_H, block - HEADER_H);
+        for (RuleSpec rule : RuleCatalog.ofType(true)) addRuleTile(hard, rule);
+        finish(page, hard);
     }
 
-    private float layoutChallenges() {
-        float y = 6f;
-        rows.add(new Row(Kind.HEADING, y, HEADING_H));
-        y += HEADING_H;
+    private void buildChallengesPage() {
+        CustomPanelAPI page = page(TAB_CHALLENGES);
+        challengeCount = header(page, "CHALLENGES", GOLD, 0f);
+        Grid grid = grid(page, TAB_CHALLENGES, HEADER_H, panelH - pageTop - PAD - HEADER_H);
         for (ChallengeSpec spec : Challenges.all()) {
-            Row row = new Row(Kind.CHALLENGE, y, CHALLENGE_H);
-            row.challenge = spec;
-            rows.add(row);
-            y += CHALLENGE_H;
+            Tile tile = nextTile(grid);
+            tile.challenge = spec;
+            List<RuleSpec> rewards = Challenges.rewards(spec);
+            tile.iconPath = rewards.isEmpty() ? Ids.BOOK_ICON : rewards.get(0).icon;
         }
-        y += PAIR_GAP;
-        rows.add(new Row(Kind.HEADING, y, HEADING_H));
-        y += HEADING_H;
-        for (Feats.Feat feat : Feats.all()) {
-            Row row = new Row(Kind.FEAT, y, FEAT_H);
-            row.feat = feat;
-            rows.add(row);
-            y += FEAT_H;
-        }
-        return y;
+        finish(page, grid);
     }
 
-    private void addRowParts(Row row, int index) {
-        switch (row.kind) {
-            case HEADING: {
-                String text = row.rule != null ? row.rule.section.toUpperCase()
-                        : rows.indexOf(row) == 0 ? "CHALLENGES" : "FEATS";
-                row.name = label(content, text, GOLD, NAME_X, row.y + 8f, 400f, 18f, Fonts.ORBITRON_12, Alignment.LMID);
-                String note = row.rule != null ? ""
-                        : rows.indexOf(row) == 0 ? "Taking one on raises its rules. Lowering them, or going over its helpful limit, ends it."
-                        : "Feats count in every campaign once done.";
-                row.extra = label(content, note, DIM, 300f, row.y + 8f, LIST_W - 300f - 24f, 18f, Fonts.DEFAULT_SMALL, Alignment.RMID);
-                break;
-            }
-            case PAIR: {
-                float top = row.y + 3f, h = 24f;
-                row.name = label(content, "", TEXT, NAME_X, top + 3f, NAME_W, 18f, Fonts.DEFAULT_SMALL, Alignment.RMID);
-                row.name2 = label(content, "", TEXT, HELP_NAME_X, top + 3f, NAME_W, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-                for (int level = 1; level <= RuleSpec.MAX_LEVELS; level++) {
-                    row.hardLevels[level] = button(content, "pair:" + index + ":hard:" + level, RuleSpec.roman(level),
-                            hardX(level), top, LEVEL_W, h, true);
-                    row.helpfulLevels[level] = button(content, "pair:" + index + ":helpful:" + level, RuleSpec.roman(level),
-                            helpfulX(level), top, LEVEL_W, h, true);
-                }
-                row.off = button(content, "pair:" + index + ":off:0", "Off", OFF_X, top, OFF_W, h, true);
-                row.points = label(content, "", TEXT, POINTS_X, top + 3f, 60f, 18f, Fonts.DEFAULT_SMALL, Alignment.RMID);
-                row.effect = label(content, "", DIM, NAME_X, row.y + 27f, LIST_W - NAME_X - 40f, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
-                break;
-            }
-            case CHALLENGE: {
-                float actionX = LIST_W - 24f - ACTION_W - 8f;
-                row.name = label(content, "", GOLD, NAME_X, row.y + 5f, 360f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-                row.points = label(content, "", DIM, 380f, row.y + 5f, actionX - 380f - 12f, 18f, Fonts.DEFAULT_SMALL, Alignment.RMID);
-                row.effect = label(content, "", DIM, NAME_X, row.y + 28f, actionX - NAME_X - 12f, 20f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-                row.action = button(content, "challenge:" + index, "Take it on", actionX, row.y + 14f, ACTION_W, 26f, true);
-                break;
-            }
-            case FEAT: {
-                row.name = label(content, "", TEXT, NAME_X, row.y + 4f, 380f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-                row.points = label(content, "", DIM, 400f, row.y + 4f, 110f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-                row.effect = label(content, "", DIM, 520f, row.y + 4f, LIST_W - 520f - 24f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
-                break;
-            }
-            default:
-                break;
+    private void buildFeatsPage() {
+        CustomPanelAPI page = page(TAB_FEATS);
+        featCount = header(page, "FEATS", GOLD, 0f);
+        Grid grid = grid(page, TAB_FEATS, HEADER_H, panelH - pageTop - PAD - HEADER_H);
+        for (Feats.Feat feat : Feats.all()) {
+            Tile tile = nextTile(grid);
+            tile.feat = feat;
+            RuleSpec opens = firstRuleOpenedBy(feat);
+            tile.iconPath = opens != null ? opens.icon : Ids.BOOK_ICON;
         }
+        finish(page, grid);
+    }
+
+    /** A grid box at the given top inside a page; tiles are added with nextTile, then finish builds it. */
+    private Grid grid(CustomPanelAPI page, int tab, float topInPage, float h) {
+        Grid grid = new Grid(tab, PAD, pageTop + topInPage, leftW, h);
+        grids.add(grid);
+        return grid;
+    }
+
+    private int columns(Grid grid) {
+        return Math.max(1, (int) ((grid.w - GRID_PAD * 2f - SCROLLBAR_W + TILE_GAP) / (TILE_W + TILE_GAP)));
+    }
+
+    private Tile nextTile(Grid grid) {
+        int cols = columns(grid);
+        int index = grid.tiles.size();
+        float used = cols * (TILE_W + TILE_GAP) - TILE_GAP;
+        float left = Math.max(GRID_PAD, (grid.w - SCROLLBAR_W - used) / 2f);
+        Tile tile = new Tile(grid, left + (index % cols) * (TILE_W + TILE_GAP),
+                GRID_PAD + (index / cols) * (TILE_H + TILE_GAP));
+        grid.tiles.add(tile);
+        return tile;
+    }
+
+    private void addRuleTile(Grid grid, RuleSpec rule) {
+        Tile tile = nextTile(grid);
+        tile.rule = rule;
+        tile.iconPath = rule.icon;
+    }
+
+    private void finish(CustomPanelAPI page, Grid grid) {
+        int cols = columns(grid);
+        int rows = (grid.tiles.size() + cols - 1) / cols;
+        float contentH = Math.max(grid.h, GRID_PAD * 2f + rows * (TILE_H + TILE_GAP) - TILE_GAP);
+        TooltipMakerAPI scroller = page.createUIElement(grid.w, grid.h, true);
+        grid.content = page.createCustomPanel(grid.w, contentH, null);
+        for (Tile tile : grid.tiles) {
+            tile.name = Global.getSettings().createLabel(tileName(tile), Fonts.DEFAULT_SMALL);
+            tile.name.setAlignment(Alignment.MID);
+            grid.content.addComponent((UIComponentAPI) tile.name);
+            tile.name.autoSizeToWidth(TILE_W - 10f);
+            float nameH = tile.name.getPosition().getHeight();
+            tile.name.getPosition().inTL(tile.x + 5f, tile.y + Math.max(3f, 4f + (32f - nameH) / 2f));
+            tile.status = label(grid.content, "", TEXT, tile.x + 4f, tile.y + TILE_H - 31f, TILE_W - 8f, 18f,
+                    Fonts.DEFAULT_SMALL, Alignment.MID);
+        }
+        scroller.addCustom(grid.content, 0f);
+        scroller.setHeightSoFar(contentH);
+        page.addUIElement(scroller).inTL(grid.x - PAD, grid.y - pageTop);
+    }
+
+    private static String tileName(Tile tile) {
+        if (tile.rule != null) return tile.rule.name;
+        if (tile.challenge != null) return tile.challenge.name;
+        return tile.feat.name;
     }
 
     private LabelAPI label(CustomPanelAPI parent, String text, Color color, float x, float y, float w, float h,
@@ -290,11 +330,31 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         return label;
     }
 
-    private Btn button(CustomPanelAPI parent, String action, String text, float x, float y, float w, float h, boolean inList) {
-        Btn b = new Btn(action, x, y, w, h, inList);
+    /**
+     * A self-drawn button. x and y are panel coordinates; a button on a tab page gets its label in that page
+     * (so it moves away with the page) at the matching page position.
+     */
+    private Btn button(CustomPanelAPI parent, String action, String text, float x, float y, float w, float h, int tab) {
+        boolean onPage = parent != panel;
+        float px = onPage ? PAD + x : x, py = onPage ? pageTop + y : y;
+        Btn b = new Btn(action, px, py, w, h, tab);
         b.label = label(parent, text, Color.WHITE, x, y + (h - 18f) / 2f, w, 18f, Fonts.DEFAULT_SMALL, Alignment.MID);
         buttons.add(b);
         return b;
+    }
+
+    // ---- tabs ----
+
+    private void showTab(int next) {
+        tab = next;
+        for (int i = 0; i < pages.length; i++) {
+            if (pages[i] != null) pages[i].getPosition().inTL(i == tab ? PAD : HIDDEN_X, pageTop);
+        }
+        hovered = null;
+        shown = tab == TAB_CHALLENGES ? selectedChallenge : null;
+        hint.setText(tab == TAB_RULES ? "Left click raises a rule, right click lowers it."
+                : tab == TAB_CHALLENGES ? "Click a challenge to pick it." : "");
+        refresh();
     }
 
     // ---- filling in ----
@@ -303,14 +363,37 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         int net = Balance.net();
         balance.setText(Balance.describe(net));
         balance.setColor(RuleBookIntel.balanceColor(net));
-        multiplier.setText(Balance.ngpInstalled()
-                ? "Career points " + Balance.formatMultiplier(Balance.ngpMultiplier(net)) : "");
-        tabRules.checked = tab == TAB_RULES;
-        tabChallenges.checked = tab == TAB_CHALLENGES;
-        for (Row row : rows) {
-            if (row.kind == Kind.PAIR) fillPair(row);
-            else if (row.kind == Kind.CHALLENGE) fillChallenge(row);
-            else if (row.kind == Kind.FEAT) fillFeat(row);
+
+        int hardOn = 0, hardPoints = 0, helpOn = 0, helpPoints = 0;
+        for (RuleSpec rule : RuleCatalog.all()) {
+            int level = RuleState.level(rule);
+            if (level <= 0) continue;
+            if (rule.hard) {
+                hardOn++;
+                hardPoints += rule.points(level);
+            } else {
+                helpOn++;
+                helpPoints += rule.points(level);
+            }
+        }
+        hardSummary.setText("Hard: " + hardOn + " on, " + hardPoints);
+        helpfulSummary.setText("Helpful: " + helpOn + " on, +" + helpPoints);
+        career.setText(Balance.ngpInstalled() ? "Career points " + Balance.formatMultiplier(Balance.ngpMultiplier(net)) : "");
+        helpfulCount.setText(helpOn + " on");
+        hardCount.setText(hardOn + " on");
+
+        int done = 0;
+        for (ChallengeSpec spec : Challenges.all()) if (Challenges.isComplete(spec)) done++;
+        challengeCount.setText(done + " of " + Challenges.all().size() + " done");
+        int feats = 0;
+        for (Feats.Feat feat : Feats.all()) if (Unlocks.hasFeat(feat.id)) feats++;
+        featCount.setText(feats + " of " + Feats.all().size() + " done");
+
+        for (Btn b : buttons) {
+            if (b.action.startsWith("tab:")) b.checked = Integer.parseInt(b.action.substring(4)) == tab;
+        }
+        for (Grid grid : grids) {
+            for (Tile tile : grid.tiles) fillTile(tile);
         }
         refreshDetail();
     }
@@ -320,215 +403,173 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
     }
 
     private static boolean usable(RuleSpec rule) {
-        return rule != null && (Unlocks.isUnlocked(rule) || RuleState.level(rule) > 0);
+        return Unlocks.isUnlocked(rule) || RuleState.level(rule) > 0;
     }
 
-    private static int level(RuleSpec rule) {
-        return rule == null ? 0 : RuleState.level(rule);
+    private static String signed(int points) {
+        return points > 0 ? "+" + points : String.valueOf(points);
     }
 
-    /** The side that is on, or null when the row is off. */
-    private static RuleSpec activeSide(Row row) {
-        if (level(row.hard) > 0) return row.hard;
-        if (level(row.helpful) > 0) return row.helpful;
+    private void fillTile(Tile tile) {
+        if (tile.rule != null) {
+            RuleSpec rule = tile.rule;
+            int level = RuleState.level(rule);
+            if (!usable(rule)) {
+                tile.name.setColor(DIM.darker());
+                tile.status.setText("Locked");
+                tile.status.setColor(DIM.darker());
+            } else if (level > 0) {
+                tile.name.setColor(Color.WHITE);
+                tile.status.setText(signed(rule.points(level)));
+                tile.status.setColor(typeColor(rule));
+            } else {
+                tile.name.setColor(TEXT);
+                tile.status.setText(signed(rule.points(1)));
+                tile.status.setColor(DIM);
+            }
+        } else if (tile.challenge != null) {
+            ChallengeSpec spec = tile.challenge;
+            tile.name.setColor(Challenges.isComplete(spec) ? RuleBookIntel.helpfulColor() : TEXT);
+            if (Challenges.isComplete(spec)) {
+                tile.status.setText("Done");
+                tile.status.setColor(RuleBookIntel.helpfulColor());
+            } else if (Challenges.isActive(spec)) {
+                tile.status.setText("Under way");
+                tile.status.setColor(GOLD);
+            } else {
+                boolean ready = Challenges.whyNot(spec) == null;
+                tile.status.setText(ready ? "Ready" : "Not ready");
+                tile.status.setColor(ready ? TEXT : DIM.darker());
+            }
+        } else {
+            Feats.Feat feat = tile.feat;
+            boolean done = Unlocks.hasFeat(feat.id);
+            tile.name.setColor(done ? RuleBookIntel.helpfulColor() : TEXT);
+            String status = done ? "Done" : "Not yet";
+            if (feat.repeatable && Global.getSector() != null && feat.count() > 0) {
+                status = feat.count() + " this campaign";
+            }
+            tile.status.setText(status);
+            tile.status.setColor(done ? RuleBookIntel.helpfulColor() : DIM);
+        }
+    }
+
+    private static RuleSpec mirror(RuleSpec rule) {
+        for (RuleSpec other : RuleCatalog.all()) {
+            if (other != rule && other.hard != rule.hard && other.pair.equals(rule.pair)) return other;
+        }
         return null;
     }
 
-    private void fillSideName(LabelAPI label, RuleSpec rule) {
-        if (rule == null) {
-            label.setText("");
-            return;
-        }
-        boolean held = !Challenges.activeRequiring(rule).isEmpty();
-        label.setText(held ? rule.name + " *" : rule.name);
-        label.setColor(usable(rule) ? typeColor(rule) : DIM.darker());
-    }
-
-    private void fillSide(Btn[] buttons, RuleSpec rule) {
-        boolean show = usable(rule);
-        int on = level(rule);
-        for (int l = 1; l <= RuleSpec.MAX_LEVELS; l++) {
-            Btn b = buttons[l];
-            b.visible = show && l <= rule.levels;
-            b.checked = b.visible && l == on;
-            b.label.setText(b.visible ? RuleSpec.roman(l) : "");
-            b.label.setColor(b.checked ? Color.WHITE : TEXT);
-        }
-    }
-
-    private void fillPair(Row row) {
-        fillSideName(row.name, row.hard);
-        fillSideName(row.name2, row.helpful);
-        fillSide(row.hardLevels, row.hard);
-        fillSide(row.helpfulLevels, row.helpful);
-        RuleSpec active = activeSide(row);
-        row.off.visible = usable(row.hard) || usable(row.helpful);
-        row.off.checked = active == null;
-        row.off.label.setText(row.off.visible ? "Off" : "");
-        row.off.label.setColor(row.off.checked ? Color.WHITE : TEXT);
-
-        if (active != null) {
-            int points = active.points(level(active));
-            row.points.setText(points > 0 ? "+" + points : String.valueOf(points));
-            row.points.setColor(typeColor(active));
-            row.effect.setText(active.name + " " + RuleSpec.roman(level(active)) + ":  " + active.describe(level(active)));
-            row.effect.setColor(TEXT);
-            return;
-        }
-        row.points.setText("");
-        StringBuilder locked = new StringBuilder();
-        for (RuleSpec side : new RuleSpec[] {row.hard, row.helpful}) {
-            if (side == null || usable(side)) continue;
-            if (locked.length() > 0) locked.append("   ");
-            locked.append(side.name).append(" is locked.");
-            if (!side.unlockHint.isEmpty()) locked.append(' ').append(side.unlockHint);
-        }
-        row.effect.setText(locked.toString());
-        row.effect.setColor(DIM.darker());
-    }
-
-    private void fillChallenge(Row row) {
-        ChallengeSpec spec = row.challenge;
-        boolean complete = Challenges.isComplete(spec);
-        boolean active = Challenges.isActive(spec);
-        String why = active ? null : Challenges.whyNot(spec);
-        row.name.setText(spec.name);
-        row.name.setColor(complete ? RuleBookIntel.helpfulColor() : GOLD);
-        if (complete) {
-            row.points.setText("Completed");
-            row.points.setColor(RuleBookIntel.helpfulColor());
-        } else if (active) {
-            row.points.setText("Under way: " + Challenges.progressText(spec));
-            row.points.setColor(GOLD);
-        } else if (why != null) {
-            row.points.setText(why);
-            row.points.setColor(DIM);
-        } else {
-            row.points.setText("Reward: " + rewardNames(spec));
-            row.points.setColor(DIM);
-        }
-        row.effect.setText("Needs " + spec.requirementsText() + ".  Goal: " + spec.goalText() + ".  " + spec.limitText() + ".");
-        row.action.visible = !complete;
-        row.action.enabled = active || why == null;
-        row.action.checked = active;
-        row.action.label.setText(complete ? "" : active ? "Give up" : "Take it on");
-        row.action.label.setColor(row.action.enabled ? Color.WHITE : DIM.darker());
-    }
-
-    private void fillFeat(Row row) {
-        Feats.Feat feat = row.feat;
-        boolean done = Unlocks.hasFeat(feat.id);
-        row.name.setText(feat.name);
-        row.name.setColor(done ? RuleBookIntel.helpfulColor() : TEXT);
-        String status = done ? "Done" : "Not yet";
-        if (feat.repeatable && Global.getSector() != null) {
-            int count = feat.count();
-            if (count > 0) status = (done ? "Done, " : "") + count + " this campaign";
-        }
-        row.points.setText(status);
-        row.points.setColor(done ? RuleBookIntel.helpfulColor() : DIM);
-        row.effect.setText(featUses(feat));
-    }
-
-    private static String rewardNames(ChallengeSpec spec) {
-        StringBuilder out = new StringBuilder();
-        for (RuleSpec rule : Challenges.rewards(spec)) {
-            if (out.length() > 0) out.append(", ");
-            out.append(rule.name);
-        }
-        return out.length() == 0 ? "none" : out.toString();
-    }
-
-    private static String featUses(Feats.Feat feat) {
-        StringBuilder rules = new StringBuilder();
-        for (RuleSpec rule : RuleCatalog.all()) {
-            if (!feat.id.equals(rule.featId())) continue;
-            if (rules.length() > 0) rules.append(", ");
-            rules.append(rule.name);
-        }
-        StringBuilder challenges = new StringBuilder();
-        for (ChallengeSpec spec : Challenges.all()) {
-            if (spec.goalFeat != feat) continue;
-            if (challenges.length() > 0) challenges.append(", ");
-            challenges.append(spec.name);
-        }
-        StringBuilder out = new StringBuilder();
-        if (rules.length() > 0) out.append("Unlocks ").append(rules);
-        if (challenges.length() > 0) {
-            if (out.length() > 0) out.append(".  ");
-            out.append("Goal of ").append(challenges);
-        }
-        return out.toString();
+    private static RuleSpec firstRuleOpenedBy(Feats.Feat feat) {
+        for (RuleSpec rule : RuleCatalog.all()) if (feat.id.equals(rule.featId())) return rule;
+        return null;
     }
 
     private void refreshDetail() {
-        if (hovered == null || hovered.kind == Kind.HEADING) {
+        Tile tile = shown;
+        challengeAction.visible = false;
+        if (tile == null) {
             detailTitle.setText("");
-            detailBody.setText(tab == TAB_RULES
-                    ? "House rules for this voyage. The Sector will hold you to them."
-                    : "Challenges ask you to keep hard rules on until you reach a goal. Finishing one opens new rules in every campaign.");
-            detailBody.setColor(DIM);
-            detailFlavor.setText("");
+            detailKind.setText("");
+            setBody(tab == TAB_RULES ? "Point at a rule to see what it does."
+                    : tab == TAB_CHALLENGES ? "Point at a challenge to see its rules and goal."
+                    : "Point at a feat to see what it opens.", DIM);
+            setFlavor("");
             return;
         }
-        if (hovered.kind == Kind.PAIR) pairDetail(hovered);
-        else if (hovered.kind == Kind.CHALLENGE) challengeDetail(hovered.challenge);
-        else featDetail(hovered.feat);
+        if (tile.rule != null) ruleDetail(tile.rule);
+        else if (tile.challenge != null) challengeDetail(tile.challenge);
+        else featDetail(tile.feat);
+
+        ChallengeSpec selected = selectedChallenge != null ? selectedChallenge.challenge : null;
+        if (tab == TAB_CHALLENGES && selected != null && !Challenges.isComplete(selected)) {
+            boolean active = Challenges.isActive(selected);
+            challengeAction.visible = true;
+            challengeAction.enabled = active || Challenges.whyNot(selected) == null;
+            challengeAction.checked = active;
+            challengeAction.label.setText((active ? "Give up " : "Take on ") + selected.name);
+            challengeAction.label.setColor(challengeAction.enabled ? Color.WHITE : DIM.darker());
+        }
+        if (!challengeAction.visible) challengeAction.label.setText("");
     }
 
-    private void pairDetail(Row row) {
-        RuleSpec active = activeSide(row);
-        RuleSpec first = row.hard != null ? row.hard : row.helpful;
-        String title = row.hard != null && row.helpful != null ? row.hard.name + "  |  " + row.helpful.name
-                : first.name + (first.hard ? "  (hard)" : "  (helpful)");
-        detailTitle.setText(title);
-        detailTitle.setColor(active != null ? typeColor(active) : GOLD);
-        StringBuilder body = new StringBuilder();
-        for (RuleSpec side : new RuleSpec[] {row.hard, row.helpful}) {
-            if (side == null) continue;
-            if (body.length() > 0) body.append('\n');
-            body.append(side.hard ? "Hard: " : "Helpful: ").append(side.describeAllLevels())
-                    .append("  Points ").append(side.pointsText()).append('.');
-            if (!usable(side) && !side.unlockHint.isEmpty()) body.append("  ").append(side.unlockHint);
+    private void setBody(String text, Color color) {
+        detailBody.setText(text);
+        detailBody.setColor(color);
+        detailBody.autoSizeToWidth(SIDE_W - 24f);
+    }
+
+    /** The flavor line sits at the bottom of the detail box, however many lines it wraps to. */
+    private void setFlavor(String text) {
+        detailFlavor.setText(text);
+        detailFlavor.autoSizeToWidth(SIDE_W - 24f);
+        float h = detailFlavor.getPosition().getHeight();
+        detailFlavor.getPosition().inTL(sideX + 12f, detailBottom - 10f - h);
+    }
+
+    private void ruleDetail(RuleSpec rule) {
+        int level = RuleState.level(rule);
+        detailTitle.setText(rule.name);
+        detailTitle.setColor(usable(rule) ? typeColor(rule) : DIM);
+        String kind = rule.hard ? "Hard rule" : "Helpful rule";
+        if (!usable(rule)) kind += ", locked";
+        else if (level > 0) kind += ", level " + RuleSpec.roman(level) + (rule.levels > 1 ? " of " + RuleSpec.roman(rule.levels) : "");
+        else kind += ", off";
+        detailKind.setText(kind);
+        detailKind.setColor(DIM);
+
+        StringBuilder body = new StringBuilder(rule.describeAllLevels());
+        if (level > 0 && rule.levels > 1) body.append("\n\nNow: ").append(rule.describe(level));
+        body.append("\n\nPoints: ").append(rule.pointsText());
+        RuleSpec mirror = mirror(rule);
+        if (mirror != null) body.append("\nTurns off ").append(mirror.name).append('.');
+        if (!usable(rule) && !rule.unlockHint.isEmpty()) body.append("\n\n").append(rule.unlockHint);
+        for (ChallengeSpec spec : Challenges.activeRequiring(rule)) {
+            body.append("\n\nHeld at ").append(RuleSpec.roman(spec.levelFor(rule))).append(" by ").append(spec.name)
+                    .append(". Lowering it ends the challenge.");
         }
-        for (RuleSpec side : new RuleSpec[] {row.hard, row.helpful}) {
-            if (side == null) continue;
-            for (ChallengeSpec spec : Challenges.activeRequiring(side)) {
-                body.append("\n* ").append(side.name).append(" is held by the challenge ").append(spec.name).append(" at ")
-                        .append(RuleSpec.roman(spec.levelFor(side))).append(" or higher. Lowering it ends the challenge.");
-            }
-        }
-        detailBody.setText(body.toString());
-        detailBody.setColor(TEXT);
-        detailFlavor.setText((active != null ? active : first).flavor);
+        setBody(body.toString(), TEXT);
+        setFlavor(rule.flavor);
     }
 
     private void challengeDetail(ChallengeSpec spec) {
-        detailTitle.setText(spec.name + "  (challenge)");
+        detailTitle.setText(spec.name);
         detailTitle.setColor(GOLD);
+        String state = Challenges.isComplete(spec) ? "Challenge, done"
+                : Challenges.isActive(spec) ? "Challenge, under way: " + Challenges.progressText(spec) : "Challenge";
+        detailKind.setText(state);
+        detailKind.setColor(Challenges.isComplete(spec) ? RuleBookIntel.helpfulColor() : DIM);
+
         StringBuilder body = new StringBuilder(spec.description);
-        body.append("\nNeeds ").append(spec.requirementsText()).append(".  ").append(spec.limitText()).append('.');
+        body.append("\n\nRules: ").append(spec.requirementsText()).append('.');
         body.append("\nGoal: ").append(spec.goalText()).append('.');
-        if (Challenges.isActive(spec)) body.append("  Progress: ").append(Challenges.progressText(spec)).append('.');
-        for (RuleSpec reward : Challenges.rewards(spec)) {
-            body.append("\nReward: ").append(reward.name).append(" - ").append(reward.describe(1));
-            if (reward.levels > 1) body.append(" (level I)");
-        }
-        detailBody.setText(body.toString());
-        detailBody.setColor(TEXT);
-        detailFlavor.setText(spec.flavor);
+        body.append('\n').append(spec.limitText()).append('.');
+        for (RuleSpec reward : Challenges.rewards(spec)) body.append("\nReward: ").append(reward.name).append('.');
+        String why = Challenges.whyNot(spec);
+        if (why != null && !Challenges.isActive(spec) && !Challenges.isComplete(spec)) body.append("\n\n").append(why).append('.');
+        setBody(body.toString(), TEXT);
+        setFlavor(spec.flavor);
     }
 
     private void featDetail(Feats.Feat feat) {
         boolean done = Unlocks.hasFeat(feat.id);
-        detailTitle.setText(feat.name + (done ? "  (done)" : "  (feat)"));
+        detailTitle.setText(feat.name);
         detailTitle.setColor(done ? RuleBookIntel.helpfulColor() : GOLD);
-        String uses = featUses(feat);
-        String body = (uses.isEmpty() ? "Recorded for every campaign once done." : uses + ".")
-                + (feat.repeatable ? "\nCounts every battle it happens in, so challenges can ask for it more than once." : "");
-        detailBody.setText(body);
-        detailBody.setColor(TEXT);
-        detailFlavor.setText("");
+        detailKind.setText(done ? "Feat, done" : "Feat");
+        detailKind.setColor(done ? RuleBookIntel.helpfulColor() : DIM);
+        StringBuilder body = new StringBuilder();
+        for (RuleSpec rule : RuleCatalog.all()) {
+            if (feat.id.equals(rule.featId())) body.append(body.length() > 0 ? "\n" : "").append("Opens ").append(rule.name).append('.');
+        }
+        for (ChallengeSpec spec : Challenges.all()) {
+            if (spec.goalFeat == feat) body.append(body.length() > 0 ? "\n" : "").append("Goal of ").append(spec.name).append('.');
+        }
+        if (feat.repeatable && Global.getSector() != null) {
+            body.append(body.length() > 0 ? "\n\n" : "").append("This campaign: ").append(feat.count()).append('.');
+        }
+        setBody(body.toString(), TEXT);
+        setFlavor("");
     }
 
     // ---- input ----
@@ -542,37 +583,49 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         if (action.startsWith("tab:")) {
             int next = Integer.parseInt(action.substring(4));
             if (next != tab) {
-                tab = next;
-                buildList();
                 click();
-                refresh();
+                showTab(next);
             }
             return;
         }
-        if (action.startsWith("pair:")) {
-            String[] parts = action.split(":");
-            Row row = rows.get(Integer.parseInt(parts[1]));
-            int level = Integer.parseInt(parts[3]);
-            switch (parts[2]) {
-                case "hard":
-                    RuleManager.setLevel(row.hard, level); // switches the helpful mirror off
-                    break;
-                case "helpful":
-                    RuleManager.setLevel(row.helpful, level);
-                    break;
-                default:
-                    if (row.hard != null) RuleManager.setLevel(row.hard, 0);
-                    if (row.helpful != null) RuleManager.setLevel(row.helpful, 0);
-                    break;
+        if (action.startsWith("clear:")) {
+            boolean hard = action.endsWith("hard");
+            for (RuleSpec rule : RuleCatalog.ofType(hard)) {
+                // Rules a running challenge holds stay; lowering them would end the challenge.
+                if (RuleState.level(rule) > 0 && Challenges.activeRequiring(rule).isEmpty()) RuleManager.setLevel(rule, 0);
             }
             click();
             refresh();
             return;
         }
-        if (action.startsWith("challenge:")) {
-            Row row = rows.get(Integer.parseInt(action.substring(10)));
-            if (Challenges.isActive(row.challenge)) Challenges.giveUp(row.challenge);
-            else Challenges.start(row.challenge);
+        if (action.equals("challenge") && selectedChallenge != null) {
+            ChallengeSpec spec = selectedChallenge.challenge;
+            if (Challenges.isActive(spec)) Challenges.giveUp(spec);
+            else Challenges.start(spec);
+            click();
+            refresh();
+        }
+    }
+
+    private void clickTile(Tile tile, boolean right) {
+        if (tile.rule != null) {
+            RuleSpec rule = tile.rule;
+            if (!usable(rule)) return;
+            int level = RuleState.level(rule);
+            int next;
+            if (right) next = Math.max(0, level - 1);
+            else if (level < rule.levels) next = level + 1;
+            // Past the top a click turns the rule off, except when a challenge holds it.
+            else next = Challenges.activeRequiring(rule).isEmpty() ? 0 : level;
+            if (next == level) return;
+            RuleManager.setLevel(rule, next); // switches the mirror off
+            click();
+            refresh();
+            return;
+        }
+        if (tile.challenge != null && !right) {
+            selectedChallenge = tile;
+            shown = tile;
             click();
             refresh();
         }
@@ -588,54 +641,61 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         if (callbacks != null) callbacks.dismissDialog();
     }
 
-    /** Reads where the scrolled list content sits now, in this panel's top-down coordinates. */
-    private void updateContentTop() {
-        if (position == null || content == null) return;
-        PositionAPI p = content.getPosition();
-        if (p == null) return;
-        contentTop = (position.getY() + PANEL_H) - (p.getY() + p.getHeight());
+    /** Reads where each visible grid's scrolled content sits now, in this panel's top-down coordinates. */
+    private void updateGrids() {
+        if (position == null) return;
+        for (Grid grid : grids) {
+            if (grid.tab != tab || grid.content == null) continue;
+            PositionAPI p = grid.content.getPosition();
+            if (p == null) continue;
+            grid.contentLeft = p.getX() - position.getX();
+            grid.contentTop = (position.getY() + panelH) - (p.getY() + p.getHeight());
+        }
     }
 
-    private boolean inList(float my) {
-        return my >= LIST_TOP && my <= LIST_TOP + LIST_H;
+    private static boolean inBox(float mx, float my, float x, float y, float w, float h) {
+        return mx >= x && mx <= x + w && my >= y && my <= y + h;
     }
 
-    private float screenX(Btn b) {
-        return b.inList ? LIST_X + b.x : b.x;
+    private boolean buttonShown(Btn b) {
+        return b.visible && (b.tab < 0 || b.tab == tab);
     }
 
-    private float screenY(Btn b) {
-        return b.inList ? contentTop + b.y : b.y;
-    }
-
-    private boolean contains(Btn b, float mx, float my) {
-        if (!b.visible) return false;
-        if (b.inList && !inList(my)) return false;
-        float x = screenX(b), y = screenY(b);
-        return mx >= x && mx <= x + b.w && my >= y && my <= y + b.h;
-    }
-
-    private void pointer(float mx, float my, boolean down) {
-        boolean click = down && !wasMouseDown;
-        wasMouseDown = down;
-        for (Btn b : buttons) b.hover = b.enabled && contains(b, mx, my);
-
-        Row over = null;
-        if (mx >= LIST_X && mx <= LIST_X + LIST_W && inList(my)) {
-            for (Row row : rows) {
-                float top = contentTop + row.y;
-                if (my >= top && my < top + row.h) over = row;
+    private Tile tileAt(float mx, float my) {
+        for (Grid grid : grids) {
+            if (grid.tab != tab || !inBox(mx, my, grid.x, grid.y, grid.w - SCROLLBAR_W, grid.h)) continue;
+            for (Tile tile : grid.tiles) {
+                if (inBox(mx, my, grid.contentLeft + tile.x, grid.contentTop + tile.y, TILE_W, TILE_H)) return tile;
             }
         }
+        return null;
+    }
+
+    private void pointer(float mx, float my, boolean leftDown, boolean rightDown) {
+        boolean left = leftDown && !wasLeftDown, right = rightDown && !wasRightDown;
+        wasLeftDown = leftDown;
+        wasRightDown = rightDown;
+        for (Btn b : buttons) b.hover = buttonShown(b) && b.enabled && inBox(mx, my, b.x, b.y, b.w, b.h);
+
+        Tile over = tileAt(mx, my);
         if (over != hovered) {
             hovered = over;
-            refreshDetail();
+            Tile next = over != null ? over : tab == TAB_CHALLENGES ? selectedChallenge : shown;
+            if (next != shown) {
+                shown = next;
+                refreshDetail();
+            }
         }
 
-        if (!click || dismissed) return;
+        if (dismissed || !(left || right)) return;
+        if (over != null) {
+            clickTile(over, right);
+            return;
+        }
+        if (!left) return;
         for (Btn b : new ArrayList<>(buttons)) {
-            if (contains(b, mx, my)) {
-                if (b.enabled) act(b.action);
+            if (b.hover) {
+                act(b.action);
                 return;
             }
         }
@@ -643,12 +703,12 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
 
     @Override
     public void advance(float amount) {
-        updateContentTop();
+        updateGrids();
         if (dismissed || position == null || !Mouse.isCreated()) return;
         float scale = Global.getSettings().getScreenScaleMult();
         if (scale <= 0f) return;
-        pointer(Mouse.getX() / scale - position.getX(), position.getY() + PANEL_H - Mouse.getY() / scale,
-                Mouse.isButtonDown(0));
+        pointer(Mouse.getX() / scale - position.getX(), position.getY() + panelH - Mouse.getY() / scale,
+                Mouse.isButtonDown(0), Mouse.isButtonDown(1));
     }
 
     @Override
@@ -675,17 +735,43 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
     }
 
     private float y(float topDown) {
-        return position.getY() + PANEL_H - topDown;
+        return position.getY() + panelH - topDown;
     }
 
     private void rect(float left, float top, float w, float h, Color c, float alpha) {
         GLDraw.quad(x(left), y(top + h), w, h, c, alpha);
     }
 
+    private void frame(float left, float top, float w, float h, Color c, float thickness, float alpha) {
+        GLDraw.frame(x(left), y(top + h), w, h, c, thickness, alpha);
+    }
+
+    private SpriteAPI sprite(String path) {
+        if (path == null) return null;
+        SpriteAPI s = sprites.get(path);
+        if (s == null) {
+            s = Global.getSettings().getSprite(path);
+            sprites.put(path, s);
+        }
+        return s;
+    }
+
+    private void drawIcon(String path, float left, float top, float size, Color tint, float alpha) {
+        SpriteAPI s = sprite(path);
+        if (s == null || s.getTextureId() == 0) return;
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        s.setSize(size, size);
+        s.setColor(tint);
+        s.setAlphaMult(alpha);
+        s.render(x(left), y(top + size));
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    }
+
     @Override
     public void renderBelow(float alpha) {
         if (position == null) return;
-        updateContentTop();
+        updateGrids();
         GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_CURRENT_BIT
                 | GL11.GL_TEXTURE_BIT | GL11.GL_LINE_BIT | GL11.GL_SCISSOR_BIT);
         try {
@@ -693,73 +779,122 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            rect(0f, 0f, PANEL_W, PANEL_H, BG, alpha);
-            GLDraw.frame(x(0f), y(PANEL_H), PANEL_W, PANEL_H, GOLD, 2f, alpha * 0.6f);
+            rect(0f, 0f, panelW, panelH, BG, alpha);
+            frame(0f, 0f, panelW, panelH, GOLD, 2f, alpha * 0.6f);
+
+            // Side panel.
+            rect(sideX, PAD, SIDE_W, panelH - PAD * 2f, PANEL, alpha);
+            frame(sideX, PAD, SIDE_W, panelH - PAD * 2f, DIM, 1f, alpha * 0.3f);
             drawMeter(alpha);
+            rect(sideX + 8f, detailTop, SIDE_W - 16f, detailBottom - detailTop, BG, alpha * 0.6f);
+            frame(sideX + 8f, detailTop, SIDE_W - 16f, detailBottom - detailTop, DIM, 1f, alpha * 0.25f);
 
-            rect(LIST_X, LIST_TOP, LIST_W, LIST_H, PANEL, alpha);
-            GLDraw.frame(x(LIST_X), y(LIST_TOP + LIST_H), LIST_W, LIST_H, DIM, 1f, alpha * 0.3f);
+            for (Grid grid : grids) if (grid.tab == tab) drawGrid(grid, alpha);
+            for (Btn b : buttons) if (buttonShown(b)) drawButton(b, alpha);
 
-            // Everything in the list is clipped to the list's box, like its labels.
-            float scale = Global.getSettings().getScreenScaleMult();
-            GL11.glEnable(GL11.GL_SCISSOR_TEST);
-            GL11.glScissor((int) (x(LIST_X) * scale), (int) (y(LIST_TOP + LIST_H) * scale),
-                    (int) Math.ceil(LIST_W * scale), (int) Math.ceil(LIST_H * scale));
-            for (Row row : rows) {
-                float top = contentTop + row.y;
-                if (top + row.h < LIST_TOP || top > LIST_TOP + LIST_H) continue;
-                drawRow(row, top, alpha);
+            if (shown != null) {
+                Color tint = shown.rule != null && !usable(shown.rule) ? DIM : Color.WHITE;
+                rect(sideX + 12f, detailTop + 8f, DETAIL_ICON, DETAIL_ICON, TILE_OFF, alpha);
+                drawIcon(shown.iconPath, sideX + 12f, detailTop + 8f, DETAIL_ICON, tint, alpha);
             }
-            for (Btn b : buttons) if (b.inList) drawButton(b, alpha);
-            GL11.glDisable(GL11.GL_SCISSOR_TEST);
-
-            rect(20f, DETAIL_TOP, PANEL_W - 40f, DETAIL_H, PANEL, alpha);
-            GLDraw.frame(x(20f), y(DETAIL_TOP + DETAIL_H), PANEL_W - 40f, DETAIL_H, DIM, 1f, alpha * 0.3f);
-
-            for (Btn b : buttons) if (!b.inList) drawButton(b, alpha);
         } finally {
             GL11.glPopAttrib();
         }
     }
 
-    private void drawRow(Row row, float top, float alpha) {
-        if (row.kind == Kind.HEADING) {
-            rect(LIST_X + 10f, top + row.h - 4f, LIST_W - 40f, 1f, GOLD, alpha * 0.35f);
-            return;
+    private void drawGrid(Grid grid, float alpha) {
+        // Header bar above the grid.
+        rect(grid.x, grid.y - HEADER_H, grid.w, HEADER_H - 2f, PANEL, alpha);
+        rect(grid.x, grid.y - 3f, grid.w, 1f, GOLD, alpha * 0.3f);
+        rect(grid.x, grid.y, grid.w, grid.h, PANEL, alpha * 0.6f);
+
+        float scale = Global.getSettings().getScreenScaleMult();
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        GL11.glScissor((int) (x(grid.x) * scale), (int) (y(grid.y + grid.h) * scale),
+                (int) Math.ceil(grid.w * scale), (int) Math.ceil(grid.h * scale));
+        for (Tile tile : grid.tiles) {
+            float left = grid.contentLeft + tile.x, top = grid.contentTop + tile.y;
+            if (top + TILE_H < grid.y || top > grid.y + grid.h) continue;
+            drawTile(tile, left, top, alpha);
         }
-        if (row.pairStart) rect(LIST_X + 10f, top - PAIR_GAP / 2f - 0.5f, LIST_W - 40f, 1f, DIM, alpha * 0.25f);
-        if (row == hovered) rect(LIST_X + 4f, top, LIST_W - 28f, row.h, new Color(40, 48, 62), alpha);
-        Color bar;
-        if (row.kind == Kind.PAIR) {
-            RuleSpec active = activeSide(row);
-            bar = active != null ? typeColor(active) : DIM;
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+    }
+
+    private void drawTile(Tile tile, float left, float top, float alpha) {
+        Color accent, fill;
+        float iconAlpha;
+        Color tint = Color.WHITE;
+        boolean gold = false;
+        int level = 0, levels = 0;
+        if (tile.rule != null) {
+            RuleSpec rule = tile.rule;
+            level = RuleState.level(rule);
+            levels = rule.levels;
+            if (!usable(rule)) {
+                accent = DIM.darker();
+                fill = TILE_LOCKED;
+                iconAlpha = 0.2f;
+                tint = DIM;
+                levels = 0;
+            } else if (level > 0) {
+                accent = typeColor(rule);
+                fill = GLDraw.darken(accent, 0.72f);
+                iconAlpha = 1f;
+            } else {
+                accent = DIM;
+                fill = TILE_OFF;
+                iconAlpha = 0.5f;
+                tint = new Color(200, 200, 200);
+            }
+            gold = !Challenges.activeRequiring(rule).isEmpty();
+        } else if (tile.challenge != null) {
+            ChallengeSpec spec = tile.challenge;
+            boolean complete = Challenges.isComplete(spec), active = Challenges.isActive(spec);
+            accent = complete ? RuleBookIntel.helpfulColor() : active ? GOLD : DIM;
+            fill = complete ? GLDraw.darken(RuleBookIntel.helpfulColor(), 0.75f)
+                    : active ? GLDraw.darken(GOLD, 0.75f) : TILE_OFF;
+            iconAlpha = complete || active ? 1f : 0.6f;
+            gold = tile == selectedChallenge;
+        } else {
+            boolean done = Unlocks.hasFeat(tile.feat.id);
+            accent = done ? RuleBookIntel.helpfulColor() : DIM;
+            fill = done ? GLDraw.darken(accent, 0.75f) : TILE_OFF;
+            iconAlpha = done ? 1f : 0.35f;
         }
-        else if (row.kind == Kind.CHALLENGE) bar = Challenges.isComplete(row.challenge) ? RuleBookIntel.helpfulColor() : GOLD;
-        else bar = Unlocks.hasFeat(row.feat.id) ? RuleBookIntel.helpfulColor() : DIM;
-        rect(LIST_X + 4f, top + 4f, 3f, row.h - 8f, bar, alpha * 0.7f);
-        if (row.kind == Kind.CHALLENGE) rect(LIST_X + 10f, top + row.h - 1f, LIST_W - 40f, 1f, DIM, alpha * 0.15f);
+
+        rect(left, top, TILE_W, TILE_H, fill, alpha);
+        boolean hover = tile == hovered;
+        Color border = gold ? GOLD : hover ? GLDraw.brighten(accent, 0.3f) : accent;
+        frame(left, top, TILE_W, TILE_H, border, gold || hover ? 2f : 1f, alpha * (hover || gold ? 1f : 0.55f));
+
+        drawIcon(tile.iconPath, left + (TILE_W - ICON) / 2f, top + 36f, ICON, tint, alpha * iconAlpha);
+
+        if (levels > 0) {
+            float total = levels * PIP_W + (levels - 1) * PIP_GAP;
+            float px = left + (TILE_W - total) / 2f, py = top + TILE_H - 12f;
+            for (int l = 1; l <= levels; l++) {
+                rect(px, py, PIP_W, PIP_H, l <= level ? accent : PIP_OFF, alpha);
+                px += PIP_W + PIP_GAP;
+            }
+        }
     }
 
     private void drawButton(Btn b, float alpha) {
-        if (!b.visible) return;
-        float bx = screenX(b), by = screenY(b);
-        if (b.inList && (by + b.h < LIST_TOP || by > LIST_TOP + LIST_H)) return;
         Color fill = !b.enabled ? new Color(22, 26, 33)
                 : b.checked ? new Color(98, 76, 38)
                 : b.hover ? new Color(60, 67, 78) : new Color(32, 40, 50);
-        GLDraw.bevelledPanel(x(bx), y(by + b.h), b.w, b.h, fill, 2f, alpha);
-        GLDraw.frame(x(bx), y(by + b.h), b.w, b.h, b.checked ? GOLD : DIM, 1f, alpha * (b.enabled ? 0.65f : 0.2f));
+        GLDraw.bevelledPanel(x(b.x), y(b.y + b.h), b.w, b.h, fill, 2f, alpha);
+        frame(b.x, b.y, b.w, b.h, b.checked ? GOLD : DIM, 1f, alpha * (b.enabled ? 0.65f : 0.2f));
     }
 
     private void drawMeter(float alpha) {
         int net = Balance.net();
-        float half = METER_W / 2f;
-        float center = METER_X + half;
-        rect(METER_X, METER_Y, METER_W, METER_H, new Color(30, 36, 46), alpha);
+        float half = meterW / 2f, center = meterX + half, h = 10f;
+        rect(meterX, meterY, meterW, h, new Color(30, 36, 46), alpha);
         float fraction = Math.min(1f, Math.abs(net) / (float) METER_RANGE);
-        if (net > 0) rect(center, METER_Y, half * fraction, METER_H, RuleBookIntel.helpfulColor(), alpha * 0.85f);
-        if (net < 0) rect(center - half * fraction, METER_Y, half * fraction, METER_H, RuleBookIntel.hardColor(), alpha * 0.85f);
-        rect(center - 1f, METER_Y - 4f, 2f, METER_H + 8f, TEXT, alpha);
-        GLDraw.frame(x(METER_X), y(METER_Y + METER_H), METER_W, METER_H, DIM, 1f, alpha * 0.5f);
+        if (net > 0) rect(center, meterY, half * fraction, h, RuleBookIntel.helpfulColor(), alpha * 0.85f);
+        if (net < 0) rect(center - half * fraction, meterY, half * fraction, h, RuleBookIntel.hardColor(), alpha * 0.85f);
+        rect(center - 1f, meterY - 4f, 2f, h + 8f, TEXT, alpha);
+        frame(meterX, meterY, meterW, h, DIM, 1f, alpha * 0.5f);
     }
 }

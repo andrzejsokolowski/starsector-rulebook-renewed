@@ -1,3 +1,9 @@
+Version 0.5.0 (2026-11-10)
+- New Rule Book screen: rules are tiles in two grids, helpful rules on top and hard rules below, with a side panel for the balance, a summary and the details of the tile under the mouse.
+- Left click on a tile raises its level, right click lowers it. Pips on the tile show the level.
+- Challenges and feats have their own tabs, also as tiles. Click a challenge, then take it on from the side panel.
+- Fixed: after switching tabs, the old list stayed on screen under the new one.
+
 Version 0.4.1 (2026-11-10)
 - Challenges no longer pay New Game Plus - Renewed career points. They only unlock Rule Book rules.
 
