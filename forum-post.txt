@@ -312,6 +312,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.9.2[/b]
+[list][li]Fixed: the game disabled Rule Book - Renewed at start with "unmet requirements" even with Achievements - Renewed installed. The launcher could never match the required Achievements version.[/li][/list]
 [b]0.9.1[/b]
 [list][li]The golden rules HSS Phoenix (Onslaught only) and TTS Invincible (Paragon only) are now one golden rule, Flagship, that works on any flagship: hull, armor, flux, weapon damage and rate of fire +20%, speed and maneuverability +30%, better shields, +10% maximum combat readiness.[/li][/list]
 [b]0.9.0[/b]

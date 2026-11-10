@@ -43,6 +43,9 @@ lines, no explaining paragraphs (Andrzej, 2026-11-10).
 
 ## Build
 
+Never give a dependency on a 0.x mod a version in `mod_info.json`: the 0.98a launcher then never counts it as
+met and disables this mod (0.9.1 shipped like that). `checkVersionMetadata` refuses it.
+
 `./gradlew releaseZip` compiles against the game, LunaLib, Achievements - Renewed (its jar in the folder next
 door) and Peerless Skills (`gradle.properties` names the
 game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.

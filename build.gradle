@@ -110,6 +110,15 @@ tasks.register('checkVersionMetadata') {
             throw new GradleException('The supported Starsector versions do not match')
         if (registrationFile.readLines('UTF-8').findAll { !it.trim().isEmpty() } != ['version file', 'rulebook_renewed.version'])
             throw new GradleException('Version Checker must register rulebook_renewed.version')
+        // The launcher reads a text version that starts with 0 as major "0.<minor>" (so "0.2.0" has major "0.2"),
+        // but a {major, minor, patch} object as major "0", and compares majors as text: a versioned dependency
+        // on a 0.x mod is never met. Checked in the 0.98a launcher (ModManager$VersionInfo.setFromString).
+        info.dependencies.each { dep ->
+            def v = dep.version
+            def major = v instanceof Map ? v.major?.toString() : v?.toString()?.tokenize('.')?.getAt(0)
+            if (v != null && major == '0')
+                throw new GradleException("Dependency ${dep.id}: the launcher cannot check a version that starts with 0; leave the version out")
+        }
         logger.lifecycle("Update metadata verified for Rule Book - Renewed ${info.version}")
     }
 }
