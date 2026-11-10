@@ -275,23 +275,4 @@ public final class Feats {
         for (Feat feat : FEATS) if (feat.id.equals(id)) return feat;
         return null;
     }
-
-    /** Records every feat done in this save, and names the rules that just opened up. */
-    public static void check() {
-        for (Feat feat : all()) {
-            if (feat.count() <= 0 || !Unlocks.addFeat(feat.id)) continue;
-            Feats.message("Feat done: " + feat.name + ".");
-            for (RuleSpec rule : RuleCatalog.all()) {
-                if (feat.id.equals(rule.featId())) message("A new page in the Rule Book: " + rule.name);
-            }
-        }
-    }
-
-    static void message(String text) {
-        try {
-            Global.getSector().getCampaignUI().addMessage(text, Misc.getHighlightColor());
-        } catch (Throwable ignored) {
-            // No campaign UI yet; the unlock is saved all the same.
-        }
-    }
 }

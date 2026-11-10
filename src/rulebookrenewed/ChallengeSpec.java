@@ -31,12 +31,10 @@ public final class ChallengeSpec {
     public final int helpfulLimit;
     /** Days to reach the goal after taking it on, or 0 for no time limit (a days goal never has one). */
     public final int deadlineDays;
-    public final String description;
-    public final String flavor;
     public final float order;
 
     ChallengeSpec(String id, String name, List<Requirement> requirements, Feats.Feat goalFeat, int goalAmount,
-                  int helpfulLimit, int deadlineDays, String description, String flavor, float order) {
+                  int helpfulLimit, int deadlineDays, float order) {
         this.id = id;
         this.name = name;
         this.requirements = Collections.unmodifiableList(requirements);
@@ -44,8 +42,6 @@ public final class ChallengeSpec {
         this.goalAmount = goalAmount;
         this.helpfulLimit = helpfulLimit;
         this.deadlineDays = goalFeat == null ? 0 : Math.max(0, deadlineDays);
-        this.description = description;
-        this.flavor = flavor;
         this.order = order;
     }
 
@@ -79,8 +75,8 @@ public final class ChallengeSpec {
     }
 
     public String limitText() {
-        if (helpfulLimit < 0) return "Helpful rules allowed";
-        if (helpfulLimit == 0) return "No helpful rules";
-        return "Helpful rules up to " + helpfulLimit + " points";
+        if (helpfulLimit < 0) return "";
+        if (helpfulLimit == 0) return "No positive rules";
+        return "Positive rules up to " + helpfulLimit + " points";
     }
 }

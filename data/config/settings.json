@@ -5,4 +5,20 @@
 	"plugins": {
 		"ruleBookRenewedCombat": "rulebookrenewed.RuleCombatPlugin",
 	},
+	# Picker art from Unofficial New Game Plus (see CREDITS.txt).
+	"graphics": {
+		"rbr_fx": {
+			"frame": "graphics/rulebook/fx/frame.png",
+			"bg_corner": "graphics/rulebook/fx/bg_corner.png",
+			"bg_seamless": "graphics/rulebook/fx/bg_seamless.png",
+			"bg_seamless_ring0": "graphics/rulebook/fx/bg_seamless_ring0.png",
+			"bg_seamless_ring1": "graphics/rulebook/fx/bg_seamless_ring1.png",
+			"bg_seamless_ring2": "graphics/rulebook/fx/bg_seamless_ring2.png",
+		},
+		"rbr_icons": {
+			"positive": "graphics/rulebook/icons/positive_icon.png",
+			"negative": "graphics/rulebook/icons/negative_icon.png",
+			"unknown": "graphics/rulebook/rules/unknown.png",
+		},
+	},
 }

@@ -53,6 +53,6 @@ public final class RuleManager {
         }
         refresh(rule);
         Balance.publish();
-        if (old != level) Challenges.validate();
+        if (old != level) Challenges.check();
     }
 }

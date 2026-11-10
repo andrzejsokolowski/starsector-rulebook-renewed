@@ -33,8 +33,9 @@ public final class RuleBookModPlugin extends BaseModPlugin {
         Global.getSector().addTransientScript(new RuleBookScript());
         Global.getSector().addTransientListener(new RuleBattleListener());
         // Applies this save's rules and undoes the last save's (Ludd's Song changes a game-wide value).
+        Unlocks.migrate();
         RuleManager.refreshAll();
-        Feats.check();
+        achievementsrenewed.api.Achievements.check();
         Challenges.check();
     }
 }

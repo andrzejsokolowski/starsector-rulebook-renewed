@@ -1,6 +1,9 @@
 package rulebookrenewed;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,19 +18,27 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.util.Misc;
 
 /**
- * Challenges: a set of required rules plus a goal. Taking one on raises its rules to the required levels.
- * While it runs, lowering a required rule or going over its helpful-rule cap ends it. Reaching the goal
- * records the challenge in saves/common and opens its reward rules in every campaign.
+ * Challenges: hard rules to keep on, plus a goal. Nothing is "taken on": a challenge makes progress
+ * whenever its conditions hold (every required rule at its level or higher, and positive rules within
+ * the challenge's limit), whatever else the player does.
  *
- * The list is read once at startup from data/config/rulebook/challenges.csv, merged over all mods. A run
- * in progress is kept in the save: when it started, and the goal feat's count at that moment, so only
- * progress made during the challenge counts.
+ * Counted goals (battles won, fleets beaten) add up only what happens while the conditions hold; dropping
+ * the rules pauses the count. A goal with a deadline must be reached within that many days of its first
+ * counted win, or the count starts over. "Hold out" goals count unbroken days and start over when the
+ * conditions break. A one-time deed counts when it happens while the conditions hold; a state goal that
+ * was already true when the rules went on (five colonies, a million credits) counts after HOLD_DAYS days.
+ *
+ * State is kept per save. Completion is the feat challenge_<id>, which opens the reward rules.
  */
 public final class Challenges {
 
     private static final Logger LOG = Global.getLogger(Challenges.class);
     private static final String CSV = "data/config/rulebook/challenges.csv";
-    private static final String RUNS_KEY = "rbr_challengeRuns";
+    private static final String STATE_KEY = "rbr_challengeState";
+    /** Days the rules must stay on before a goal that was already true when they went on counts. */
+    public static final int HOLD_DAYS = 90;
+    /** Goal feats that describe a state that can be true before the rules go on (not a one-time deed). */
+    private static final Set<String> STATE_FEATS = new HashSet<>(Arrays.asList("colony", "colony6", "colonies5", "millionaire"));
     private static final Map<String, ChallengeSpec> CHALLENGES = new LinkedHashMap<>();
 
     private Challenges() {}
@@ -95,8 +106,7 @@ public final class Challenges {
         String orderText = str(row, "order");
         float order = orderText.isEmpty() ? 1000f : Float.parseFloat(orderText);
         return new ChallengeSpec(id, str(row, "name"), requirements, feat, Math.max(1, amount), limit,
-                intOr(str(row, "deadlineDays"), 0),
-                str(row, "description"), str(row, "flavor"), order);
+                intOr(str(row, "deadlineDays"), 0), order);
     }
 
     private static int intOr(String text, int fallback) {
@@ -113,172 +123,148 @@ public final class Challenges {
         return Collections.unmodifiableList(new ArrayList<>(CHALLENGES.values()));
     }
 
-    /** The rules this challenge unlocks (unlock column challenge:&lt;id&gt;). */
     public static List<RuleSpec> rewards(ChallengeSpec spec) {
         List<RuleSpec> out = new ArrayList<>();
         for (RuleSpec rule : RuleCatalog.all()) if (spec.featId().equals(rule.featId())) out.add(rule);
         return out;
     }
 
-    // ---- runs in this save ----
-
-    @SuppressWarnings("unchecked")
-    private static Map<String, Map<String, Object>> runs() {
-        Map<String, Object> data = Global.getSector().getPersistentData();
-        Object stored = data.get(RUNS_KEY);
-        if (!(stored instanceof Map)) {
-            stored = new HashMap<String, Map<String, Object>>();
-            data.put(RUNS_KEY, stored);
-        }
-        return (Map<String, Map<String, Object>>) stored;
+    /** Where rule levels are read from: the save, or the picker's working copy. */
+    public interface Levels {
+        int level(RuleSpec rule);
     }
 
-    public static boolean isActive(ChallengeSpec spec) {
-        return Global.getSector() != null && runs().containsKey(spec.id);
+    public static final Levels LIVE = RuleState::level;
+
+    public static int positivePoints(Levels levels) {
+        int sum = 0;
+        for (RuleSpec rule : RuleCatalog.all()) {
+            if (!rule.hard) sum += Math.max(0, rule.points(levels.level(rule)));
+        }
+        return sum;
+    }
+
+    /** True when every required rule is at its level or higher and positive rules are within the limit. */
+    public static boolean conditionsMet(ChallengeSpec spec, Levels levels) {
+        for (ChallengeSpec.Requirement r : spec.requirements) {
+            if (levels.level(r.rule) < r.level) return false;
+        }
+        return spec.helpfulLimit < 0 || positivePoints(levels) <= spec.helpfulLimit;
     }
 
     public static boolean isComplete(ChallengeSpec spec) {
         return Unlocks.hasFeat(spec.featId());
     }
 
-    /** Active challenges that need this rule, with the level each needs. */
-    public static List<ChallengeSpec> activeRequiring(RuleSpec rule) {
-        List<ChallengeSpec> out = new ArrayList<>();
-        if (Global.getSector() == null) return out;
-        for (ChallengeSpec spec : CHALLENGES.values()) {
-            if (spec.levelFor(rule) > 0 && isActive(spec)) out.add(spec);
-        }
-        return out;
+    /** True when the goal can no longer happen in this save: a one-time deed done before the rules were on. */
+    public static boolean spent(ChallengeSpec spec) {
+        if (Global.getSector() == null || spec.goalFeat == null || spec.goalFeat.repeatable) return false;
+        if (STATE_FEATS.contains(spec.goalFeat.id)) return false;
+        Map<String, Object> s = state(spec);
+        boolean met = Boolean.TRUE.equals(s.get("met"));
+        int base = met ? intOf(s.get("base"), 0) : spec.goalFeat.count();
+        return base >= spec.goalAmount;
     }
 
-    public static int helpfulPoints() {
-        int sum = 0;
-        for (RuleSpec rule : RuleCatalog.all()) {
-            if (!rule.hard) sum += Math.max(0, rule.points(RuleState.level(rule)));
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> state(ChallengeSpec spec) {
+        Map<String, Object> data = Global.getSector().getPersistentData();
+        Object stored = data.get(STATE_KEY);
+        if (!(stored instanceof Map)) {
+            stored = new HashMap<String, Map<String, Object>>();
+            data.put(STATE_KEY, stored);
         }
-        return sum;
+        Map<String, Map<String, Object>> all = (Map<String, Map<String, Object>>) stored;
+        Map<String, Object> s = all.get(spec.id);
+        if (s == null) {
+            s = new HashMap<>();
+            all.put(spec.id, s);
+        }
+        return s;
     }
 
-    /** Null when the challenge can be taken on now, otherwise why not. */
-    public static String whyNot(ChallengeSpec spec) {
-        if (isComplete(spec)) return "Completed";
-        if (isActive(spec)) return "Under way";
-        for (ChallengeSpec.Requirement r : spec.requirements) {
-            if (RuleState.level(r.rule) == 0 && !Unlocks.isUnlocked(r.rule)) return r.rule.name + " is still locked";
-        }
-        if (spec.goalFeat != null && !spec.goalFeat.repeatable && spec.goalFeat.count() > 0) {
-            return "Already done in this campaign";
-        }
-        if (spec.helpfulLimit >= 0) {
-            int helpful = helpfulPointsAfterStart(spec);
-            if (helpful > spec.helpfulLimit) {
-                return "Lower your helpful rules to " + spec.helpfulLimit + " points first (now " + helpful + ")";
-            }
-        }
-        return null;
+    private static int intOf(Object value, int fallback) {
+        return value instanceof Integer ? (Integer) value : fallback;
     }
 
-    /** Helpful points once the challenge's rules are raised; raising a required helpful rule counts too. */
-    private static int helpfulPointsAfterStart(ChallengeSpec spec) {
-        int sum = 0;
-        for (RuleSpec rule : RuleCatalog.all()) {
-            if (rule.hard) continue;
-            int level = Math.max(RuleState.level(rule), spec.levelFor(rule));
-            sum += Math.max(0, rule.points(level));
-        }
-        return sum;
+    private static float daysSince(Object timestamp) {
+        if (!(timestamp instanceof Long)) return 0f;
+        return Global.getSector().getClock().getElapsedDaysSince((Long) timestamp);
     }
 
-    public static void start(ChallengeSpec spec) {
-        if (whyNot(spec) != null) return;
-        for (ChallengeSpec.Requirement r : spec.requirements) {
-            if (RuleState.level(r.rule) < r.level) RuleManager.setLevel(r.rule, r.level);
-        }
-        Map<String, Object> run = new HashMap<>();
-        run.put("start", Global.getSector().getClock().getTimestamp());
-        run.put("base", spec.goalFeat == null ? 0 : spec.goalFeat.count());
-        runs().put(spec.id, run);
-        Feats.message("Challenge taken on: " + spec.name + ". " + spec.goalText() + ".");
-    }
-
-    public static void giveUp(ChallengeSpec spec) {
-        if (runs().remove(spec.id) != null) message("Challenge given up: " + spec.name);
-    }
-
-    /** Ends every active challenge whose rules no longer hold. Called after each change of rules. */
-    public static void validate() {
-        if (Global.getSector() == null) return;
-        for (ChallengeSpec spec : CHALLENGES.values()) {
-            if (!isActive(spec)) continue;
-            String broken = broken(spec);
-            if (broken == null) continue;
-            runs().remove(spec.id);
-            message("Challenge failed: " + spec.name + ". " + broken);
-        }
-    }
-
-    private static String broken(ChallengeSpec spec) {
-        for (ChallengeSpec.Requirement r : spec.requirements) {
-            if (RuleState.level(r.rule) < r.level) {
-                return r.rule.name + " went below " + RuleSpec.roman(r.level) + ".";
-            }
-        }
-        if (spec.helpfulLimit >= 0 && helpfulPoints() > spec.helpfulLimit) {
-            return "Helpful rules went over " + spec.helpfulLimit + " points.";
-        }
-        if (spec.deadlineDays > 0 && daysRunning(spec) > spec.deadlineDays && progress(spec) < spec.goalAmount) {
-            return "Time ran out.";
-        }
-        return null;
-    }
-
-    /** Days since the challenge was taken on. */
-    public static float daysRunning(ChallengeSpec spec) {
-        Map<String, Object> run = runs().get(spec.id);
-        Object start = run == null ? null : run.get("start");
-        if (!(start instanceof Long)) return 0f;
-        return Global.getSector().getClock().getElapsedDaysSince((Long) start);
-    }
-
-    /** Progress toward the goal in this save, 0 when the challenge is not running. */
     public static int progress(ChallengeSpec spec) {
-        if (!isActive(spec)) return 0;
-        Map<String, Object> run = runs().get(spec.id);
-        if (spec.goalFeat == null) return (int) daysRunning(spec);
-        Object base = run.get("base");
-        int baseCount = base instanceof Integer ? (Integer) base : 0;
-        return Math.max(0, spec.goalFeat.count() - baseCount);
+        if (Global.getSector() == null) return 0;
+        Map<String, Object> s = state(spec);
+        if (spec.goalFeat == null) return Boolean.TRUE.equals(s.get("met")) ? (int) daysSince(s.get("metSince")) : 0;
+        return intOf(s.get("progress"), 0);
     }
 
+    /** Short progress for a challenge that is not complete, e.g. "3 / 10, 42 days left". Empty when there is none. */
     public static String progressText(ChallengeSpec spec) {
+        if (Global.getSector() == null) return "";
+        Map<String, Object> s = state(spec);
         int done = Math.min(progress(spec), spec.goalAmount);
-        if (spec.goalFeat == null) return done + " of " + spec.goalAmount + " days";
-        String text = spec.goalAmount == 1 ? "Not yet" : done + " of " + spec.goalAmount;
-        if (spec.deadlineDays > 0) {
-            int left = Math.max(0, spec.deadlineDays - (int) daysRunning(spec));
+        if (spec.goalFeat == null) return done + " / " + spec.goalAmount + " days";
+        if (!spec.goalFeat.repeatable) {
+            if (spent(spec)) return "Already done in this campaign";
+            boolean held = Boolean.TRUE.equals(s.get("met")) && spec.goalFeat.count() >= spec.goalAmount;
+            return held ? Math.min(HOLD_DAYS, (int) daysSince(s.get("metSince"))) + " / " + HOLD_DAYS + " days" : "";
+        }
+        String text = done + " / " + spec.goalAmount;
+        if (spec.deadlineDays > 0 && done > 0) {
+            int left = Math.max(0, spec.deadlineDays - (int) daysSince(s.get("windowStart")));
             text += ", " + left + (left == 1 ? " day left" : " days left");
         }
         return text;
     }
 
-    /** Completes every active challenge whose goal is met. Called daily and after battles. */
+    /** Counts progress and completes challenges. Called daily, after battles and after every rule change. */
     public static void check() {
         if (Global.getSector() == null) return;
-        validate();
+        long now = Global.getSector().getClock().getTimestamp();
         for (ChallengeSpec spec : CHALLENGES.values()) {
-            if (!isActive(spec) || progress(spec) < spec.goalAmount) continue;
-            runs().remove(spec.id);
-            Unlocks.addFeat(spec.featId());
-            Feats.message("Challenge complete: " + spec.name + "!");
-            for (RuleSpec reward : rewards(spec)) Feats.message("A new page in the Rule Book: " + reward.name);
+            if (isComplete(spec)) continue;
+            try {
+                if (advance(spec, now)) Unlocks.addFeat(spec.featId());
+            } catch (Throwable t) {
+                LOG.error("Rule Book: challenge " + spec.id + " could not be checked", t);
+            }
         }
     }
 
-    private static void message(String text) {
-        try {
-            Global.getSector().getCampaignUI().addMessage(text, Misc.getNegativeHighlightColor());
-        } catch (Throwable ignored) {
-            // No campaign UI yet.
+    /** One evaluation step; true when the challenge is now complete. */
+    private static boolean advance(ChallengeSpec spec, long now) {
+        Map<String, Object> s = state(spec);
+        boolean before = Boolean.TRUE.equals(s.get("met"));
+        boolean met = conditionsMet(spec, LIVE);
+        s.put("met", met);
+        int count = spec.goalFeat == null ? 0 : spec.goalFeat.count();
+        if (met && !before) {
+            s.put("metSince", now);
+            s.put("base", count);
         }
+
+        if (spec.goalFeat == null) {
+            return met && daysSince(s.get("metSince")) >= spec.goalAmount;
+        }
+        if (spec.goalFeat.repeatable) {
+            // Whatever was won since the last look happened under the rules as they stood then.
+            int gained = Math.max(0, count - intOf(s.get("last"), count));
+            s.put("last", count);
+            int progress = intOf(s.get("progress"), 0);
+            if (before && gained > 0) {
+                if (progress == 0) s.put("windowStart", now);
+                progress += gained;
+            }
+            if (spec.deadlineDays > 0 && progress > 0 && progress < spec.goalAmount
+                    && daysSince(s.get("windowStart")) > spec.deadlineDays) {
+                progress = 0;
+            }
+            s.put("progress", progress);
+            return progress >= spec.goalAmount;
+        }
+        if (!met || count < spec.goalAmount) return false;
+        if (intOf(s.get("base"), count) < spec.goalAmount) return true;
+        return STATE_FEATS.contains(spec.goalFeat.id) && daysSince(s.get("metSince")) >= HOLD_DAYS;
     }
 }

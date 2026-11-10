@@ -22,6 +22,9 @@ dependencies {
     compileOnly fileTree(dir: "${starsectorPath}/starsector-core", include: '*.jar')
     // LunaLib supplies the settings page. Found wherever the mod happens to be installed.
     compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/LunaLib.jar')
+    // Achievements - Renewed keeps the feats. Built next door, or found among the installed mods.
+    compileOnly files('../Achievements - Renewed/jars/AchievementsRenewed.jar')
+    compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/AchievementsRenewed.jar')
     // Peerless Skills is optional. Only rulebookrenewed.compat.peerless may name its classes, and that
     // package is loaded only when the Peerless rule is in the catalog, which needs the mod enabled.
     compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/PeerlessSkills*.jar')
@@ -151,7 +154,7 @@ tasks.register('checkReleaseFiles') {
         def rulesFile = file('data/config/rulebook/rules.csv')
         def lines = rulesFile.readLines('UTF-8')
         def header = lines[0].split(',', -1) as List
-        ['id', 'name', 'type', 'levels', 'points', 'values', 'requiredMod', 'unlock', 'effect', 'icon', 'description', 'flavor', 'unlockHint', 'order', 'pair', 'section'].each {
+        ['id', 'name', 'type', 'levels', 'points', 'values', 'requiredMod', 'unlock', 'effect', 'icon', 'description', 'order', 'pair', 'section'].each {
             if (!header.contains(it)) problems << "rules.csv has no ${it} column"
         }
         def parseCsv = { String line ->
@@ -184,19 +187,17 @@ tasks.register('checkReleaseFiles') {
             if (levels < 1 || levels > 5) problems << "rules.csv ${row.id}: levels must be 1 to 5"
             if (row.points.split('\\|').size() != levels) problems << "rules.csv ${row.id}: points need ${levels} entries"
             if (row.values.split('\\|').size() != levels) problems << "rules.csv ${row.id}: values need ${levels} entries"
-            if (!(row.type in ['hard', 'helpful', 'neutral'])) problems << "rules.csv ${row.id}: type must be hard, helpful or neutral"
-            if (row.type == 'neutral' && row.points.split('\\|').any { it.trim() != '0' }) problems << "rules.csv ${row.id}: a neutral rule has 0 points"
+            if (!(row.type in ['positive', 'negative'])) problems << "rules.csv ${row.id}: type must be positive or negative"
             pairRows.computeIfAbsent(row.pair ?: row.id) { [] } << row
             def src = file("src/${row.effect.replace('.', '/')}.java")
             if (!src.isFile()) problems << "rules.csv ${row.id}: effect class ${row.effect} not found"
         }
 
-        // A pair is one hard and one helpful rule sharing a tile name; a neutral rule stands alone.
+        // A pair is one negative rule and its positive mirror.
         pairRows.each { key, members ->
             if (members.size() > 2) problems << "rules.csv pair ${key}: more than two rules"
             if (members.size() == 2) {
-                if (members*.type.sort() != ['hard', 'helpful']) problems << "rules.csv pair ${key}: needs one hard and one helpful rule"
-                if (!members[0].pairName || members[0].pairName != members[1].pairName) problems << "rules.csv pair ${key}: both rules need the same pairName"
+                if (members*.type.sort() != ['negative', 'positive']) problems << "rules.csv pair ${key}: needs one negative and one positive rule"
             }
         }
 
@@ -206,7 +207,7 @@ tasks.register('checkReleaseFiles') {
         (file('src/rulebookrenewed/Counters.java').getText('UTF-8') =~ /String [A-Z_]+ = "([a-z0-9_]+)"/).each { featIds << it[1] }
         def challengeLines = file('data/config/rulebook/challenges.csv').readLines('UTF-8')
         def challengeHeader = challengeLines[0].split(',', -1) as List
-        ['id', 'name', 'rules', 'goal', 'helpfulLimit', 'deadlineDays', 'description', 'flavor', 'order', 'requiredMod'].each {
+        ['id', 'name', 'rules', 'goal', 'helpfulLimit', 'deadlineDays', 'order', 'requiredMod'].each {
             if (!challengeHeader.contains(it)) problems << "challenges.csv has no ${it} column"
         }
         def challengeIds = [] as Set
@@ -230,6 +231,25 @@ tasks.register('checkReleaseFiles') {
             if (unlock.startsWith('feat:') && !(unlock.substring(5) in featIds)) problems << "rules.csv ${id}: unknown feat ${unlock}"
         }
 
+        // Every feat and challenge that unlocks a rule has its achievement row.
+        def achievementLines = file('data/config/achievements_renewed/achievements.csv').readLines('UTF-8')
+        def achievementHeader = parseCsv(achievementLines[0])
+        ['id', 'mod', 'name', 'hint', 'howTo', 'description', 'icon', 'category', 'goal', 'secret', 'reward', 'chain', 'step', 'after', 'script', 'requiredMod', 'order'].each {
+            if (!achievementHeader.contains(it)) problems << "achievements.csv has no ${it} column"
+        }
+        def achievementIds = [] as Set
+        achievementLines.drop(1).findAll { it.trim() }.each { line ->
+            def cells = parseCsv(line)
+            if (cells.size() != achievementHeader.size()) { problems << "achievements.csv row has ${cells.size()} cells, header has ${achievementHeader.size()}: ${line.take(40)}"; return }
+            def row = [achievementHeader, cells].transpose().collectEntries { it }
+            if (!achievementIds.add(row.id)) problems << "achievements.csv ${row.id}: id used twice"
+            if (!row.name || !row.hint || !row.howTo) problems << "achievements.csv ${row.id}: needs a name, a hint and a how-to"
+            if (row.script && !file("src/${row.script.replace('.', '/')}.java").isFile()) problems << "achievements.csv ${row.id}: script ${row.script} not found"
+            if (row.after && !achievementLines.any { it.startsWith(row.after + ',') }) problems << "achievements.csv ${row.id}: unknown after ${row.after}"
+        }
+        featIds.findAll { !it.startsWith('rbr_') }.each { if (!(("rbr_" + it).toString() in achievementIds)) problems << "achievements.csv has no row rbr_${it}" }
+        challengeIds.each { if (!(("rbr_challenge_" + it).toString() in achievementIds)) problems << "achievements.csv has no row rbr_challenge_${it}" }
+
         if (problems) throw new GradleException("Release files are not ready:\n  " + problems.join('\n  '))
         logger.lifecycle('Release files verified')
     }
@@ -244,7 +264,7 @@ tasks.named('check') {
 def releaseFiles = copySpec {
     from(projectDir) {
         include 'mod_info.json', 'rulebook_renewed.version', 'CREDITS.txt'
-        include 'data/**', 'graphics/**', 'jars/RuleBookRenewed.jar'
+        include 'data/**', 'graphics/**', 'sounds/**', 'jars/RuleBookRenewed.jar'
     }
 }
 

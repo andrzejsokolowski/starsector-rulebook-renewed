@@ -50,7 +50,6 @@ public final class RuleBookIntel extends BaseIntelPlugin {
     @Override
     public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
         float pad = 10f;
-        info.addPara("House rules for this voyage, written in your own hand.", Misc.getGrayColor(), pad);
 
         int net = Balance.net();
         info.addPara(Balance.describe(net), balanceColor(net), pad);
@@ -67,19 +66,18 @@ public final class RuleBookIntel extends BaseIntelPlugin {
             String levelText = rule.levels > 1 ? " " + RuleSpec.roman(level) : "";
             int points = rule.points(level);
             String pointText = points > 0 ? "+" + points : String.valueOf(points);
-            info.addPara(rule.name + levelText + "   " + pointText, rule.neutral ? Misc.getTextColor() : rule.hard ? hardColor() : helpfulColor(), 5f);
+            info.addPara(rule.name + levelText + "   " + pointText, rule.hard ? hardColor() : helpfulColor(), 5f);
             info.addPara(rule.describe(level), Misc.getGrayColor(), 1f);
         }
-        if (!any) info.addPara("None. The Sector plays by its own rules.", Misc.getGrayColor(), 5f);
+        if (!any) info.addPara("None.", Misc.getGrayColor(), 5f);
 
         boolean anyChallenge = false;
         for (ChallengeSpec spec : Challenges.all()) {
-            if (!Challenges.isActive(spec)) continue;
-            if (!anyChallenge) info.addSectionHeading("Challenges under way", Alignment.MID, pad);
+            if (Challenges.isComplete(spec) || !Challenges.conditionsMet(spec, Challenges.LIVE)) continue;
+            if (!anyChallenge) info.addSectionHeading("Challenges in progress", Alignment.MID, pad);
             anyChallenge = true;
             info.addPara(spec.name + "   " + Challenges.progressText(spec), Misc.getHighlightColor(), 5f);
-            info.addPara("Goal: " + spec.goalText() + ". Keep " + spec.requirementsText() + ". " + spec.limitText() + ".",
-                    Misc.getGrayColor(), 1f);
+            info.addPara(spec.goalText() + ".", Misc.getGrayColor(), 1f);
         }
 
         info.addButton("Open the Rule Book", BUTTON_OPEN, width, 24f, pad * 2f);

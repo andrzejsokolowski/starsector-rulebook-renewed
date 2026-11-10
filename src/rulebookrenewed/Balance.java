@@ -21,7 +21,7 @@ public final class Balance {
 
     /** "You're 20 points over budget - Slightly overpowered", in Andrzej's wording. */
     public static String describe(int net) {
-        if (net == 0) return "Balanced - The scales are even";
+        if (net == 0) return "Balanced";
         int size = Math.abs(net);
         String unit = size == 1 ? " point " : " points ";
         if (net > 0) return "You're " + size + unit + "over budget - " + overLabel(size);

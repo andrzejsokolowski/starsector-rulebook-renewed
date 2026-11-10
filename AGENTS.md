@@ -11,32 +11,46 @@ Tasks, history and test lists: the **Rule Book - Renewed board** in Andrzej's No
 the page "Rule Book - Renewed: design" (`41320ca75d2081c0ba48d8f8e3dc4b50`) in Claude Information. Update the
 board during the work, not only at release time.
 
-## Clean room
+## Other mods' work
 
-- Unofficial New Game Plus (Originem) is all rights reserved. Never open its `src`, jar, CSV or string files.
-  Game ideas are fine; names, text and code are written from scratch.
+- Unofficial New Game Plus (Originem; the installed copy is the 0.98 fork 2.3.2). Its licence: "Code are free
+  to use and distribute, but it's better to notice me. DO NOT copy entirely. All rights reserved." On
+  2026-11-10 Andrzej also got a yes from the fork's author to continue its work and told this project to use
+  its code and art. Taken so far: the picker's layout and flow, `ui/UIRect`, `ui/UIPanelManager`,
+  `ui/BackgroundUI`, the tile and background art under `graphics/rulebook` (rule icons recoloured per rule
+  by a script) and the four tile sounds. Every copied or adapted file says so in its header and
+  `CREDITS.txt` lists it. Never copy the mod wholesale; its music was not taken. Rule effects stay our own.
 - Unofficial Rule Book (DemonX3) is MIT. Its rule effects may be adapted; keep its notice in `CREDITS.txt` and
   name the source rule there and in the effect class comment.
 
+## Text
+
+Player-facing text is short and plain, worded like the game: "Enemy armor increased by {value}%." No flavour
+lines, no explaining paragraphs (Andrzej, 2026-11-10).
+
 ## Build
 
-`./gradlew releaseZip` compiles against the game, LunaLib and Peerless Skills (`gradle.properties` names the
+`./gradlew releaseZip` compiles against the game, LunaLib, Achievements - Renewed (its jar in the folder next
+door) and Peerless Skills (`gradle.properties` names the
 game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
 
 ## Layout
 
-- `data/config/rulebook/rules.csv` - one row per rule: type (`hard`, `helpful`, or `neutral` for fluff worth
-  0 points), levels, points and values per level (`|` separated),
-  required mod, unlock (`feat:<id>` or `challenge:<id>`), effect class, icon, description with `{value}`, flavor,
-  unlock hint, order, pair, section, pairName (the shared tile name of a mirrored pair). Loaded merged over all mods by `RuleCatalog` at
-  startup; rows whose required mod is off are dropped before their effect class is loaded. Sections sort by
-  their lowest order, so keep each section's orders together.
+- `data/config/rulebook/rules.csv` - one row per rule: type (`positive` or `negative`; a rule just for fun is
+  a positive rule worth 0 points), levels, points and values per level (`|` separated), required mod, unlock
+  (`feat:<id>` or `challenge:<id>`), effect class, icon, description with `{value}`, order, pair, section.
+  Loaded merged over all mods by `RuleCatalog` at startup; rows whose required mod is off are dropped before
+  their effect class is loaded. A negative rule and its positive mirror share a `pair`; only one can be on.
+  Points: negative rules are below zero and give the player points, positive rules cost them; the picker
+  shows the cost (`-points`). With the LunaLib setting "Point budget" on, a set that costs more than it
+  gives cannot be confirmed.
 - `data/config/rulebook/challenges.csv` - one row per challenge: required rules (`rule_id:level|...`), goal
-  (`feat:<id>[:<count>]`, `wins:<n>` or `days:<n>`), helpful limit (points, 0 = none allowed, empty = no cap).
-  `Challenges` loads it after the rules. A run is kept in the save with its start time and the goal feat's
-  count at the start, so only progress during the run counts. Lowering a required rule or going over the
-  helpful limit ends the run (`Challenges.validate`, called from `RuleManager.setLevel`). Completion is the
-  feat `challenge_<id>` in `Unlocks`, which opens rules whose unlock is `challenge:<id>`.
+  (`feat:<id>[:<count>]`, `wins:<n>` or `days:<n>`), helpfulLimit (points of positive rules allowed, 0 = none,
+  empty = no cap), deadlineDays. Nothing is taken on: `Challenges.check` (daily, after battles, after every
+  rule change) counts progress whenever a challenge's conditions hold. Counted goals pause when they do
+  not; "hold out" goals start over; a one-time deed must happen while they hold; a state goal that was
+  already true (five colonies, a million credits) counts after 90 days. Completion is the achievement
+  `rbr_challenge_<id>`, which opens rules whose unlock is `challenge:<id>`.
 - `src/rulebookrenewed/rules` - `RuleEffect` hooks: campaign apply/unapply (every 0.25 days and on change),
   `onSwitchedOn`, `applyToShip` (combat, first frame each ship is on the field), `applyToMember` (fleet buff),
   `applyToEnemyMember` (enemy ships before they are built). A hard rule and its helpful mirror share one
@@ -58,8 +72,12 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   `prepareEnemyFleet` (once per enemy fleet when an encounter opens: enemy officer skills, marked per officer).
   A hard rule and its mirror are never on together: `RuleManager.setLevel` switches the other side off.
 - `RuleCombatPlugin` (registered in `data/config/settings.json`) stands down outside campaign battles.
-- `RuleState` - chosen levels per save (sector persistent data). `Unlocks` - feats in saves/common
-  (`rulebook_renewed_unlocks.json`). `Feats` - every feat with a count: story flags (0 or 1), colonies,
+- `RuleState` - chosen levels per save (sector persistent data). `Unlocks` - a thin layer over
+  Achievements - Renewed (a required mod, `achievementsrenewed.api.Achievements`): the feat `x` is the
+  achievement `rbr_x`, a finished challenge is `rbr_challenge_<id>`. Their rows (name, hint, how-to, reward
+  line, chain) are in `data/config/achievements_renewed/achievements.csv`; feat rows name the script
+  `achievements/FeatAchievement`, which reports the feat's count, and that mod polls it, keeps what is done
+  across saves and shows the notification. `Feats` - every feat with a count: story flags (0 or 1), colonies,
   credits, and battle counters from `Counters` (per save, filled by `RuleBattleListener` when the player's
   side wins). Feats from Oddisz's other mods (`modFlag`/`modCount`) read only state those mods leave in the
   save, never their classes, and exist only while one of their mod ids is enabled. Checked daily and after
@@ -69,12 +87,15 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   `$rbr_ngpMultiplier`.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
   `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
-- `ui/RulePickerPanel` - tile grids on the left (tabs Rules, Challenges, Feats; Rules has a Neutral grid
-  of pair tiles and fluff over a Helpful-only and a Hard-only grid), a side panel on the right (balance, summary, hovered tile's details, challenge button).
-  Size follows the screen. Each tab is a container panel built once; a tab switch moves the others off
-  screen (never remove a scrolling TooltipMakerAPI with removeComponent: the panel holds its external
-  scroller, so the labels stay). Tile labels sit in a content panel inside a scrolling TooltipMakerAPI;
-  tiles and buttons are self drawn and hit tested (see Gambling Den) and follow the content panel's real
-  screen position each frame. Left click is one step easier, right click one step harder. `RuleBookDialog` hosts it;
+- `ui/RulePickerPanel` - UNGP's picker layout with native UI: positive grid over negative grid (or the
+  challenge list) on the left; on the right the hovered rule (only the effect that applies, large), the
+  picked rules, challenges whose rules are met, points, problems, Confirm / Cancel. Picks go to a working
+  copy and are applied on Confirm. `RuleTile` is one tile (area checkbox, icon, level pips, cost): left
+  click picks then raises the level, right click lowers it (mouse polled in `advance`); the mirror of a
+  picked rule is disabled ("Conflict with X"); a locked rule shows as `[ ? ]` with "Unlocked by". Each tab
+  is a page panel built once and moved off screen when hidden (never remove a scrolling TooltipMakerAPI
+  with removeComponent). `ChallengeRow` is one challenge with its rule icons and "Enable required rules",
+  which replaces the working rules with exactly the required ones; a later pick that breaks that
+  challenge, or one with progress, shows a warning box once. `RuleBookDialog` hosts the picker;
   `RuleBookIntel` is the permanent intel entry with the open button.
 - `compat/peerless` - the only package that may name Peerless Skills (`checkPeerlessIsolated`).

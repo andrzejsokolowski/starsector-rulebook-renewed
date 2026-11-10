@@ -47,7 +47,7 @@ public final class RuleBookScript implements EveryFrameScript {
         featDays += days;
         if (featDays >= FEAT_DAYS) {
             featDays = 0f;
-            Feats.check();
+            achievementsrenewed.api.Achievements.check();
             Challenges.check();
         }
     }

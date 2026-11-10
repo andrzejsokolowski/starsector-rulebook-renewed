@@ -1,0 +1,7 @@
+{
+	# Tile sounds from Unofficial New Game Plus (see CREDITS.txt).
+	"rbr_positive_pickup": [{"file": "sounds/rulebook/ui_positive_pickup.ogg", "pitch": 1, "volume": 0.6}],
+	"rbr_positive_drop": [{"file": "sounds/rulebook/ui_positive_drop.ogg", "pitch": 1, "volume": 0.6}],
+	"rbr_negative_pickup": [{"file": "sounds/rulebook/ui_negative_pickup.ogg", "pitch": 1, "volume": 0.6}],
+	"rbr_negative_drop": [{"file": "sounds/rulebook/ui_negative_drop.ogg", "pitch": 1, "volume": 0.6}],
+}

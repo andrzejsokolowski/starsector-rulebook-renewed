@@ -74,7 +74,7 @@ public final class RuleBattleListener extends BaseCampaignEventListener {
         if (abyss) Counters.add(Counters.ABYSS);
         if (station) Counters.add(Counters.STATION);
         if (ownPoints > 0f && enemyPoints >= ownPoints * 2f) Counters.add(Counters.GIANT);
-        Feats.check();
+        achievementsrenewed.api.Achievements.check();
         Challenges.check();
     }
 }

@@ -15,6 +15,11 @@ public final class Settings {
         return flag("rbr_unlockAll", false);
     }
 
+    /** Positive rules must be paid for with negative rules. */
+    public static boolean enforceBudget() {
+        return flag("rbr_enforceBudget", true);
+    }
+
     private static boolean flag(String key, boolean fallback) {
         try {
             Boolean value = LunaSettings.getBoolean(Ids.MOD_ID, key);
