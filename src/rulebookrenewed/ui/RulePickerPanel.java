@@ -100,6 +100,8 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
     private final Map<RuleSpec, Integer> working = new HashMap<>();
     private final Challenges.Levels levels = this::level;
     private final List<RuleTile> tiles = new ArrayList<>();
+    /** The scrolling box each tile lives in. Tiles scrolled out of one box still sit, unseen, over the other. */
+    private final Map<RuleTile, UIRect> tileGrid = new HashMap<>();
     private final List<ChallengeRow> rows = new ArrayList<>();
     private final Set<String> warned = new HashSet<>();
     private final float width, height;
@@ -311,6 +313,10 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         CustomPanelAPI page = page(TAB_RULES);
         List<RuleSpec> positive = new ArrayList<>(), negative = new ArrayList<>();
         for (RuleSpec rule : RuleCatalog.all()) (rule.hard ? negative : positive).add(rule);
+        // Dearest first: the highest cost among positive rules, the most points given among negative ones.
+        java.util.Comparator<RuleSpec> byCost = (a, b) -> Integer.compare(Math.abs(b.points(1)), Math.abs(a.points(1)));
+        positive.sort(byCost);
+        negative.sort(byCost);
 
         UIRect[] temp = new UIRect(0, 0, pageRect.getWidth(), pageRect.getHeight()).splitVertically(0.5f, 0.5f);
         positiveGrid = grid(page, temp[0].shrink(5f), "Positive rules", POSITIVE_ICON, POSITIVE, "clear_positive", positive, true);
@@ -352,6 +358,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
             tip.addCustomDoNotSetPosition(custom).getPosition().inTL(x, y);
             tip.addSpacer((1f / perRow) * (RuleTile.SIZE + rowPad));
             tiles.add(tile);
+            tileGrid.put(tile, content);
         }
         tip.addSpacer(RuleTile.SIZE);
         content.addTooltip();
@@ -510,7 +517,8 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         TooltipMakerAPI tip = sub.createUIElement(detailRect.getWidth(), detailRect.getHeight(), false);
         RuleSpec rule = hovered;
         if (rule == null) {
-            tip.addPara("Left click picks a rule, then raises its level. Right click lowers it.", Misc.getGrayColor(), 0f);
+            tip.addPara("Left click - Increase rule intensity", Misc.getGrayColor(), 0f);
+            tip.addPara("Right click - Diminish rule intensity", Misc.getGrayColor(), 3f);
             sub.addUIElement(tip);
             return;
         }
@@ -714,9 +722,10 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
 
         if (tab == TAB_RULES) {
             RuleTile over = null;
-            if (inside(positiveGrid, x, y) || inside(negativeGrid, x, y)) {
+            UIRect grid = inside(positiveGrid, x, y) ? positiveGrid : inside(negativeGrid, x, y) ? negativeGrid : null;
+            if (grid != null) {
                 for (RuleTile tile : tiles) {
-                    if (tile.contains(x, y)) {
+                    if (tileGrid.get(tile) == grid && tile.contains(x, y)) {
                         over = tile;
                         break;
                     }

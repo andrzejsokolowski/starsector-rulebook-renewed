@@ -1,4 +1,4 @@
-Subject: [0.98a] Rule Book - Renewed 0.7.1 - house rules for one campaign, each with its own level
+Subject: [0.98a] Rule Book - Renewed 0.7.2 - house rules for one campaign, each with its own level
 
 [center][size=28pt][url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][b]Rule Book - Renewed[/b][/url][/size]
 [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][img]https://img.shields.io/github/downloads/andrzejsokolowski/starsector-rulebook-renewed/total?style=for-the-badge&label=download[/img][/url]  [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed][img]https://img.shields.io/github/v/release/andrzejsokolowski/starsector-rulebook-renewed?display_name=tag&sort=semver&style=for-the-badge&label=source[/img][/url]
@@ -251,6 +251,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.7.2[/b]
+[list][li]Fixed: pointing at a rule or right clicking it often did nothing, or showed and lowered a different rule. Both now work anywhere on the tile.[/li][li]Tiles are sorted by cost, the dearest first.[/li][li]Shorter texts for Ironman, the S-mod limit rules and the burn level rules.[/li][/list]
 [b]0.7.1[/b]
 [list][li]Rule Book's achievements are sorted into tabs: base game ones in the Achievements tab, each other mod's in that mod's own tab, challenges under Rule Book - Renewed. Needs Achievements - Renewed 0.2.0.[/li][li]New achievement Supergrowth in the Cloning tab: own a Cloning Megafactory with an Omega core and a Pristine Nanoforge installed. It shows when a mod that provides Omega cores is on.[/li][li]Mentor's Legacy now unlocks from the base achievement Reach level 15, which no longer exists twice.[/li][li]Four preset slots next to the tabs save and load whole rule sets. Presets are kept across campaigns.[/li][li]New mod description in the launcher.[/li][/list]
 [b]0.7.0[/b]

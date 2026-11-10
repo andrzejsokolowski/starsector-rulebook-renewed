@@ -1,3 +1,8 @@
+Version 0.7.2 (2026-11-10)
+- Fixed: pointing at a rule or right clicking it often did nothing, or showed and lowered a different rule. Both now work anywhere on the tile.
+- Tiles are sorted by cost, the dearest first.
+- Shorter texts for Ironman, the S-mod limit rules and the burn level rules.
+
 Version 0.7.1 (2026-11-10)
 - Rule Book's achievements are sorted into tabs: base game ones in the Achievements tab, each other mod's in that mod's own tab, challenges under Rule Book - Renewed. Needs Achievements - Renewed 0.2.0.
 - New achievement Supergrowth in the Cloning tab: own a Cloning Megafactory with an Omega core and a Pristine Nanoforge installed. It shows when a mod that provides Omega cores is on.
