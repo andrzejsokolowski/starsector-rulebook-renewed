@@ -14,6 +14,8 @@
 			"bg_seamless_ring0": "graphics/rulebook/fx/bg_seamless_ring0.png",
 			"bg_seamless_ring1": "graphics/rulebook/fx/bg_seamless_ring1.png",
 			"bg_seamless_ring2": "graphics/rulebook/fx/bg_seamless_ring2.png",
+			# The ring Headhunting draws under its target.
+			"headhunting_edge": "graphics/rulebook/fx/headhunting_edge.png",
 		},
 		"rbr_icons": {
 			"positive": "graphics/rulebook/icons/positive_icon.png",

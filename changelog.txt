@@ -1,3 +1,7 @@
+Version 0.9.0 (2026-11-10)
+- 59 new rules adapted from Unofficial New Game Plus, among them its eight golden rules (only one golden rule can be picked): Technological Revolution, HSS Phoenix, TTS Invincible, Shield Specialization, Stay Calm, Gravity Disruptor, Cruising Hunting and Still Growing Up.
+- New icons that match what each rule does. Pristine Foes and Junker Foes show the Phoenix.
+
 Version 0.8.0 (2026-11-10)
 - Most rules now have three levels instead of five, at 1x, 1.5x and 2.5x, with larger effects: for example enemy ship quality at 20/30/50 percent.
 - Minor rules became single, stronger ones: Calm Currents (no damage from hyperspace storms), Greedy Crews (wages doubled), Fox, and Loyal Hands (half pay, or no pay at the cost of 10 percent combat readiness).

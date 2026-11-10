@@ -1,9 +1,13 @@
 package rulebookrenewed.rules;
 
+import java.util.List;
+
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.input.InputEventAPI;
 
 import rulebookrenewed.RuleSpec;
 
@@ -31,6 +35,15 @@ public interface RuleEffect {
 
     /** Combat side, every frame of a campaign battle while the game is not paused. For auras and conditions. */
     default void advanceCombat(RuleSpec rule, CombatEngineAPI engine, float amount, int level, float value) {}
+
+    /** Combat side, right after advanceCombat, with the frame's input events. For rules that react to a key. */
+    default void processCombatInput(RuleSpec rule, CombatEngineAPI engine, List<InputEventAPI> events, int level, float value) {}
+
+    /** Campaign side, every frame on the campaign map while the game is not paused (RuleBookScript). For timers and states that must follow the fleet closely. */
+    default void advanceCampaign(RuleSpec rule, float amount, int level, float value) {}
+
+    /** Called once after every battle the player's fleet took part in, won or lost (RuleBattleListener). */
+    default void onPlayerBattleFinished(RuleSpec rule, BattleAPI battle, int level, float value) {}
 
     /** Called by the fleet buff that MemberStatRule keeps on every ship in the player's fleet. */
     default void applyToMember(RuleSpec rule, FleetMemberAPI member, int level, float value) {}

@@ -38,6 +38,16 @@ public final class RuleBookScript implements EveryFrameScript {
         if (RuleState.isPickerPending()) tryOpenPicker(amount);
         if (Global.getSector().isPaused()) return;
 
+        for (RuleSpec rule : RuleCatalog.all()) {
+            int level = RuleState.level(rule);
+            if (level <= 0) continue;
+            try {
+                rule.effect.advanceCampaign(rule, amount, level, rule.value(level));
+            } catch (Throwable t) {
+                Global.getLogger(RuleBookScript.class).error("Rule Book: rule " + rule.id + " failed on the campaign map", t);
+            }
+        }
+
         float days = Global.getSector().getClock().convertToDays(amount);
         refreshDays += days;
         if (refreshDays >= REFRESH_DAYS) {

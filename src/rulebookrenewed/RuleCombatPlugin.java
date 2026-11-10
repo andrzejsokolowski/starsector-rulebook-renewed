@@ -92,6 +92,7 @@ public final class RuleCombatPlugin extends BaseEveryFrameCombatPlugin {
             for (Active a : active) {
                 try {
                     a.rule.effect.advanceCombat(a.rule, engine, amount, a.level, a.value);
+                    a.rule.effect.processCombatInput(a.rule, engine, events, a.level, a.value);
                 } catch (Throwable t) {
                     LOG.error("Rule Book: rule " + a.rule.id + " failed in combat", t);
                 }

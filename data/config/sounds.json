@@ -4,4 +4,16 @@
 	"rbr_positive_drop": [{"file": "sounds/rulebook/ui_positive_drop.ogg", "pitch": 1, "volume": 0.6}],
 	"rbr_negative_pickup": [{"file": "sounds/rulebook/ui_negative_pickup.ogg", "pitch": 1, "volume": 0.6}],
 	"rbr_negative_drop": [{"file": "sounds/rulebook/ui_negative_drop.ogg", "pitch": 1, "volume": 0.6}],
+	# Rule sounds from Unofficial New Game Plus (see CREDITS.txt).
+	"rbr_staycalm_start": [{"file": "sounds/rulebook/staycalm_start.ogg", "pitch": 1, "volume": 1}],
+	"rbr_staycalm_end": [{"file": "sounds/rulebook/staycalm_end.ogg", "pitch": 1, "volume": 1}],
+	"rbr_phasingghost_arrive": [{"file": "sounds/rulebook/phasingghost_arrive.ogg", "pitch": 1, "volume": 1}],
+	"rbr_phasingghost_warning": [{"file": "sounds/rulebook/phasingghost_warning.ogg", "pitch": 1, "volume": 1}],
+	"rbr_headhunting_mark": [{"file": "sounds/rulebook/headhunting_mark.ogg", "pitch": 1, "volume": 1}],
+	"rbr_headhunting_ready": [{"file": "sounds/rulebook/headhunting_ready.ogg", "pitch": 1, "volume": 1}],
+	"rbr_collector": [{"file": "sounds/rulebook/collector.ogg", "pitch": 1, "volume": 1}],
+	"rbr_fraudulent": [{"file": "sounds/rulebook/fraudulent.ogg", "pitch": 1, "volume": 1}],
+	"rbr_fungus": [{"file": "sounds/rulebook/fungus.ogg", "pitch": 1, "volume": 1}],
+	"rbr_still_growing_up": [{"file": "sounds/rulebook/still_growing_up.ogg", "pitch": 1, "volume": 1}],
+	"rbr_birthday_present": [{"file": "sounds/rulebook/birthday_present.ogg", "pitch": 1, "volume": 1}],
 }

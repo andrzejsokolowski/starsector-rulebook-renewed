@@ -47,6 +47,16 @@ public final class RuleBattleListener extends BaseCampaignEventListener {
         } catch (Throwable t) {
             Global.getLogger(RuleBattleListener.class).error("Rule Book: could not record a battle", t);
         }
+        if (battle == null || !battle.isPlayerInvolved()) return;
+        for (RuleSpec rule : RuleCatalog.all()) {
+            int level = RuleState.level(rule);
+            if (level <= 0) continue;
+            try {
+                rule.effect.onPlayerBattleFinished(rule, battle, level, rule.value(level));
+            } catch (Throwable t) {
+                Global.getLogger(RuleBattleListener.class).error("Rule Book: rule " + rule.id + " failed after a battle", t);
+            }
+        }
     }
 
     /** Counts a won battle, and what it was won against, for feats and challenge goals. */

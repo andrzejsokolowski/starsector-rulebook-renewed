@@ -199,12 +199,76 @@ The numbers are the values of level I up to the highest level.
 | Lucky Streak | positive | Every Gambling Den slot machine win pays 10000/15000/25000 extra credits. | costs 3/5/8 | Challenge: High Roller |
 | Omega Shard | positive | Grants 1 Omega core, once per campaign. | costs 12 | Challenge: Omega Apprentice |
 | Ascendant Worlds | positive | Stability of your colonies above size 10 increased by 1/2/3. | costs 3/6/9 | Challenge: Ascendant |
+| Besieged | negative | Deployment points you start a battle with decreased by 4/6/10% of the battle size. | gives 6/9/15 |  |
+| Arms Limitation Treaty | negative | With more than 2 design types among your combat ships, maximum combat readiness of your ships decreased by up to 20/30/50%. | gives 6/9/15 |  |
+| Deep Space Phobia | negative | In hyperspace, the sensor range of your fleet is halved and the range at which it can be detected is increased by 50/75/125%. | gives 4/6/10 |  |
+| Ancient Threat | negative | Maximum combat readiness of your ships decreased by 10/15/25% in star systems held by the Remnants. | gives 4/6/10 |  |
+| The Detente | negative | Maintenance supply use of your ships increased by 10/15/25% for each ship in your fleet above 15. | gives 4/6/10 |  |
+| Blood Lust | negative | After 30 days without a battle, maximum combat readiness of your ships decreased by 10/15/25% until your next battle. | gives 4/6/10 |  |
+| Dangerous Sector | negative | Combat readiness lost by your ships in star coronas and similar terrain increased by 200%. | gives 5 |  |
+| Explosive Sniper | negative | Speed and maneuverability of enemy missiles increased by 20/30/50%. | gives 6/9/15 |  |
+| Low Compatibility | negative | Damage taken by the weapons and engines of your ships and your allies' ships, and their repair time in combat, increased by 20/30/50%. | gives 4/6/10 |  |
+| Wholesale Shells | negative | Ballistic-type shots fired by your side have a 10/15/25% chance to deal half damage. | gives 4/6/10 |  |
+| Emergent Airforce Rebuild | negative | As the fighter replacement rate of your carriers falls from 100% to 50%, their fighters take up to 20/30/50% more damage and deal as much less. | gives 4/6/10 |  |
+| Blocked Flux Conduits | negative | While their shields are raised, flux dissipation of your ships decreased by up to 20/30/50%, more the wider the shield. | gives 6/9/15 |  |
+| Century War | negative | Enemy stations take 20/30/50% less damage and the range of their weapons is increased by 20/30/50%. | gives 3/5/8 |  |
+| Fragment Graveyard | negative | Wrecks of destroyed ships fly off 4 times faster and are much heavier. Ships break apart twice as often. | gives 3 |  |
+| Order 66 | negative | Damage your ships and your allies' ships take from your own side increased by 100/150/250%. | gives 4/6/10 |  |
+| Ghost Reinforcements | negative | About once a minute, the enemy has a 10/15/25% chance to receive a phase ship. The chance doubles after each miss and drops after each arrival. | gives 6/9/15 |  |
+| Danger Zone | negative | Every enemy ship lays mines near your ships: a frigate every 30/20/12 seconds, bigger ships more often. | gives 6/9/15 |  |
+| Trade Embargo | negative | Accessibility of your colonies decreased by 10/15/25% for each hostile market within 15 light-years. | gives 4/6/10 |  |
+| Spy | negative | Stability of your colonies decreased by 1/2/3 for each hostile market within 15 light-years. | gives 3/6/9 |  |
+| Fraudulent | negative | Each sale has a 10/15/25% chance, doubled at black markets, to lose 20% of what it earned. | gives 3/5/8 |  |
+| Work Harder! | negative | While your marines number less than 10/15/25% of your crew, each day has an 8% chance of a riot: one ship loses 75% combat readiness and half of its crew. | gives 3/5/8 |  |
+| Monotonous Teller | negative | Every 120/80/48 days you lose 1 story point. | gives 4/6/10 |  |
+| Inflation | negative | Every month you lose 1/1.5/2.5% of your credits. | gives 4/6/10 |  |
+| EW Smog | positive | Maximum ECM rating of your side in battle increased by 4/6/10%. | costs 4/6/10 |  |
+| Bustling Fungus | positive | While your fleet has not moved for a day, repair rate of your ships increased by 50% and their maintenance supply use decreased by 50%. | costs 5 |  |
+| Sneaker | positive | Burn level of your fleet while moving slowly or going dark increased by 1/2/3. | costs 3/6/9 |  |
+| Thermodynamics | positive | While Emergency Burn is on, your fleet moves at the highest burn level. | costs 6 |  |
+| Endurance | positive | A ship of yours that falls below half of its maximum combat readiness regains the readiness of one deployment, once every 12/8/5 days. | costs 4/6/10 |  |
+| Logistics Overhaul | positive | Number of logistics hullmods each of your ships can have increased by 1/2/3. | costs 4/8/12 |  |
+| Elite Reserves | positive | Spare crew increases the maximum combat readiness of your ships by up to 10/15/25%, the full amount at twice the crew your ships need. | costs 4/6/10 |  |
+| Guide to Dogfighting | positive | Damage of your side's non-beam weapons with a base range of 500 or less increased by 10/15/25%. | costs 6/9/15 |  |
+| I Have the High Ground! | positive | Range of ballistic and energy weapons of your ships within 2000 units of an objective increased by 10/15/25%. | costs 4/6/10 |  |
+| Naval Phalanx | positive | Your ships with another of your side within 600 units have their flux dissipation increased by 10/15/25% and the damage taken by their shields decreased by 10/15/25%. | costs 4/6/10 |  |
+| Experimental Shunt | positive | Your ships dissipate hard flux while shields are raised, at 6/9/15% of their flux dissipation. | costs 6/9/15 |  |
+| Critical Hit | positive | Each hit by the ship you fly has a 4/6/10% chance to deal double damage. | costs 4/6/10 |  |
+| Lucky Seven | positive | Every 7th non-beam hit by the ship you fly deals 7% more damage, sometimes 77% or 777% more. | costs 3 |  |
+| Seer | positive | Every 20 seconds, the fog of war lifts from the whole battlefield for 2/3/5 seconds. | costs 3/5/8 |  |
+| Headhunting | positive | An enemy ship you order eliminated takes 20/30/50% more damage for 20 seconds. 60 second cooldown. | costs 4/6/10 |  |
+| Collector | positive | When the ship you fly or its fighters hit the hull of an enemy ship at 4/6/10% hull or less, that ship is destroyed and you gain 25 credits. | costs 3/5/8 |  |
+| V for Vent | positive | While the ship you fly vents, each press of the vent key raises its vent rate by 25% for a third of a second, up to twice. | costs 3 |  |
+| Let there be Light! | positive | Damage dealt to shields by beams of the ship you fly increased by 10/15/25%. | costs 4/6/10 |  |
+| Symbol Perseus | positive | When the ship you fly destroys its third enemy ship within 8 seconds, and with each further kill in that time, 10/15/25% of its maximum flux is removed. | costs 4/6/10 |  |
+| GLaDOS | positive | Industries run by an Alpha Core at your colonies produce 1/2/3 more of each commodity. | costs 3/6/9 |  |
+| Industrial Zone | positive | Maximum number of industries at your colonies increased by 1. A colony of size 5 or smaller over its old limit has the output of each industry decreased by 1. | costs 8 |  |
+| Black in Black | positive | Trade on black markets raises no suspicion. | costs 4 |  |
+| Make an Exception | positive | Each AI inspection sent against you while you are not hostile to its faction has a 40/60/100% chance to be bribed away at no cost. | costs 3/5/8 |  |
+| Tachyon Labour | positive | The first time this rule is switched on, your standing with the Remnants becomes Cooperative. | costs 6 |  |
+| Full of Company | positive | The first time this rule is switched on, your standing with the independents and the pirates becomes Friendly. | costs 4 |  |
+| Premium Seafood | positive | Every day your fleet gains 2 Volturnian Lobster while it has cargo space. | costs 2 |  |
+| Birthday Present | positive | One cycle after this rule is switched on, it is replaced by a random positive rule at level I. | costs 2 |  |
+| Entropius Mind | positive | Every 7 days, all your other rules are replaced by 1 to 12 random rules at random levels. | free |  |
 
 ### Just for fun
 
 | Rule | Type | Effect per level | Points | Unlocked by |
 | --- | --- | --- | --- | --- |
 | Fireworks | positive | Destroyed ships explode with fireworks. No other effect. | free |  |
+
+### Golden
+
+| Rule | Type | Effect per level | Points | Unlocked by |
+| --- | --- | --- | --- | --- |
+| Technological Revolution | positive | Ordnance points of your ships increased by 10/15/25%. Above 240 deployment points of combat ships in your fleet the bonus shrinks, down to half at 480. | costs 8/12/20 |  |
+| HSS Phoenix | positive | While your flagship is an Onslaught, its hull, armor, flux capacity and flux dissipation are increased by 20%, its speed and maneuverability are doubled and its maximum combat readiness is increased by 10%. | costs 15 |  |
+| TTS Invincible | positive | While your flagship is a Paragon, its weapon damage and rate of fire are increased by 15%, its shield unfolds and turns 50% faster for 50% less upkeep, and its maximum combat readiness is increased by 10%. | costs 15 |  |
+| Shield Specialization | positive | Damage taken by your shields and their upkeep decreased by 10/15/25%, their turn and unfold rates increased by 10/15/25%. | costs 8/12/20 |  |
+| Stay Calm | positive | When enemy missiles about to hit the ship you fly carry more damage than 20% of its hull, time slows to a third for 2 seconds, except for your ship. 15 second cooldown. | costs 10 |  |
+| Gravity Disruptor | positive | Time runs 4/6/10% faster for your ships and 4/6/10% slower for enemy ships. | costs 8/12/20 |  |
+| Cruising Hunting | positive | Deployment points of your cruisers decreased by 10/15/25%, at least by 2. | costs 8/12/20 |  |
+| Still Growing Up | positive | After 3 months a random positive rule is switched on at level I, the next one 6 months later, then 9, and so on. | costs 15 |  |
 
 Armor and hull rules are a percent of each ship's own armor and hull. Combat rules apply only in campaign
 battles, not in missions or the simulator. Bounty rules change bounties posted after you pick them. Enemy

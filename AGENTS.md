@@ -19,7 +19,9 @@ board during the work, not only at release time.
   its code and art. Taken so far: the picker's layout and flow, `ui/UIRect`, `ui/UIPanelManager`,
   `ui/BackgroundUI`, the tile and background art under `graphics/rulebook` (rule icons recoloured per rule
   by a script) and the four tile sounds. Every copied or adapted file says so in its header and
-  `CREDITS.txt` lists it. Never copy the mod wholesale; its music was not taken. Rule effects stay our own.
+  `CREDITS.txt` lists it. Never copy the mod wholesale; its music was not taken. In 0.9.0 its golden rules and
+  the rules with a mechanic of their own were adapted as effect classes in `rules/ungp` (our hooks, not its
+  framework); `Tools` there replaces LazyLib. Its plain stat rules were not, since ours cover them.
 - Unofficial Rule Book (DemonX3) is MIT. Its rule effects may be adapted; keep its notice in `CREDITS.txt` and
   name the source rule there and in the effect class comment.
 
@@ -79,8 +81,10 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   other market), `EnemyKindDamage` (one kind of enemy ship takes more damage), `SettingRule` (scales
   settings.json values the game reads live: bounties, battle XP, ship prices; originals kept and put back).
   `Scale.by` does the percent push: a rise is a percent bonus, a cut is a multiplier with a 0.05 floor.
-  More hooks: `advanceCombat` (every unpaused frame of a campaign battle: Doomslayer, Last Stand) and
-  `prepareEnemyFleet` (once per enemy fleet when an encounter opens: enemy officer skills, marked per officer).
+  More hooks: `advanceCombat` (every unpaused frame of a campaign battle: Doomslayer, Last Stand),
+  `processCombatInput` (the same frame's input events), `advanceCampaign` (every unpaused campaign frame),
+  `onPlayerBattleFinished` (after every battle the player is in) and `prepareEnemyFleet` (once per enemy
+  fleet when an encounter opens: enemy officer skills, marked per officer).
   A hard rule and its mirror are never on together: `RuleManager.setLevel` switches the other side off.
 - `RuleCombatPlugin` (registered in `data/config/settings.json`) stands down outside campaign battles.
 - `RuleState` - chosen levels per save (sector persistent data). `Unlocks` - a thin layer over
