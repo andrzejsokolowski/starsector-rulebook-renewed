@@ -20,7 +20,8 @@ import rulebookrenewed.ui.RuleBookDialog;
  */
 public final class RuleBookIntel extends BaseIntelPlugin {
 
-    public static final String TAG = "Rule Book";
+    /** The intel tag other mods (MagicLib, Second-in-Command) use for the player's own entries. */
+    public static final String TAG = "Personal";
     private static final String BUTTON_OPEN = "rbr_open";
     private static final String BUTTON_ACHIEVEMENTS = "rbr_achievements";
 

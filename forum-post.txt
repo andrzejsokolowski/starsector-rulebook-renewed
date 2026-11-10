@@ -12,7 +12,7 @@ Needs LunaLib and Achievements - Renewed.
 
 [hr][center][size=12pt][b]How it works[/b][/size][/center][hr]
 [list]
-[li]The Rule Book opens a few seconds into a new game. Open it again any time from the Rule Book entry on the intel screen.[/li]
+[li]The Rule Book opens a few seconds into a new game. Open it again any time from the Rule Book entry under Personal on the intel screen.[/li]
 [li]Left click increases a rule's intensity, right click diminishes it. Most rules have three levels: 1x, 1.5x and 2.5x. Nothing changes until you press Confirm.[/li]
 [li]Only one golden rule can be picked.[/li]
 [li]Four preset slots save and load whole rule sets, across campaigns.[/li]
@@ -300,6 +300,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.10.3[/b]
+[list][li]The Rule Book intel entry is under Personal.[/li][/list]
 [b]0.10.2[/b]
 [list][li]The New Game Plus - Renewed achievement is now "Use a consumable item": use any of its four ship items (S-mod slot, D-mod removal, Stat tuning, Extra ordnance points). D-mod removal and Extra ordnance points did not count before.[/li][/list]
 [b]0.10.1[/b]

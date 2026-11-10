@@ -1,3 +1,6 @@
+Version 0.10.3 (2026-11-10)
+- The Rule Book intel entry is under Personal.
+
 Version 0.10.2 (2026-11-10)
 - The New Game Plus - Renewed achievement is now "Use a consumable item": use any of its four ship items (S-mod slot, D-mod removal, Stat tuning, Extra ordnance points). D-mod removal and Extra ordnance points did not count before.
 

@@ -4,7 +4,7 @@ Rules for one Starsector campaign. Negative rules make the game harder and give 
 it easier and cost points. Every rule has its own level.
 
 - **Opening it**: the Rule Book opens a few seconds after a new game starts (LunaLib setting). Open it again
-  from the **Rule Book** entry on the intel screen.
+  from the **Rule Book** entry under Personal on the intel screen.
 - **Picking**: left click increases a rule's intensity, right click diminishes it. Most rules have three
   levels: 1x, 1.5x and 2.5x. A negative rule and its positive mirror are never on together: picking one
   greys out the other. Only one golden rule can be picked. Nothing changes until you press **Confirm**.
