@@ -25,9 +25,10 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
 
 ## Layout
 
-- `data/config/rulebook/rules.csv` - one row per rule: levels, points and values per level (`|` separated),
+- `data/config/rulebook/rules.csv` - one row per rule: type (`hard`, `helpful`, or `neutral` for fluff worth
+  0 points), levels, points and values per level (`|` separated),
   required mod, unlock (`feat:<id>` or `challenge:<id>`), effect class, icon, description with `{value}`, flavor,
-  unlock hint, order, pair, section (the picker heading). Loaded merged over all mods by `RuleCatalog` at
+  unlock hint, order, pair, section, pairName (the shared tile name of a mirrored pair). Loaded merged over all mods by `RuleCatalog` at
   startup; rows whose required mod is off are dropped before their effect class is loaded. Sections sort by
   their lowest order, so keep each section's orders together.
 - `data/config/rulebook/challenges.csv` - one row per challenge: required rules (`rule_id:level|...`), goal
@@ -68,12 +69,12 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   `$rbr_ngpMultiplier`.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
   `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
-- `ui/RulePickerPanel` - tile grids on the left (tabs Rules, Challenges, Feats; Rules has a helpful grid
-  over a hard grid), a side panel on the right (balance, summary, hovered tile's details, challenge button).
+- `ui/RulePickerPanel` - tile grids on the left (tabs Rules, Challenges, Feats; Rules has a Neutral grid
+  of pair tiles and fluff over a Helpful-only and a Hard-only grid), a side panel on the right (balance, summary, hovered tile's details, challenge button).
   Size follows the screen. Each tab is a container panel built once; a tab switch moves the others off
   screen (never remove a scrolling TooltipMakerAPI with removeComponent: the panel holds its external
   scroller, so the labels stay). Tile labels sit in a content panel inside a scrolling TooltipMakerAPI;
   tiles and buttons are self drawn and hit tested (see Gambling Den) and follow the content panel's real
-  screen position each frame. Left click raises a rule, right click lowers it. `RuleBookDialog` hosts it;
+  screen position each frame. Left click is one step easier, right click one step harder. `RuleBookDialog` hosts it;
   `RuleBookIntel` is the permanent intel entry with the open button.
 - `compat/peerless` - the only package that may name Peerless Skills (`checkPeerlessIsolated`).

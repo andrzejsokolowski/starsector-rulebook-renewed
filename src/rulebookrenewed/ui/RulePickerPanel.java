@@ -38,11 +38,14 @@ import rulebookrenewed.Unlocks;
 /**
  * The rule picker: grids of tiles on the left, a side panel on the right.
  *
- * Rules tab: helpful rules in the top grid, hard rules in the bottom grid. Left click on a tile raises
- * its level, right click lowers it; pips on the tile show the level. A hard rule and its helpful mirror
- * are never on together (RuleManager.setLevel switches the other side off). Challenges tab: one tile per
- * challenge; a click selects it and the side panel's button takes it on or gives it up. Feats tab: one
- * tile per feat. The side panel holds the balance meter, a summary, and the hovered tile's details.
+ * Rules tab: three grids. Neutral: one tile per mirrored pair (hard rule and helpful twin) plus fluff rules
+ * that change nothing about difficulty. Helpful: rules with no hard twin. Hard: rules with no helpful twin.
+ * Everywhere, left click moves a tile one step toward easier and right click one step toward harder: on a
+ * pair tile from the hard levels through Off to the helpful levels, on a helpful tile up and down its
+ * levels, on a hard tile the other way round. Pips on the tile show where it stands. Challenges tab: one
+ * tile per challenge; a click selects it and the side panel's button takes it on or gives it up. Feats
+ * tab: one tile per feat. The side panel holds the balance meter, a summary, and the hovered tile's
+ * details.
  *
  * Each tab is one container panel built once. A tab switch moves the other containers off screen, so no
  * label of another tab can stay behind. Every grid is a scrolling TooltipMakerAPI holding a content panel
@@ -93,6 +96,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         final float x, y, w, h;
         final List<Tile> tiles = new ArrayList<>();
         CustomPanelAPI content;
+        LabelAPI count;
         float contentLeft, contentTop;
 
         Grid(int tab, float x, float y, float w, float h) {
@@ -106,11 +110,14 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         }
     }
 
-    /** One tile. x, y: its top left in grid content coordinates. Exactly one of rule, challenge, feat is set. */
+    /**
+     * One tile. x, y: its top left in grid content coordinates. A rule tile has a hard rule, a helpful rule,
+     * or both (a mirrored pair); a fluff rule sits in the helpful slot. Otherwise a challenge or a feat.
+     */
     private static final class Tile {
         final Grid grid;
         final float x, y;
-        RuleSpec rule;
+        RuleSpec hard, helpful;
         ChallengeSpec challenge;
         Feats.Feat feat;
         String iconPath;
@@ -120,6 +127,39 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
             this.grid = grid;
             this.x = x;
             this.y = y;
+        }
+
+        boolean isRule() {
+            return hard != null || helpful != null;
+        }
+
+        /** The rule that is on, or null when the tile is off. */
+        RuleSpec active() {
+            if (hard != null && RuleState.level(hard) > 0) return hard;
+            if (helpful != null && RuleState.level(helpful) > 0) return helpful;
+            return null;
+        }
+
+        /** Below 0: the hard rule's level, negated. Above 0: the helpful rule's level. */
+        int state() {
+            return (helpful != null ? RuleState.level(helpful) : 0) - (hard != null ? RuleState.level(hard) : 0);
+        }
+
+        int minState() {
+            return hard != null && usable(hard) ? -hard.levels : 0;
+        }
+
+        int maxState() {
+            return helpful != null && usable(helpful) ? helpful.levels : 0;
+        }
+
+        boolean locked() {
+            return minState() == 0 && maxState() == 0 && state() == 0;
+        }
+
+        boolean held() {
+            return (hard != null && !Challenges.activeRequiring(hard).isEmpty())
+                    || (helpful != null && !Challenges.activeRequiring(helpful).isEmpty());
         }
     }
 
@@ -134,7 +174,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
 
     private LabelAPI balance, hardSummary, helpfulSummary, career, hint;
     private LabelAPI detailTitle, detailKind, detailBody, detailFlavor;
-    private LabelAPI helpfulCount, hardCount, challengeCount, featCount;
+    private LabelAPI challengeCount, featCount;
     private Btn challengeAction;
     private float detailTop, detailBottom, meterX, meterY, meterW;
 
@@ -216,34 +256,61 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
     }
 
     /** A header bar over a grid: title on the left, a count next to it. Returns the count label. */
-    private LabelAPI header(CustomPanelAPI page, String title, Color color, float top) {
-        label(page, title, color, 10f, top + 6f, 240f, 18f, Fonts.ORBITRON_12, Alignment.LMID);
-        return label(page, "", DIM, 220f, top + 6f, 300f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
+    private LabelAPI header(CustomPanelAPI page, String title, Color color, float left, float top) {
+        label(page, title, color, left + 10f, top + 6f, 110f, 18f, Fonts.ORBITRON_12, Alignment.LMID);
+        return label(page, "", DIM, left + 120f, top + 6f, 80f, 18f, Fonts.DEFAULT_SMALL, Alignment.LMID);
     }
 
     private void buildRulesPage() {
         CustomPanelAPI page = page(TAB_RULES);
         float pageH = panelH - pageTop - PAD;
-        float block = (pageH - 10f) / 2f;
+        float topBlock = (pageH - 10f) * 0.56f;
+        float bottomTop = topBlock + 10f, bottomBlock = pageH - bottomTop;
 
-        helpfulCount = header(page, "HELPFUL RULES", RuleBookIntel.helpfulColor(), 0f);
-        button(page, "clear:helpful", "Clear all", leftW - 110f, 3f, 104f, HEADER_H - 6f, TAB_RULES);
-        Grid helpful = grid(page, TAB_RULES, HEADER_H, block - HEADER_H);
-        for (RuleSpec rule : RuleCatalog.ofType(false)) addRuleTile(helpful, rule);
+        // Sort the rules into mirrored pairs (plus fluff), helpful-only and hard-only.
+        List<RuleSpec[]> neutral = new ArrayList<>();
+        List<RuleSpec> helpfulOnly = new ArrayList<>(), hardOnly = new ArrayList<>();
+        Map<String, Integer> pairSize = new HashMap<>();
+        for (RuleSpec rule : RuleCatalog.all()) pairSize.merge(rule.pair, 1, Integer::sum);
+        Map<String, RuleSpec[]> pairs = new HashMap<>();
+        for (RuleSpec rule : RuleCatalog.all()) {
+            if (rule.neutral) neutral.add(new RuleSpec[] {null, rule});
+            else if (pairSize.get(rule.pair) > 1) {
+                RuleSpec[] pair = pairs.get(rule.pair);
+                if (pair == null) {
+                    pair = new RuleSpec[2];
+                    pairs.put(rule.pair, pair);
+                    neutral.add(pair);
+                }
+                pair[rule.hard ? 0 : 1] = rule;
+            } else if (rule.hard) hardOnly.add(rule);
+            else helpfulOnly.add(rule);
+        }
+
+        Grid both = grid(TAB_RULES, 0f, HEADER_H, leftW, topBlock - HEADER_H);
+        both.count = header(page, "NEUTRAL", GOLD, 0f, 0f);
+        button(page, "clear:" + grids.indexOf(both), "Clear all", leftW - 110f, 3f, 104f, HEADER_H - 6f, TAB_RULES);
+        for (RuleSpec[] pair : neutral) addRuleTile(both, pair[0], pair[1]);
+        finish(page, both);
+
+        float helpfulW = Math.round((leftW - 10f) * 0.68f), hardW = leftW - 10f - helpfulW, hardX = helpfulW + 10f;
+        Grid helpful = grid(TAB_RULES, 0f, bottomTop + HEADER_H, helpfulW, bottomBlock - HEADER_H);
+        helpful.count = header(page, "HELPFUL", RuleBookIntel.helpfulColor(), 0f, bottomTop);
+        button(page, "clear:" + grids.indexOf(helpful), "Clear all", helpfulW - 110f, bottomTop + 3f, 104f, HEADER_H - 6f, TAB_RULES);
+        for (RuleSpec rule : helpfulOnly) addRuleTile(helpful, null, rule);
         finish(page, helpful);
 
-        float top = block + 10f;
-        hardCount = header(page, "HARD RULES", RuleBookIntel.hardColor(), top);
-        button(page, "clear:hard", "Clear all", leftW - 110f, top + 3f, 104f, HEADER_H - 6f, TAB_RULES);
-        Grid hard = grid(page, TAB_RULES, top + HEADER_H, block - HEADER_H);
-        for (RuleSpec rule : RuleCatalog.ofType(true)) addRuleTile(hard, rule);
+        Grid hard = grid(TAB_RULES, hardX, bottomTop + HEADER_H, hardW, bottomBlock - HEADER_H);
+        hard.count = header(page, "HARD", RuleBookIntel.hardColor(), hardX, bottomTop);
+        button(page, "clear:" + grids.indexOf(hard), "Clear all", hardX + hardW - 110f, bottomTop + 3f, 104f, HEADER_H - 6f, TAB_RULES);
+        for (RuleSpec rule : hardOnly) addRuleTile(hard, rule, null);
         finish(page, hard);
     }
 
     private void buildChallengesPage() {
         CustomPanelAPI page = page(TAB_CHALLENGES);
-        challengeCount = header(page, "CHALLENGES", GOLD, 0f);
-        Grid grid = grid(page, TAB_CHALLENGES, HEADER_H, panelH - pageTop - PAD - HEADER_H);
+        challengeCount = header(page, "CHALLENGES", GOLD, 0f, 0f);
+        Grid grid = grid(TAB_CHALLENGES, 0f, HEADER_H, leftW, panelH - pageTop - PAD - HEADER_H);
         for (ChallengeSpec spec : Challenges.all()) {
             Tile tile = nextTile(grid);
             tile.challenge = spec;
@@ -255,8 +322,8 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
 
     private void buildFeatsPage() {
         CustomPanelAPI page = page(TAB_FEATS);
-        featCount = header(page, "FEATS", GOLD, 0f);
-        Grid grid = grid(page, TAB_FEATS, HEADER_H, panelH - pageTop - PAD - HEADER_H);
+        featCount = header(page, "FEATS", GOLD, 0f, 0f);
+        Grid grid = grid(TAB_FEATS, 0f, HEADER_H, leftW, panelH - pageTop - PAD - HEADER_H);
         for (Feats.Feat feat : Feats.all()) {
             Tile tile = nextTile(grid);
             tile.feat = feat;
@@ -266,9 +333,9 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         finish(page, grid);
     }
 
-    /** A grid box at the given top inside a page; tiles are added with nextTile, then finish builds it. */
-    private Grid grid(CustomPanelAPI page, int tab, float topInPage, float h) {
-        Grid grid = new Grid(tab, PAD, pageTop + topInPage, leftW, h);
+    /** A grid box at the given place inside a page; tiles are added with nextTile, then finish builds it. */
+    private Grid grid(int tab, float leftInPage, float topInPage, float w, float h) {
+        Grid grid = new Grid(tab, PAD + leftInPage, pageTop + topInPage, w, h);
         grids.add(grid);
         return grid;
     }
@@ -288,10 +355,11 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         return tile;
     }
 
-    private void addRuleTile(Grid grid, RuleSpec rule) {
+    private void addRuleTile(Grid grid, RuleSpec hard, RuleSpec helpful) {
         Tile tile = nextTile(grid);
-        tile.rule = rule;
-        tile.iconPath = rule.icon;
+        tile.hard = hard;
+        tile.helpful = helpful;
+        tile.iconPath = (hard != null ? hard : helpful).icon;
     }
 
     private void finish(CustomPanelAPI page, Grid grid) {
@@ -316,7 +384,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
     }
 
     private static String tileName(Tile tile) {
-        if (tile.rule != null) return tile.rule.name;
+        if (tile.isRule()) return (tile.hard != null ? tile.hard : tile.helpful).pairName;
         if (tile.challenge != null) return tile.challenge.name;
         return tile.feat.name;
     }
@@ -352,7 +420,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         }
         hovered = null;
         shown = tab == TAB_CHALLENGES ? selectedChallenge : null;
-        hint.setText(tab == TAB_RULES ? "Left click raises a rule, right click lowers it."
+        hint.setText(tab == TAB_RULES ? "Left click: easier.   Right click: harder."
                 : tab == TAB_CHALLENGES ? "Click a challenge to pick it." : "");
         refresh();
     }
@@ -367,7 +435,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         int hardOn = 0, hardPoints = 0, helpOn = 0, helpPoints = 0;
         for (RuleSpec rule : RuleCatalog.all()) {
             int level = RuleState.level(rule);
-            if (level <= 0) continue;
+            if (level <= 0 || rule.neutral) continue;
             if (rule.hard) {
                 hardOn++;
                 hardPoints += rule.points(level);
@@ -379,8 +447,12 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         hardSummary.setText("Hard: " + hardOn + " on, " + hardPoints);
         helpfulSummary.setText("Helpful: " + helpOn + " on, +" + helpPoints);
         career.setText(Balance.ngpInstalled() ? "Career points " + Balance.formatMultiplier(Balance.ngpMultiplier(net)) : "");
-        helpfulCount.setText(helpOn + " on");
-        hardCount.setText(hardOn + " on");
+        for (Grid grid : grids) {
+            if (grid.count == null || grid.tab != TAB_RULES) continue;
+            int on = 0;
+            for (Tile tile : grid.tiles) if (tile.active() != null) on++;
+            grid.count.setText(on + " on");
+        }
 
         int done = 0;
         for (ChallengeSpec spec : Challenges.all()) if (Challenges.isComplete(spec)) done++;
@@ -402,7 +474,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         return rule.hard ? RuleBookIntel.hardColor() : RuleBookIntel.helpfulColor();
     }
 
-    private static boolean usable(RuleSpec rule) {
+    static boolean usable(RuleSpec rule) {
         return Unlocks.isUnlocked(rule) || RuleState.level(rule) > 0;
     }
 
@@ -411,20 +483,19 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
     }
 
     private void fillTile(Tile tile) {
-        if (tile.rule != null) {
-            RuleSpec rule = tile.rule;
-            int level = RuleState.level(rule);
-            if (!usable(rule)) {
+        if (tile.isRule()) {
+            RuleSpec active = tile.active();
+            if (tile.locked()) {
                 tile.name.setColor(DIM.darker());
                 tile.status.setText("Locked");
                 tile.status.setColor(DIM.darker());
-            } else if (level > 0) {
+            } else if (active != null) {
                 tile.name.setColor(Color.WHITE);
-                tile.status.setText(signed(rule.points(level)));
-                tile.status.setColor(typeColor(rule));
+                tile.status.setText(active.neutral ? "On" : signed(active.points(RuleState.level(active))));
+                tile.status.setColor(active.neutral ? GOLD : typeColor(active));
             } else {
                 tile.name.setColor(TEXT);
-                tile.status.setText(signed(rule.points(1)));
+                tile.status.setText("Off");
                 tile.status.setColor(DIM);
             }
         } else if (tile.challenge != null) {
@@ -454,13 +525,6 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         }
     }
 
-    private static RuleSpec mirror(RuleSpec rule) {
-        for (RuleSpec other : RuleCatalog.all()) {
-            if (other != rule && other.hard != rule.hard && other.pair.equals(rule.pair)) return other;
-        }
-        return null;
-    }
-
     private static RuleSpec firstRuleOpenedBy(Feats.Feat feat) {
         for (RuleSpec rule : RuleCatalog.all()) if (feat.id.equals(rule.featId())) return rule;
         return null;
@@ -478,7 +542,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
             setFlavor("");
             return;
         }
-        if (tile.rule != null) ruleDetail(tile.rule);
+        if (tile.isRule()) ruleDetail(tile);
         else if (tile.challenge != null) challengeDetail(tile.challenge);
         else featDetail(tile.feat);
 
@@ -508,29 +572,34 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         detailFlavor.getPosition().inTL(sideX + 12f, detailBottom - 10f - h);
     }
 
-    private void ruleDetail(RuleSpec rule) {
-        int level = RuleState.level(rule);
-        detailTitle.setText(rule.name);
-        detailTitle.setColor(usable(rule) ? typeColor(rule) : DIM);
-        String kind = rule.hard ? "Hard rule" : "Helpful rule";
-        if (!usable(rule)) kind += ", locked";
-        else if (level > 0) kind += ", level " + RuleSpec.roman(level) + (rule.levels > 1 ? " of " + RuleSpec.roman(rule.levels) : "");
-        else kind += ", off";
+    private void ruleDetail(Tile tile) {
+        RuleSpec active = tile.active();
+        RuleSpec first = tile.hard != null ? tile.hard : tile.helpful;
+        detailTitle.setText(first.pairName);
+        detailTitle.setColor(tile.locked() ? DIM : active == null ? TEXT : active.neutral ? GOLD : typeColor(active));
+        String kind;
+        if (tile.locked()) kind = "Locked";
+        else if (active == null) kind = "Off";
+        else kind = active.name + (active.levels > 1 ? " " + RuleSpec.roman(RuleState.level(active)) : "");
         detailKind.setText(kind);
-        detailKind.setColor(DIM);
+        detailKind.setColor(active == null ? DIM : active.neutral ? GOLD : typeColor(active));
 
-        StringBuilder body = new StringBuilder(rule.describeAllLevels());
-        if (level > 0 && rule.levels > 1) body.append("\n\nNow: ").append(rule.describe(level));
-        body.append("\n\nPoints: ").append(rule.pointsText());
-        RuleSpec mirror = mirror(rule);
-        if (mirror != null) body.append("\nTurns off ").append(mirror.name).append('.');
-        if (!usable(rule) && !rule.unlockHint.isEmpty()) body.append("\n\n").append(rule.unlockHint);
-        for (ChallengeSpec spec : Challenges.activeRequiring(rule)) {
-            body.append("\n\nHeld at ").append(RuleSpec.roman(spec.levelFor(rule))).append(" by ").append(spec.name)
-                    .append(". Lowering it ends the challenge.");
+        StringBuilder body = new StringBuilder();
+        if (active != null && active.levels > 1) body.append("Now: ").append(active.describe(RuleState.level(active))).append("\n\n");
+        for (RuleSpec side : new RuleSpec[] {tile.helpful, tile.hard}) {
+            if (side == null) continue;
+            if (tile.hard != null && tile.helpful != null) body.append(side.hard ? "Harder: " : "Easier: ").append(side.name).append(". ");
+            body.append(side.describeAllLevels());
+            if (!side.neutral) body.append("  Points ").append(side.pointsText()).append('.');
+            if (!usable(side) && !side.unlockHint.isEmpty()) body.append("  Locked: ").append(side.unlockHint);
+            body.append("\n\n");
+            for (ChallengeSpec spec : Challenges.activeRequiring(side)) {
+                body.append("Held at ").append(RuleSpec.roman(spec.levelFor(side))).append(" by ").append(spec.name)
+                        .append(". Lowering it ends the challenge.\n\n");
+            }
         }
-        setBody(body.toString(), TEXT);
-        setFlavor(rule.flavor);
+        setBody(body.toString().trim(), TEXT);
+        setFlavor((active != null ? active : first).flavor);
     }
 
     private void challengeDetail(ChallengeSpec spec) {
@@ -589,10 +658,14 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
             return;
         }
         if (action.startsWith("clear:")) {
-            boolean hard = action.endsWith("hard");
-            for (RuleSpec rule : RuleCatalog.ofType(hard)) {
+            Grid grid = grids.get(Integer.parseInt(action.substring(6)));
+            for (Tile tile : grid.tiles) {
                 // Rules a running challenge holds stay; lowering them would end the challenge.
-                if (RuleState.level(rule) > 0 && Challenges.activeRequiring(rule).isEmpty()) RuleManager.setLevel(rule, 0);
+                for (RuleSpec rule : new RuleSpec[] {tile.hard, tile.helpful}) {
+                    if (rule != null && RuleState.level(rule) > 0 && Challenges.activeRequiring(rule).isEmpty()) {
+                        RuleManager.setLevel(rule, 0);
+                    }
+                }
             }
             click();
             refresh();
@@ -607,18 +680,18 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         }
     }
 
+    /** Left click: one step toward easier. Right click: one step toward harder. */
     private void clickTile(Tile tile, boolean right) {
-        if (tile.rule != null) {
-            RuleSpec rule = tile.rule;
-            if (!usable(rule)) return;
-            int level = RuleState.level(rule);
-            int next;
-            if (right) next = Math.max(0, level - 1);
-            else if (level < rule.levels) next = level + 1;
-            // Past the top a click turns the rule off, except when a challenge holds it.
-            else next = Challenges.activeRequiring(rule).isEmpty() ? 0 : level;
-            if (next == level) return;
-            RuleManager.setLevel(rule, next); // switches the mirror off
+        if (tile.isRule()) {
+            int state = tile.state();
+            int next = Math.max(tile.minState(), Math.min(tile.maxState(), state + (right ? -1 : 1)));
+            if (next == state) return;
+            if (next > 0) RuleManager.setLevel(tile.helpful, next); // switches the hard twin off
+            else if (next < 0) RuleManager.setLevel(tile.hard, -next); // switches the helpful twin off
+            else {
+                if (tile.hard != null) RuleManager.setLevel(tile.hard, 0);
+                if (tile.helpful != null) RuleManager.setLevel(tile.helpful, 0);
+            }
             click();
             refresh();
             return;
@@ -793,7 +866,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
             for (Btn b : buttons) if (buttonShown(b)) drawButton(b, alpha);
 
             if (shown != null) {
-                Color tint = shown.rule != null && !usable(shown.rule) ? DIM : Color.WHITE;
+                Color tint = shown.isRule() && shown.locked() ? DIM : Color.WHITE;
                 rect(sideX + 12f, detailTop + 8f, DETAIL_ICON, DETAIL_ICON, TILE_OFF, alpha);
                 drawIcon(shown.iconPath, sideX + 12f, detailTop + 8f, DETAIL_ICON, tint, alpha);
             }
@@ -825,19 +898,15 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
         float iconAlpha;
         Color tint = Color.WHITE;
         boolean gold = false;
-        int level = 0, levels = 0;
-        if (tile.rule != null) {
-            RuleSpec rule = tile.rule;
-            level = RuleState.level(rule);
-            levels = rule.levels;
-            if (!usable(rule)) {
+        if (tile.isRule()) {
+            RuleSpec active = tile.active();
+            if (tile.locked()) {
                 accent = DIM.darker();
                 fill = TILE_LOCKED;
                 iconAlpha = 0.2f;
                 tint = DIM;
-                levels = 0;
-            } else if (level > 0) {
-                accent = typeColor(rule);
+            } else if (active != null) {
+                accent = active.neutral ? GOLD : typeColor(active);
                 fill = GLDraw.darken(accent, 0.72f);
                 iconAlpha = 1f;
             } else {
@@ -846,7 +915,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
                 iconAlpha = 0.5f;
                 tint = new Color(200, 200, 200);
             }
-            gold = !Challenges.activeRequiring(rule).isEmpty();
+            gold = tile.held();
         } else if (tile.challenge != null) {
             ChallengeSpec spec = tile.challenge;
             boolean complete = Challenges.isComplete(spec), active = Challenges.isActive(spec);
@@ -869,13 +938,36 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin {
 
         drawIcon(tile.iconPath, left + (TILE_W - ICON) / 2f, top + 36f, ICON, tint, alpha * iconAlpha);
 
-        if (levels > 0) {
-            float total = levels * PIP_W + (levels - 1) * PIP_GAP;
-            float px = left + (TILE_W - total) / 2f, py = top + TILE_H - 12f;
-            for (int l = 1; l <= levels; l++) {
-                rect(px, py, PIP_W, PIP_H, l <= level ? accent : PIP_OFF, alpha);
-                px += PIP_W + PIP_GAP;
+        if (tile.isRule() && !tile.locked()) drawPips(tile, left, top + TILE_H - 12f, alpha);
+    }
+
+    /**
+     * Pips under a rule tile. A pair tile has its hard levels left of a centre mark and its helpful levels
+     * right of it, filling outward from the centre; a one-sided tile has one row.
+     */
+    private void drawPips(Tile tile, float left, float top, float alpha) {
+        int state = tile.state();
+        if (tile.hard != null && tile.helpful != null) {
+            float w = 7f, gap = 2f, cx = left + TILE_W / 2f;
+            rect(cx - 1f, top - 2f, 2f, PIP_H + 4f, DIM, alpha * 0.6f);
+            for (int l = 1; l <= tile.hard.levels; l++) {
+                Color c = -state >= l ? RuleBookIntel.hardColor() : usable(tile.hard) ? PIP_OFF : TILE_LOCKED;
+                rect(cx - 4f - l * (w + gap) + gap, top, w, PIP_H, c, alpha);
             }
+            for (int l = 1; l <= tile.helpful.levels; l++) {
+                Color c = state >= l ? RuleBookIntel.helpfulColor() : usable(tile.helpful) ? PIP_OFF : TILE_LOCKED;
+                rect(cx + 4f + (l - 1) * (w + gap), top, w, PIP_H, c, alpha);
+            }
+            return;
+        }
+        RuleSpec rule = tile.hard != null ? tile.hard : tile.helpful;
+        int level = Math.abs(state);
+        Color on = rule.neutral ? GOLD : typeColor(rule);
+        float total = rule.levels * PIP_W + (rule.levels - 1) * PIP_GAP;
+        float px = left + (TILE_W - total) / 2f;
+        for (int l = 1; l <= rule.levels; l++) {
+            rect(px, top, PIP_W, PIP_H, l <= level ? on : PIP_OFF, alpha);
+            px += PIP_W + PIP_GAP;
         }
     }
 

@@ -170,6 +170,7 @@ tasks.register('checkReleaseFiles') {
         def ruleLevels = [:]
         def ruleUnlocks = [:]
         def ids = [] as Set
+        def pairRows = [:]
         lines.drop(1).findAll { it.trim() && !it.startsWith('#') }.each { line ->
             def cells = parseCsv(line)
             if (cells.size() != header.size()) { problems << "rules.csv row has ${cells.size()} cells, header has ${header.size()}: ${line.take(40)}"; return }
@@ -183,9 +184,20 @@ tasks.register('checkReleaseFiles') {
             if (levels < 1 || levels > 5) problems << "rules.csv ${row.id}: levels must be 1 to 5"
             if (row.points.split('\\|').size() != levels) problems << "rules.csv ${row.id}: points need ${levels} entries"
             if (row.values.split('\\|').size() != levels) problems << "rules.csv ${row.id}: values need ${levels} entries"
-            if (!(row.type in ['hard', 'helpful'])) problems << "rules.csv ${row.id}: type must be hard or helpful"
+            if (!(row.type in ['hard', 'helpful', 'neutral'])) problems << "rules.csv ${row.id}: type must be hard, helpful or neutral"
+            if (row.type == 'neutral' && row.points.split('\\|').any { it.trim() != '0' }) problems << "rules.csv ${row.id}: a neutral rule has 0 points"
+            pairRows.computeIfAbsent(row.pair ?: row.id) { [] } << row
             def src = file("src/${row.effect.replace('.', '/')}.java")
             if (!src.isFile()) problems << "rules.csv ${row.id}: effect class ${row.effect} not found"
+        }
+
+        // A pair is one hard and one helpful rule sharing a tile name; a neutral rule stands alone.
+        pairRows.each { key, members ->
+            if (members.size() > 2) problems << "rules.csv pair ${key}: more than two rules"
+            if (members.size() == 2) {
+                if (members*.type.sort() != ['hard', 'helpful']) problems << "rules.csv pair ${key}: needs one hard and one helpful rule"
+                if (!members[0].pairName || members[0].pairName != members[1].pairName) problems << "rules.csv pair ${key}: both rules need the same pairName"
+            }
         }
 
         // Challenges: required rules exist at a level they have, goals name a known feat, and every

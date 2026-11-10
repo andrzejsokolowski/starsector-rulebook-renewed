@@ -70,7 +70,8 @@ public final class RuleCatalog {
         if (!anyModEnabled(requiredMod)) return null;
 
         String type = str(row, "type").toLowerCase();
-        if (!type.equals("hard") && !type.equals("helpful")) throw new IllegalArgumentException("type must be hard or helpful");
+        if (!type.equals("hard") && !type.equals("helpful") && !type.equals("neutral"))
+            throw new IllegalArgumentException("type must be hard, helpful or neutral");
         String[] pointTexts = str(row, "points").split("[|]");
         String[] valueTexts = str(row, "values").split("[|]");
         int levels = Integer.parseInt(str(row, "levels"));
@@ -92,9 +93,12 @@ public final class RuleCatalog {
         String orderText = str(row, "order");
         float order = orderText.isEmpty() ? 1000f : Float.parseFloat(orderText);
 
-        return new RuleSpec(id, str(row, "name"), type.equals("hard"), points, valueTexts, requiredMod,
+        if (type.equals("neutral")) points = new int[levels]; // fluff never moves the balance
+        String name = str(row, "name");
+        String pairName = str(row, "pairName");
+        return new RuleSpec(id, name, type.equals("hard"), type.equals("neutral"), points, valueTexts, requiredMod,
                 str(row, "unlock"), icon, str(row, "description"), str(row, "flavor"), str(row, "unlockHint"),
-                order, str(row, "pair").isEmpty() ? id : str(row, "pair"),
+                order, str(row, "pair").isEmpty() ? id : str(row, "pair"), pairName.isEmpty() ? name : pairName,
                 str(row, "section").isEmpty() ? "Other" : str(row, "section"), (RuleEffect) effect);
     }
 

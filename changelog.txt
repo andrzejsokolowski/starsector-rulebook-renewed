@@ -1,3 +1,10 @@
+Version 0.6.0 (2026-11-10)
+- The Rules tab has three grids. Neutral: every hard rule and its helpful mirror share one tile, named after what it changes, like Enemy armor. Helpful and Hard: rules with no mirror.
+- Everywhere, left click makes the game easier and right click makes it harder. On a Neutral tile that walks from the hard levels through Off to the helpful levels.
+- New helpful rule Living Plating: in combat, the ship you fly regrows armor every second.
+- New hard rule Phase Ghosts: enemy phase ships are invisible while phased.
+- New rule Fireworks, just for fun and worth no points: destroyed ships burst into fireworks.
+
 Version 0.5.0 (2026-11-10)
 - New Rule Book screen: rules are tiles in two grids, helpful rules on top and hard rules below, with a side panel for the balance, a summary and the details of the tile under the mouse.
 - Left click on a tile raises its level, right click lowers it. Pips on the tile show the level.

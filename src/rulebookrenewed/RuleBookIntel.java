@@ -67,7 +67,7 @@ public final class RuleBookIntel extends BaseIntelPlugin {
             String levelText = rule.levels > 1 ? " " + RuleSpec.roman(level) : "";
             int points = rule.points(level);
             String pointText = points > 0 ? "+" + points : String.valueOf(points);
-            info.addPara(rule.name + levelText + "   " + pointText, rule.hard ? hardColor() : helpfulColor(), 5f);
+            info.addPara(rule.name + levelText + "   " + pointText, rule.neutral ? Misc.getTextColor() : rule.hard ? hardColor() : helpfulColor(), 5f);
             info.addPara(rule.describe(level), Misc.getGrayColor(), 1f);
         }
         if (!any) info.addPara("None. The Sector plays by its own rules.", Misc.getGrayColor(), 5f);
