@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Premium Seafood (rbr_premium_seafood): Every day your fleet gains {value} Volturnian Lobster while it has cargo space. -->
+<g>
+<path d="M56 56 L36 40 M72 56 L92 40 M58 42 Q52 24 58 12 M70 42 Q76 24 70 12" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0 34.0 L36.9 18.5 A17 17 0 1 1 18.2 21.8 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M98.0 34.0 L109.8 21.8 A17 17 0 1 1 91.1 18.5 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 106 L48 114 L52 100 L76 100 L80 114 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="53" y="84" width="22" height="14" rx="6" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="51" y="72" width="26" height="14" rx="6" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="64" cy="56" rx="16" ry="18" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

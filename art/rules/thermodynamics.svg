@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Thermodynamics (rbr_thermodynamics): While Emergency Burn is on, your fleet moves at the highest burn level. -->
+<g>
+<path d="M54 78 L54 26 A10 10 0 0 1 74 26 L74 78 A20 20 0 1 1 54 78 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 52 L68 52 L68 88 A10 10 0 1 1 60 88 Z" fill="#3CEB8C"/>
+<path d="M88 30 L98 30 M88 46 L98 46 M88 62 L98 62" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

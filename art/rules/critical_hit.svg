@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Critical Hit (rbr_critical_hit): Each hit by the ship you fly has a {value}% chance to deal double damage. -->
+<g>
+<circle cx="64" cy="64" r="34" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 18 L64 42 M64 86 L64 110 M18 64 L42 64 M86 64 L110 64" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.0 42.0 L68.5 56.2 L83.1 53.0 L73.0 64.0 L83.1 75.0 L68.5 71.8 L64.0 86.0 L59.5 71.8 L44.9 75.0 L55.0 64.0 L44.9 53.0 L59.5 56.2 Z" fill="#3CEB8C"/>
+</g>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Symbol Perseus (rbr_symbol_perseus): When the ship you fly destroys its third enemy ship within 8 seconds, and with each further kill in that time, -->
+<g>
+<path d="M18 88 L40 60 L62 74 L84 42 L110 54 M62 74 L86 100" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="18" cy="88" r="7" fill="#3CEB8C"/>
+<circle cx="40" cy="60" r="9" fill="#3CEB8C"/>
+<path d="M40 43 Q43.06 56.94 57 60 Q43.06 63.06 40 77 Q36.94 63.06 23 60 Q36.94 56.94 40 43 Z" fill="#3CEB8C"/>
+<circle cx="62" cy="74" r="7" fill="#3CEB8C"/>
+<circle cx="84" cy="42" r="9" fill="#3CEB8C"/>
+<path d="M84 25 Q87.06 38.94 101 42 Q87.06 45.06 84 59 Q80.94 45.06 67 42 Q80.94 38.94 84 25 Z" fill="#3CEB8C"/>
+<circle cx="110" cy="54" r="7" fill="#3CEB8C"/>
+<circle cx="86" cy="100" r="7" fill="#3CEB8C"/>
+</g>
+</svg>

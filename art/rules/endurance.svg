@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Endurance (rbr_endurance): A ship of yours that falls below half of its maximum combat readiness regains the readiness of one deployment, -->
+<g>
+<path d="M64 108 C40 90 16 74 16 48 C16 28 32 18 46 18 C54 18 60 22 64 30 C68 22 74 18 82 18 C96 18 112 28 112 48 C112 74 88 90 64 108 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 62 L36 62 L46 42 L58 84 L70 34 L80 62 L120 62" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

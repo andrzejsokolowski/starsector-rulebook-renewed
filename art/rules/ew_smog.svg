@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- EW Smog (rbr_ew_smog): Maximum ECM rating of your side in battle increased by {value}%. -->
+<g>
+<path d="M20 40 Q24 92 84 100 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M52 70 L74 48" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="76" cy="46" r="6" fill="#3CEB8C"/>
+<path d="M42 92 L34 110 L66 110" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M84 24 L92 32 L100 22 L108 32 M86 48 L94 56 L102 46 L110 56" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

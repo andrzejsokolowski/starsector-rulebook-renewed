@@ -58,6 +58,6 @@ public final class RuleManager {
         }
         refresh(rule);
         Balance.publish();
-        if (old != level) Challenges.check();
+        if (old != level) Challenges.check(); // does nothing while the picker applies a batch
     }
 }

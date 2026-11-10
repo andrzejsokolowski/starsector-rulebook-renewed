@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Ordo Breaker (rbr_ordo_breaker): Damage taken by automated enemy ships increased by {value}%. -->
+<g>
+<rect x="34" y="34" width="60" height="60" rx="6" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M48 34 L48 20 M48 94 L48 108 M34 48 L20 48 M94 48 L108 48" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 34 L64 20 M64 94 L64 108 M34 64 L20 64 M94 64 L108 64" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M80 34 L80 20 M80 94 L80 108 M34 80 L20 80 M94 80 L108 80" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M54 34 L66 54 L56 66 L72 80 L66 94" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

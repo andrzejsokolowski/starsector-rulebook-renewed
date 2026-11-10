@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Blood Lust (rbr_blood_lust): After 30 days without a battle, maximum combat readiness of your ships decreased by {value}% until your next b -->
+<g>
+<path d="M64 14 C78 38 94 58 94 78 C94 96 80 108 64 108 C48 108 34 96 34 78 C34 58 50 38 64 14 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50 80 Q50 92 60 96" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

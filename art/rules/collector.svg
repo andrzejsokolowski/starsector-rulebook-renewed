@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Collector (rbr_collector): When the ship you fly or its fighters hit the hull of an enemy ship at {value}% hull or less, that ship is des -->
+<g>
+<path d="M40 112 Q48 62 80 16" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M78 20 Q40 4 10 40 Q44 30 74 42 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

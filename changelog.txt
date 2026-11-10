@@ -1,3 +1,16 @@
+Version 0.10.0 (2026-11-10)
+- Challenges work like in Unofficial New Game Plus: have a challenge's negative rules at full level by day 90 of the campaign and keep them until you reach level 15. Lowering one fails the challenge for that campaign. Blitz must be finished by day 730, Colonial Empire with five colonies. Saves started before this version and already past level 1 cannot start challenges.
+- The challenges about other mods are gone. Their rules are unlocked by that mod's achievement: Super Sol (Bring Sol into the Sector), Lucky Streak (Win at the slot machine), Omega Shard (Train an officer under an Omega core), Ascendant Worlds (Grow a colony past size 10).
+- Rules are grouped under Combat, Fleet, Colonies, Economy and Exploration.
+- New vector icons for every rule.
+- Points grow with each level: for example 4, 9 and 15 instead of 6, 9 and 15.
+- 56 rules rebalanced against Unofficial New Game Plus. Among them: Inflation takes 2, 3 or 5 percent of your credits a month; Flagship costs 30; Trade Embargo and Ghost Reinforcements give more points.
+- "Unlocked by" names the exact condition, for example "Reach level 15."
+- Price Gouging and Free Trade change tariffs by 30, 45 or 75 percent.
+- GLaDOS costs 10, 20 or 30 points.
+- Collector pays by ship size (250 to 5,000 credits) and makes no sound.
+- Ascendant Worlds gives ascended colonies 3 stability and 10, 15 or 25 percent more income.
+
 Version 0.9.2 (2026-11-10)
 - Fixed: the game disabled Rule Book - Renewed at start with "unmet requirements" even with Achievements - Renewed installed. The launcher could never match the required Achievements version.
 

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Ironman (rbr_ironman): Ships you lose in battle cannot be recovered. -->
+<g>
+<path d="M36 104 L36 52 A28 28 0 0 1 92 52 L92 104 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 48 L64 88 M50 62 L78 62" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22 106 L106 106" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

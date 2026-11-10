@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Inflation (rbr_inflation): Every month you lose {value}% of your credits. -->
+<g>
+<path d="M64 14 C88 14 100 34 100 52 C100 74 82 90 64 92 C46 90 28 74 28 52 C28 34 40 14 64 14 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 92 L56 102 L72 102 Z" fill="#FF5064" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 104 Q52 112 62 116" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44 40 Q48 28 60 26" fill="none" stroke="#FFC2C9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

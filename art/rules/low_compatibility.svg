@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Low Compatibility (rbr_low_compatibility): Damage taken by the weapons and engines of your ships and your allies' ships, and their repair time in combat, -->
+<g>
+<path d="M52 16 L52 40 M76 16 L76 40" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="36" y="40" width="56" height="40" rx="10" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 80 L64 96 Q64 108 50 108 L30 108" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M100.0 86.0 L102.8 95.2 L112.0 98.0 L102.8 100.8 L100.0 110.0 L97.2 100.8 L88.0 98.0 L97.2 95.2 Z" fill="#FF5064"/>
+</g>
+</svg>

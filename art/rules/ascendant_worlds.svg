@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Ascendant Worlds (rbr_ascendant_worlds): Stability of your colonies above size 10 increased by 3 and their income by {value}%. -->
+<g>
+<circle cx="60" cy="72" r="26" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="60" cy="72" rx="48" ry="13" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-18 60 72)"/>
+<path d="M100 14 Q102.52 25.48 114 28 Q102.52 30.52 100 42 Q97.48 30.52 86 28 Q97.48 25.48 100 14 Z" fill="#3CEB8C"/>
+</g>
+</svg>

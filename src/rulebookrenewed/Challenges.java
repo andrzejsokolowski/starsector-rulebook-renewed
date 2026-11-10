@@ -1,9 +1,6 @@
 package rulebookrenewed;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,31 +12,29 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.util.Misc;
 
 /**
- * Challenges: hard rules to keep on, plus a goal. Nothing is "taken on": a challenge makes progress
- * whenever its conditions hold (every required rule at its level or higher, and positive rules within
- * the challenge's limit), whatever else the player does.
+ * Challenges, the way Unofficial New Game Plus runs them: a set of hard rules at full level, switched on
+ * within START_DAYS days of the campaign start and kept on until the player reaches the maximum level.
+ * A challenge starts by itself the first time its conditions hold inside that window. Once started,
+ * lowering a required rule or going over its cap on positive rules fails it for the rest of the campaign.
+ * Some challenges also have a time limit (reach the maximum level by a day of the campaign) or a goal
+ * that must hold when the maximum level is reached (five colonies).
  *
- * Counted goals (battles won, fleets beaten) add up only what happens while the conditions hold; dropping
- * the rules pauses the count. A goal with a deadline must be reached within that many days of its first
- * counted win, or the count starts over. "Hold out" goals count unbroken days and start over when the
- * conditions break. A one-time deed counts when it happens while the conditions hold; a state goal that
- * was already true when the rules went on (five colonies, a million credits) counts after HOLD_DAYS days.
- *
- * State is kept per save. Completion is the feat challenge_<id>, which opens the reward rules.
+ * State is kept per save. Completion is the feat challenge_&lt;id&gt;, which opens the reward rules.
  */
 public final class Challenges {
 
     private static final Logger LOG = Global.getLogger(Challenges.class);
     private static final String CSV = "data/config/rulebook/challenges.csv";
-    private static final String STATE_KEY = "rbr_challengeState";
-    /** Days the rules must stay on before a goal that was already true when they went on counts. */
-    public static final int HOLD_DAYS = 90;
-    /** Goal feats that describe a state that can be true before the rules go on (not a one-time deed). */
-    private static final Set<String> STATE_FEATS = new HashSet<>(Arrays.asList("colony", "colony6", "colonies5", "millionaire"));
+    private static final String RUNS_KEY = "rbr_challengeRuns";
+    /** The pre-0.10.0 progress map; dropped on load. */
+    private static final String OLD_STATE_KEY = "rbr_challengeState";
+    /** Days from the campaign start in which a challenge can start. */
+    public static final int START_DAYS = 90;
+    private static final String RUNNING = "running", FAILED = "failed";
     private static final Map<String, ChallengeSpec> CHALLENGES = new LinkedHashMap<>();
+    private static int batch;
 
     private Challenges() {}
 
@@ -74,43 +69,29 @@ public final class Challenges {
         for (String part : str(row, "rules").split("[|]")) {
             part = part.trim();
             if (part.isEmpty()) continue;
-            String[] bits = part.split(":");
-            RuleSpec rule = RuleCatalog.get(bits[0].trim());
+            RuleSpec rule = RuleCatalog.get(part);
             if (rule == null) return null; // its rule is not loaded (a missing mod); leave the challenge out
-            int level = bits.length > 1 ? Integer.parseInt(bits[1].trim()) : 1;
-            requirements.add(new ChallengeSpec.Requirement(rule, Math.max(1, Math.min(level, rule.levels))));
+            requirements.add(new ChallengeSpec.Requirement(rule, rule.levels));
         }
 
-        String[] goal = str(row, "goal").split(":");
         Feats.Feat feat = null;
-        int amount;
-        switch (goal[0].trim()) {
-            case "days":
-                amount = Integer.parseInt(goal[1].trim());
-                break;
-            case "wins":
-                feat = Feats.get(Counters.WINS);
-                amount = Integer.parseInt(goal[1].trim());
-                break;
-            case "feat":
-                feat = Feats.get(goal[1].trim());
-                if (feat == null) throw new IllegalArgumentException("unknown feat " + goal[1]);
-                if (!feat.available()) return null; // the feat's mod is off
-                amount = goal.length > 2 ? Integer.parseInt(goal[2].trim()) : 1;
-                break;
-            default:
-                throw new IllegalArgumentException("goal must be feat:<id>[:<count>], wins:<count> or days:<count>");
+        int amount = 1;
+        String goal = str(row, "goal");
+        if (!goal.isEmpty()) {
+            String[] bits = goal.split(":");
+            if (!bits[0].trim().equals("feat") || bits.length < 2) throw new IllegalArgumentException("goal must be feat:<id>[:<count>]");
+            feat = Feats.get(bits[1].trim());
+            if (feat == null) throw new IllegalArgumentException("unknown feat " + bits[1]);
+            if (!feat.available()) return null; // the feat's mod is off
+            if (bits.length > 2) amount = Integer.parseInt(bits[2].trim());
         }
         String limitText = str(row, "helpfulLimit");
         int limit = limitText.isEmpty() ? -1 : Integer.parseInt(limitText);
         String orderText = str(row, "order");
         float order = orderText.isEmpty() ? 1000f : Float.parseFloat(orderText);
+        String deadline = str(row, "deadlineDays");
         return new ChallengeSpec(id, str(row, "name"), requirements, feat, Math.max(1, amount), limit,
-                intOr(str(row, "deadlineDays"), 0), order);
-    }
-
-    private static int intOr(String text, int fallback) {
-        return text.isEmpty() ? fallback : Integer.parseInt(text);
+                deadline.isEmpty() ? 0 : Integer.parseInt(deadline), order);
     }
 
     private static String str(JSONObject row, String key) {
@@ -136,6 +117,14 @@ public final class Challenges {
 
     public static final Levels LIVE = RuleState::level;
 
+    public static int maxLevel() {
+        try {
+            return Global.getSettings().getLevelupPlugin().getMaxLevel();
+        } catch (Throwable t) {
+            return 15;
+        }
+    }
+
     public static int positivePoints(Levels levels) {
         int sum = 0;
         for (RuleSpec rule : RuleCatalog.all()) {
@@ -144,7 +133,7 @@ public final class Challenges {
         return sum;
     }
 
-    /** True when every required rule is at its level or higher and positive rules are within the limit. */
+    /** True when every required rule is at full level and positive rules are within the limit. */
     public static boolean conditionsMet(ChallengeSpec spec, Levels levels) {
         for (ChallengeSpec.Requirement r : spec.requirements) {
             if (levels.level(r.rule) < r.level) return false;
@@ -156,76 +145,83 @@ public final class Challenges {
         return Unlocks.hasFeat(spec.featId());
     }
 
-    /** True when the goal can no longer happen in this save: a one-time deed done before the rules were on. */
-    public static boolean spent(ChallengeSpec spec) {
-        if (Global.getSector() == null || spec.goalFeat == null || spec.goalFeat.repeatable) return false;
-        if (STATE_FEATS.contains(spec.goalFeat.id)) return false;
-        Map<String, Object> s = state(spec);
-        boolean met = Boolean.TRUE.equals(s.get("met"));
-        int base = met ? intOf(s.get("base"), 0) : spec.goalFeat.count();
-        return base >= spec.goalAmount;
-    }
+    // ---- per-save state ----
 
     @SuppressWarnings("unchecked")
-    private static Map<String, Object> state(ChallengeSpec spec) {
+    private static Map<String, String> runs() {
         Map<String, Object> data = Global.getSector().getPersistentData();
-        Object stored = data.get(STATE_KEY);
+        Object stored = data.get(RUNS_KEY);
         if (!(stored instanceof Map)) {
-            stored = new HashMap<String, Map<String, Object>>();
-            data.put(STATE_KEY, stored);
+            stored = new HashMap<String, String>();
+            data.put(RUNS_KEY, stored);
         }
-        Map<String, Map<String, Object>> all = (Map<String, Map<String, Object>>) stored;
-        Map<String, Object> s = all.get(spec.id);
-        if (s == null) {
-            s = new HashMap<>();
-            all.put(spec.id, s);
-        }
-        return s;
+        return (Map<String, String>) stored;
     }
 
-    private static int intOf(Object value, int fallback) {
-        return value instanceof Integer ? (Integer) value : fallback;
+    /** Days since the campaign started, or -1 when the save is older than the start record. */
+    public static float campaignDays() {
+        long start = RuleState.campaignStart();
+        if (start < 0) return -1f;
+        return Global.getSector().getClock().getElapsedDaysSince(start);
     }
 
-    private static float daysSince(Object timestamp) {
-        if (!(timestamp instanceof Long)) return 0f;
-        return Global.getSector().getClock().getElapsedDaysSince((Long) timestamp);
+    /** True while a challenge may still start in this save. */
+    public static boolean startWindowOpen() {
+        float days = campaignDays();
+        return days >= 0f && days <= START_DAYS;
     }
 
-    public static int progress(ChallengeSpec spec) {
-        if (Global.getSector() == null) return 0;
-        Map<String, Object> s = state(spec);
-        if (spec.goalFeat == null) return Boolean.TRUE.equals(s.get("met")) ? (int) daysSince(s.get("metSince")) : 0;
-        return intOf(s.get("progress"), 0);
+    public static boolean isRunning(ChallengeSpec spec) {
+        return Global.getSector() != null && RUNNING.equals(runs().get(spec.id));
     }
 
-    /** Short progress for a challenge that is not complete, e.g. "3 / 10, 42 days left". Empty when there is none. */
-    public static String progressText(ChallengeSpec spec) {
+    public static boolean isFailed(ChallengeSpec spec) {
+        return Global.getSector() != null && FAILED.equals(runs().get(spec.id));
+    }
+
+    /** True when the challenge can still be won in this save. */
+    public static boolean possible(ChallengeSpec spec) {
+        if (Global.getSector() == null || isComplete(spec) || isFailed(spec)) return false;
+        return isRunning(spec) || startWindowOpen();
+    }
+
+    /** Short state for a challenge that is not complete, e.g. "Running, 120 days left". */
+    public static String statusText(ChallengeSpec spec) {
         if (Global.getSector() == null) return "";
-        Map<String, Object> s = state(spec);
-        int done = Math.min(progress(spec), spec.goalAmount);
-        if (spec.goalFeat == null) return done + " / " + spec.goalAmount + " days";
-        if (!spec.goalFeat.repeatable) {
-            if (spent(spec)) return "Already done in this campaign";
-            boolean held = Boolean.TRUE.equals(s.get("met")) && spec.goalFeat.count() >= spec.goalAmount;
-            return held ? Math.min(HOLD_DAYS, (int) daysSince(s.get("metSince"))) + " / " + HOLD_DAYS + " days" : "";
+        if (isFailed(spec)) return "Failed in this campaign";
+        float days = campaignDays();
+        if (isRunning(spec)) {
+            if (spec.deadlineDays <= 0) return "Running";
+            int left = Math.max(0, spec.deadlineDays - (int) days);
+            return "Running, " + left + (left == 1 ? " day left" : " days left");
         }
-        String text = done + " / " + spec.goalAmount;
-        if (spec.deadlineDays > 0 && done > 0) {
-            int left = Math.max(0, spec.deadlineDays - (int) daysSince(s.get("windowStart")));
-            text += ", " + left + (left == 1 ? " day left" : " days left");
-        }
-        return text;
+        if (days < 0f) return "Only in a campaign started with Rule Book 0.10.0 or later";
+        if (days > START_DAYS) return "Only in the first " + START_DAYS + " days of a campaign";
+        int left = Math.max(0, START_DAYS - (int) days);
+        return left + (left == 1 ? " day left to start" : " days left to start");
     }
 
-    /** Counts progress and completes challenges. Called daily, after battles and after every rule change. */
+    /** Suspends the checks while the picker applies several changes; the last end runs one check. */
+    public static void beginBatch() {
+        batch++;
+    }
+
+    public static void endBatch() {
+        batch = Math.max(0, batch - 1);
+        if (batch == 0) check();
+    }
+
+    public static void dropOldState() {
+        Global.getSector().getPersistentData().remove(OLD_STATE_KEY);
+    }
+
+    /** Starts, fails and completes challenges. Called daily, after battles and after every rule change. */
     public static void check() {
-        if (Global.getSector() == null) return;
-        long now = Global.getSector().getClock().getTimestamp();
+        if (Global.getSector() == null || batch > 0) return;
         for (ChallengeSpec spec : CHALLENGES.values()) {
             if (isComplete(spec)) continue;
             try {
-                if (advance(spec, now)) Unlocks.addFeat(spec.featId());
+                if (advance(spec)) Unlocks.addFeat(spec.featId());
             } catch (Throwable t) {
                 LOG.error("Rule Book: challenge " + spec.id + " could not be checked", t);
             }
@@ -233,38 +229,21 @@ public final class Challenges {
     }
 
     /** One evaluation step; true when the challenge is now complete. */
-    private static boolean advance(ChallengeSpec spec, long now) {
-        Map<String, Object> s = state(spec);
-        boolean before = Boolean.TRUE.equals(s.get("met"));
+    private static boolean advance(ChallengeSpec spec) {
+        Map<String, String> runs = runs();
+        String state = runs.get(spec.id);
+        if (FAILED.equals(state)) return false;
         boolean met = conditionsMet(spec, LIVE);
-        s.put("met", met);
-        int count = spec.goalFeat == null ? 0 : spec.goalFeat.count();
-        if (met && !before) {
-            s.put("metSince", now);
-            s.put("base", count);
-        }
-
-        if (spec.goalFeat == null) {
-            return met && daysSince(s.get("metSince")) >= spec.goalAmount;
-        }
-        if (spec.goalFeat.repeatable) {
-            // Whatever was won since the last look happened under the rules as they stood then.
-            int gained = Math.max(0, count - intOf(s.get("last"), count));
-            s.put("last", count);
-            int progress = intOf(s.get("progress"), 0);
-            if (before && gained > 0) {
-                if (progress == 0) s.put("windowStart", now);
-                progress += gained;
+        if (RUNNING.equals(state)) {
+            if (!met || (spec.deadlineDays > 0 && campaignDays() > spec.deadlineDays)) {
+                runs.put(spec.id, FAILED);
+                return false;
             }
-            if (spec.deadlineDays > 0 && progress > 0 && progress < spec.goalAmount
-                    && daysSince(s.get("windowStart")) > spec.deadlineDays) {
-                progress = 0;
-            }
-            s.put("progress", progress);
-            return progress >= spec.goalAmount;
+        } else {
+            if (!met || !startWindowOpen()) return false;
+            runs.put(spec.id, RUNNING);
         }
-        if (!met || count < spec.goalAmount) return false;
-        if (intOf(s.get("base"), count) < spec.goalAmount) return true;
-        return STATE_FEATS.contains(spec.goalFeat.id) && daysSince(s.get("metSince")) >= HOLD_DAYS;
+        if (Global.getSector().getPlayerStats().getLevel() < maxLevel()) return false;
+        return spec.goalFeat == null || spec.goalFeat.count() >= spec.goalAmount;
     }
 }

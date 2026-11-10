@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Slow Learners (rbr_slow_learners): Experience gained from battles decreased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M38 58 L38 84 Q64 100 90 84 L90 58 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 48 L64 26 L116 48 L64 70 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M104 54 L104 86" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="104" cy="90" r="6" fill="#FF5064"/>
+</g>
+<path d="M107.0 37.0 L122.0 20.0 L112.5 20.0 L112.5 6.0 L101.5 6.0 L101.5 20.0 L92.0 20.0 Z" fill="#FFC2C9"/>
+</svg>

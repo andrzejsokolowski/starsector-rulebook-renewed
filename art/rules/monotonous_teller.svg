@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Monotonous Teller (rbr_monotonous_teller): Every {value} days you lose 1 story point. -->
+<g>
+<path d="M24 26 L104 26 Q114 26 114 36 L114 78 Q114 88 104 88 L58 88 L34 108 L38 88 L24 88 Q14 88 14 78 L14 36 Q14 26 24 26 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="42" cy="57" r="7" fill="#FF5064"/>
+<circle cx="64" cy="57" r="7" fill="#FF5064"/>
+<circle cx="86" cy="57" r="7" fill="#FF5064"/>
+</g>
+</svg>

@@ -4,9 +4,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * One line of data/config/rulebook/challenges.csv: rules that must stay at or above a level, a goal, and
- * an optional cap on helpful rules. Finishing it unlocks every rule whose unlock column says
- * challenge:&lt;id&gt;.
+ * One line of data/config/rulebook/challenges.csv: hard rules that must be at full level from the first
+ * days of the campaign until the maximum level, an optional cap on positive rules, an optional time limit
+ * and an optional goal that must hold at the end. Finishing it unlocks every rule whose unlock column
+ * says challenge:&lt;id&gt;.
  */
 public final class ChallengeSpec {
 
@@ -23,13 +24,12 @@ public final class ChallengeSpec {
     public final String id;
     public final String name;
     public final List<Requirement> requirements;
-    /** A feat id; the goal is met when its count rises by goalAmount after the challenge starts. Null for a days goal. */
+    /** A feat whose count must be at least goalAmount when the maximum level is reached, or null. */
     public final Feats.Feat goalFeat;
-    /** Days to hold out when goalFeat is null, otherwise how far the feat's count must rise. */
     public final int goalAmount;
-    /** Most helpful points allowed while the challenge runs; -1 for no cap. */
+    /** Most positive points allowed while the challenge runs; -1 for no cap. */
     public final int helpfulLimit;
-    /** Days to reach the goal after taking it on, or 0 for no time limit (a days goal never has one). */
+    /** The campaign day by which the maximum level must be reached, or 0 for no time limit. */
     public final int deadlineDays;
     public final float order;
 
@@ -41,7 +41,7 @@ public final class ChallengeSpec {
         this.goalFeat = goalFeat;
         this.goalAmount = goalAmount;
         this.helpfulLimit = helpfulLimit;
-        this.deadlineDays = goalFeat == null ? 0 : Math.max(0, deadlineDays);
+        this.deadlineDays = Math.max(0, deadlineDays);
         this.order = order;
     }
 
@@ -50,18 +50,32 @@ public final class ChallengeSpec {
         return "challenge_" + id;
     }
 
-    public int levelFor(RuleSpec rule) {
-        for (Requirement r : requirements) if (r.rule == rule) return r.level;
-        return 0;
+    public String goalText() {
+        String text = "Have these rules at full level by day " + Challenges.START_DAYS
+                + " and keep them until you reach level " + Challenges.maxLevel();
+        if (deadlineDays > 0) text += " by day " + deadlineDays;
+        if (goalFeat != null) {
+            String what = goalFeat.name.isEmpty() ? goalFeat.id
+                    : Character.toLowerCase(goalFeat.name.charAt(0)) + goalFeat.name.substring(1);
+            text += ", and " + what + (goalAmount > 1 ? " (" + goalAmount + ")" : "");
+        }
+        return text;
     }
 
-    public String goalText() {
-        String text;
-        if (goalFeat == null) return "Hold out for " + goalAmount + " days";
-        if (goalFeat.id.equals(Counters.WINS)) text = "Win " + goalAmount + (goalAmount == 1 ? " battle" : " battles");
-        else if (goalAmount <= 1) text = goalFeat.name;
-        else text = goalFeat.name + ", " + goalAmount + " times";
-        return deadlineDays > 0 ? text + " within " + deadlineDays + " days" : text;
+    /** What this challenge asks beyond the common rule: the cap on positive rules, the time limit, the goal. */
+    public String extraText() {
+        StringBuilder out = new StringBuilder();
+        String limit = limitText();
+        if (!limit.isEmpty()) out.append(limit).append('.');
+        if (deadlineDays > 0) {
+            out.append(out.length() > 0 ? "  " : "").append("Reach level ").append(Challenges.maxLevel())
+                    .append(" by day ").append(deadlineDays).append('.');
+        }
+        if (goalFeat != null) {
+            out.append(out.length() > 0 ? "  " : "").append("At the end: ").append(goalFeat.name)
+                    .append(goalAmount > 1 ? " (" + goalAmount + ")" : "").append('.');
+        }
+        return out.toString();
     }
 
     public String requirementsText() {

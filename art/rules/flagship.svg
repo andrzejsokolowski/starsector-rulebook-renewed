@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Flagship (rbr_flagship): Hull, armor, flux capacity, flux dissipation, weapon damage and rate of fire of your flagship increased by {va -->
+<g>
+<g transform="translate(54 72) scale(0.86) translate(-64 -64)">
+<path d="M64 18 L76 46 L76 60 L102 80 L102 94 L76 88 L72 106 L56 106 L52 88 L26 94 L26 80 L52 60 L52 46 Z" fill="#664F16" stroke="#FFC83C" stroke-width="9.3" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M96 70 L96 20" fill="none" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M96 22 L118 30 L96 40 Z" fill="#FFC83C" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

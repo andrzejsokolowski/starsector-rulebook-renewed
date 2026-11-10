@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Sneaker (rbr_sneaker): Burn level of your fleet while moving slowly or going dark increased by {value}. -->
+<g>
+<path d="M14 92 L14 50 Q14 38 26 38 L42 38 L54 56 L74 62 Q104 66 114 84 L114 98 Q114 104 106 104 L20 104 Q14 104 14 98 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 88 L114 88 M50 50 L42 58 M60 58 L52 66" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

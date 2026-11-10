@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Charter of Governors (rbr_charter): Number of administrators you can employ increased by {value}. -->
+<g>
+<path d="M16 46 L64 18 L112 46 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M32 56 L32 90 M54 56 L54 90 M74 56 L74 90 M96 56 L96 90" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="18" y="94" width="92" height="12" rx="2" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

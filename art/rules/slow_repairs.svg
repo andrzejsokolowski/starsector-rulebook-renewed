@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Slow Repairs (rbr_slow_repairs): Repair and combat readiness recovery rates of your ships decreased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<g transform="rotate(40 64 64)">
+<path d="M48 14 L48 32 L56 40 L72 40 L80 32 L80 14 Q96 22 96 40 Q96 56 74 60 L74 106 Q74 114 64 114 Q54 114 54 106 L54 60 Q32 56 32 40 Q32 22 48 14 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+<path d="M107.0 37.0 L122.0 20.0 L112.5 20.0 L112.5 6.0 L101.5 6.0 L101.5 20.0 L92.0 20.0 Z" fill="#FFC2C9"/>
+</svg>

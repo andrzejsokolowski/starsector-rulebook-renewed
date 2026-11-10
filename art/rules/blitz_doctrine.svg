@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Blitz Doctrine (rbr_blitz_doctrine): Deployment cost of your ships, in combat readiness and supplies, decreased by {value}%. -->
+<g>
+<path d="M79.4 19.0 L52.4 67.6 L70.4 67.6 L61.4 109.0 L95.6 55.0 L77.6 55.0 L90.2 19.0 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 50 L36 50 M20 70 L40 70 M14 90 L30 90" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

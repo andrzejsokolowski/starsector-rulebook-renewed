@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Lean Logistics (rbr_lean_logistics): Maintenance supply use of your ships decreased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<rect x="22" y="26" width="84" height="80" rx="4" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="32" y="36" width="64" height="60" rx="2" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M32 36 L96 96 M96 36 L32 96" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M107.0 37.0 L122.0 20.0 L112.5 20.0 L112.5 6.0 L101.5 6.0 L101.5 20.0 L92.0 20.0 Z" fill="#B4F7D2"/>
+</svg>

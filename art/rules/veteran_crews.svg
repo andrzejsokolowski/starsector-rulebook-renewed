@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Veteran Crews (rbr_veteran_crews): Maximum combat readiness of your ships increased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M18 86 A46 46 0 0 1 110 86 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.2 73.7 L37.7 76.4" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M46.0 54.8 L50.0 61.8" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.0 50.0 L64.0 58.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M82.0 54.8 L78.0 61.8" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M97.8 73.7 L90.3 76.4" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 86 L86 56" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="86" r="9" fill="#3CEB8C"/>
+<path d="M14 100 L114 100" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M107.0 5.0 L122.0 22.0 L112.5 22.0 L112.5 36.0 L101.5 36.0 L101.5 22.0 L92.0 22.0 Z" fill="#B4F7D2"/>
+</svg>

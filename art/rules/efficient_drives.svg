@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Efficient Drives (rbr_efficient_drives): Fuel use of your ships decreased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M28 42 L48 20 L100 20 L100 108 L28 108 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M62 32 L88 32" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44 58 L84 94 M84 58 L44 94" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M107.0 37.0 L122.0 20.0 L112.5 20.0 L112.5 6.0 L101.5 6.0 L101.5 20.0 L92.0 20.0 Z" fill="#B4F7D2"/>
+</svg>

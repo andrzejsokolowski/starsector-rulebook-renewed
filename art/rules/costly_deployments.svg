@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Costly Deployments (rbr_costly_deployments): Deployment cost of your ships, in combat readiness and supplies, increased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<g transform="translate(64 64) scale(0.62) translate(-64 -64)">
+<path d="M64 18 L76 46 L76 60 L102 80 L102 94 L76 88 L72 106 L56 106 L52 88 L26 94 L26 80 L52 60 L52 46 Z" fill="#661F28" stroke="#FF5064" stroke-width="12.9" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M26 42 L26 26 L42 26" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M102 42 L102 26 L86 26" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26 86 L26 102 L42 102" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M102 86 L102 102 L86 102" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M107.0 5.0 L122.0 22.0 L112.5 22.0 L112.5 36.0 L101.5 36.0 L101.5 22.0 L92.0 22.0 Z" fill="#FFC2C9"/>
+</svg>

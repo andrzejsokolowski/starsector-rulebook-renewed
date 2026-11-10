@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Famine (rbr_famine): Every month, your crew and marines consume {value} food per 100 personnel. Without enough food, up to 10% of t -->
+<g>
+<path d="M34 20 L34 44 Q34 56 44 56 Q54 56 54 44 L54 20 M44 20 L44 108" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M78 20 Q100 34 96 66 L82 66 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M88 66 L88 108" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

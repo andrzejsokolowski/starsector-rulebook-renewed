@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Worn Barrels (rbr_worn_barrels): Damage dealt by your weapons decreased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M64.0 18.0 L73.2 41.8 L96.5 31.5 L86.2 54.8 L110.0 64.0 L86.2 73.2 L96.5 96.5 L73.2 86.2 L64.0 110.0 L54.8 86.2 L31.5 96.5 L41.8 73.2 L18.0 64.0 L41.8 54.8 L31.5 31.5 L54.8 41.8 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="64" r="10" fill="#FF5064"/>
+</g>
+<path d="M107.0 37.0 L122.0 20.0 L112.5 20.0 L112.5 6.0 L101.5 6.0 L101.5 20.0 L92.0 20.0 Z" fill="#FFC2C9"/>
+</svg>

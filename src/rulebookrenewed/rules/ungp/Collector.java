@@ -11,6 +11,7 @@ import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.CombatEntityAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.listeners.ApplyDamageResultAPI;
 import com.fs.starfarer.api.combat.listeners.DamageListener;
 import com.fs.starfarer.api.util.Misc;
@@ -21,12 +22,11 @@ import rulebookrenewed.rules.RuleEffect;
 /**
  * Helpful: when the ship the player flies, or one of its fighters, damages the hull of an enemy ship
  * (not a fighter) that is at or below a share of its hull, that ship is destroyed on the spot and the
- * player gains 25 credits. One battle-wide listener hears every hit; it can fire once every 0.15
- * seconds. Adapted from Collector in Unofficial New Game Plus by Originem.
+ * player gains credits by its size (250 for a frigate up to 5,000 for a capital ship). One
+ * battle-wide listener hears every hit; it can fire once every 0.15 seconds. Adapted from Collector in Unofficial New Game Plus by Originem.
  */
 public final class Collector implements RuleEffect {
 
-    private static final float CREDITS = 25f;
     private static final float PAUSE = 0.15f;
 
     @Override
@@ -87,14 +87,24 @@ public final class Collector implements RuleEffect {
                 }
             }
             victim.setHitpoints(1f);
+            // No sound of its own: the only sign of the rule is the credit text.
             engine.applyDamage(victim, center, victim.getMaxHitpoints() * hullShare + 999f, result.getType(), 0f, true,
-                    false, attacker, true);
+                    false, attacker, false);
             stats.getMinArmorFraction().unmodify(id);
-            Global.getSoundPlayer().playSound("rbr_collector", 1f, 1f, center, new Vector2f());
             CampaignFleetAPI fleet = Global.getSector() == null ? null : Global.getSector().getPlayerFleet();
             if (fleet == null) return;
-            fleet.getCargo().getCredits().add(CREDITS);
-            engine.addFloatingText(center, "+" + Misc.getDGSCredits(CREDITS), 50f, Color.yellow, null, 0f, 0f);
+            float credits = credits(victim.getHullSize());
+            fleet.getCargo().getCredits().add(credits);
+            engine.addFloatingText(center, "+" + Misc.getDGSCredits(credits), 50f, Color.yellow, null, 0f, 0f);
+        }
+
+        private static float credits(HullSize size) {
+            switch (size) {
+                case CAPITAL_SHIP: return 5000f;
+                case CRUISER: return 2500f;
+                case DESTROYER: return 1000f;
+                default: return 250f;
+            }
         }
 
         private static void clearArmor(ArmorGridAPI armor, int x, int y) {

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Iron Hulls (rbr_iron_hulls): Armor and hull damage taken by your ships and your allies' ships decreased by {value}%. -->
+<g>
+<path d="M14 34 L104 34 L104 50 Q86 52 80 62 L80 76 L94 80 L98 98 L30 98 L34 80 L48 76 L48 62 Q42 52 14 34 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 106 L108 106" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

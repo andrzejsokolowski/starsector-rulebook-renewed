@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- V for Vent (rbr_v_for_vent): While the ship you fly vents, each press of the vent key raises its vent rate by {value}% for a third of a sec -->
+<g>
+<circle cx="64" cy="64" r="46" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="rotate(0 64 64)">
+<path d="M64 64 C58 44 64 26 80 24 C90 38 82 56 64 64 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="rotate(120 64 64)">
+<path d="M64 64 C58 44 64 26 80 24 C90 38 82 56 64 64 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="rotate(240 64 64)">
+<path d="M64 64 C58 44 64 26 80 24 C90 38 82 56 64 64 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<circle cx="64" cy="64" r="8" fill="#3CEB8C"/>
+</g>
+</svg>

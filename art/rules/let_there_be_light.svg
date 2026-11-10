@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Let there be Light! (rbr_let_there_be_light): Damage dealt to shields by beams of the ship you fly increased by {value}%. -->
+<g>
+<path d="M64 14 C86 14 98 30 98 48 C98 64 86 72 80 82 L48 82 C42 72 30 64 30 48 C30 30 42 14 64 14 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50 94 L78 94 M54 106 L74 106" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M54 64 L60 52 L64 62 L68 52 L74 64" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Hungry Guns (rbr_hungry_guns): Flux cost of your weapons increased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M27.0 106 L27.0 55.0 Q27.0 31.0 42 22 Q57.0 31.0 57.0 55.0 L57.0 106 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M27.0 85.0 L57.0 85.0" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M90.0 34.0 L68.0 72.0 L82.0 72.0 L74.0 106.0 L104.0 62.0 L90.0 62.0 L98.0 34.0 Z" fill="#FF5064"/>
+</g>
+<path d="M107.0 5.0 L122.0 22.0 L112.5 22.0 L112.5 36.0 L101.5 36.0 L101.5 22.0 L92.0 22.0 Z" fill="#FFC2C9"/>
+</svg>

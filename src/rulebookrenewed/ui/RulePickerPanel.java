@@ -354,24 +354,51 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         if (positive) positiveCount = count;
         else negativeCount = count;
 
-        float pad = 10f, rowPad = pad * 2.5f;
+        float pad = 10f, rowPad = pad * 2.5f, headingH = 26f;
         int perRow = Math.max(1, (int) (content.getWidth() / (RuleTile.SIZE + pad)));
         TooltipMakerAPI tip = content.beginTooltip(page, true);
-        for (int i = 0; i < rules.size(); i++) {
-            RuleTile tile = new RuleTile(rules.get(i), this);
-            CustomPanelAPI custom = Global.getSettings().createCustom(RuleTile.SIZE, RuleTile.SIZE, tile);
-            tile.init(custom);
-            float x = (i % perRow) * (RuleTile.SIZE + pad);
-            float y = (i / perRow) * (RuleTile.SIZE + rowPad);
-            // The tile takes no room in the tooltip, so spacers give the scroller its height.
-            tip.addCustomDoNotSetPosition(custom).getPosition().inTL(x, y);
-            tip.addSpacer((1f / perRow) * (RuleTile.SIZE + rowPad));
-            tiles.add(tile);
-            tileGrid.put(tile, content);
+        float y = 0f;
+        for (Map.Entry<String, List<RuleSpec>> group : groups(rules).entrySet()) {
+            tip.setParaOrbitronLarge();
+            LabelAPI heading = tip.createLabel(group.getKey(), color);
+            tip.setParaFontDefault();
+            tip.addCustomDoNotSetPosition((UIComponentAPI) heading).getPosition()
+                    .inTL(0f, y).setSize(content.getWidth() - 20f, headingH - 4f);
+            y += headingH;
+            List<RuleSpec> members = group.getValue();
+            for (int i = 0; i < members.size(); i++) {
+                RuleTile tile = new RuleTile(members.get(i), this);
+                CustomPanelAPI custom = Global.getSettings().createCustom(RuleTile.SIZE, RuleTile.SIZE, tile);
+                tile.init(custom);
+                float x = (i % perRow) * (RuleTile.SIZE + pad);
+                tip.addCustomDoNotSetPosition(custom).getPosition().inTL(x, y + (i / perRow) * (RuleTile.SIZE + rowPad));
+                tiles.add(tile);
+                tileGrid.put(tile, content);
+            }
+            y += ((members.size() + perRow - 1) / perRow) * (RuleTile.SIZE + rowPad);
         }
-        tip.addSpacer(RuleTile.SIZE);
+        // Tiles and headings take no room in the tooltip, so one spacer gives the scroller its height.
+        tip.addSpacer(y + 10f);
         content.addTooltip();
         return content;
+    }
+
+    /** The section order of the picker; a section not named here comes after these, by name. */
+    private static final List<String> GROUP_ORDER = java.util.Arrays.asList("Combat", "Fleet", "Colonies", "Economy", "Exploration");
+
+    /** Rules by their section column, in GROUP_ORDER, keeping the order they were given in. */
+    private static Map<String, List<RuleSpec>> groups(List<RuleSpec> rules) {
+        Map<String, List<RuleSpec>> bySection = new java.util.TreeMap<>((a, b) -> {
+            int ia = GROUP_ORDER.indexOf(a), ib = GROUP_ORDER.indexOf(b);
+            if (ia < 0) ia = GROUP_ORDER.size();
+            if (ib < 0) ib = GROUP_ORDER.size();
+            return ia != ib ? Integer.compare(ia, ib) : a.compareTo(b);
+        });
+        for (RuleSpec rule : rules) {
+            String section = rule.section == null || rule.section.isEmpty() ? "Other" : rule.section;
+            bySection.computeIfAbsent(section, k -> new ArrayList<>()).add(rule);
+        }
+        return bySection;
     }
 
     private void buildChallengesPage() {
@@ -379,6 +406,10 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         challengeList = new UIRect(0, 0, pageRect.getWidth(), pageRect.getHeight()).shrink(5f);
         float rowWidth = challengeList.getWidth() - 16f;
         TooltipMakerAPI tip = challengeList.beginTooltip(page, true);
+        tip.addPara("Have a challenge's rules at full level by day %s of the campaign and keep them until you reach level %s.",
+                4f, Misc.getTextColor(), Misc.getHighlightColor(),
+                String.valueOf(Challenges.START_DAYS), String.valueOf(Challenges.maxLevel()));
+        tip.addSpacer(8f);
         for (ChallengeSpec spec : Challenges.all()) {
             ChallengeRow row = new ChallengeRow(spec, this);
             CustomPanelAPI custom = page.createCustomPanel(rowWidth, ChallengeRow.HEIGHT, row);
@@ -485,9 +516,8 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         TooltipMakerAPI tip = sub.createUIElement(challengeSummary.getWidth(), challengeSummary.getHeight(), true);
         tip.addSpacer(5f);
         for (ChallengeSpec spec : Challenges.all()) {
-            if (Challenges.isComplete(spec) || Challenges.spent(spec) || !Challenges.conditionsMet(spec, levels)) continue;
-            String progress = Challenges.progressText(spec);
-            tip.addPara(spec.name + (progress.isEmpty() ? "" : "   " + progress), GOLD, 3f);
+            if (!Challenges.possible(spec) || !Challenges.conditionsMet(spec, levels)) continue;
+            tip.addPara(spec.name + "   " + Challenges.statusText(spec), GOLD, 3f);
             tip.addPara(spec.goalText() + ".", Misc.getGrayColor(), 0f);
         }
         sub.addUIElement(tip);
@@ -592,8 +622,8 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
     private Set<ChallengeSpec> holding() {
         Set<ChallengeSpec> out = new HashSet<>();
         for (ChallengeSpec spec : Challenges.all()) {
-            if (Challenges.isComplete(spec) || !Challenges.conditionsMet(spec, levels)) continue;
-            if (spec == tracked || Challenges.progress(spec) > 0) out.add(spec);
+            if (!Challenges.possible(spec) || !Challenges.conditionsMet(spec, levels)) continue;
+            if (spec == tracked || Challenges.isRunning(spec)) out.add(spec);
         }
         return out;
     }
@@ -601,7 +631,9 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
     private void warnAboutLost(Set<ChallengeSpec> before, RuleSpec rule, boolean enabling) {
         for (ChallengeSpec spec : before) {
             if (Challenges.conditionsMet(spec, levels) || !warned.add(spec.id)) continue;
-            showWarning("Warning: " + (enabling ? "Enabling" : "Lowering") + " this rule will not permit you to achieve this challenge",
+            showWarning(Challenges.isRunning(spec)
+                            ? "Warning: confirming this fails the challenge for this campaign"
+                            : "Warning: " + (enabling ? "Enabling" : "Lowering") + " this rule will not permit you to achieve this challenge",
                     spec.name + "  -  " + rule.name);
             return;
         }
@@ -700,14 +732,19 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
     }
 
     private void apply() {
-        for (RuleSpec rule : RuleCatalog.all()) {
-            if (level(rule) == 0 && RuleState.level(rule) > 0) RuleManager.setLevel(rule, 0);
+        // One challenge check for the final set, so an in-between state cannot fail a running challenge.
+        Challenges.beginBatch();
+        try {
+            for (RuleSpec rule : RuleCatalog.all()) {
+                if (level(rule) == 0 && RuleState.level(rule) > 0) RuleManager.setLevel(rule, 0);
+            }
+            for (RuleSpec rule : RuleCatalog.all()) {
+                int level = level(rule);
+                if (level > 0 && RuleState.level(rule) != level) RuleManager.setLevel(rule, level);
+            }
+        } finally {
+            Challenges.endBatch();
         }
-        for (RuleSpec rule : RuleCatalog.all()) {
-            int level = level(rule);
-            if (level > 0 && RuleState.level(rule) != level) RuleManager.setLevel(rule, level);
-        }
-        Challenges.check();
     }
 
     private void exit() {

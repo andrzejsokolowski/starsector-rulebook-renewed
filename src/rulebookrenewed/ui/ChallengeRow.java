@@ -55,9 +55,8 @@ public final class ChallengeRow extends BaseCustomUIPanelPlugin {
         title = el.addPara(spec.name, RulePickerPanel.GOLD, 8f);
         title.getPosition().setXAlignOffset(ICON_X);
         el.setParaFontDefault();
-        String goal = spec.goalText() + ".";
-        if (!spec.limitText().isEmpty()) goal += "  " + spec.limitText() + ".";
-        el.addPara(goal, Misc.getTextColor(), 6f);
+        String extra = spec.extraText();
+        el.addPara(extra.isEmpty() ? "Positive rules allowed." : extra, Misc.getTextColor(), 6f);
         StringBuilder reward = new StringBuilder();
         for (RuleSpec rule : Challenges.rewards(spec)) reward.append(reward.length() > 0 ? ", " : "").append(rule.name);
         if (reward.length() > 0) el.addPara("Reward: " + reward, Misc.getGrayColor(), 3f);
@@ -83,24 +82,26 @@ public final class ChallengeRow extends BaseCustomUIPanelPlugin {
     /** Shows progress against the picker's working rule levels. unlocked: every required rule can be picked. */
     public void sync(Challenges.Levels working, boolean unlocked) {
         boolean complete = Challenges.isComplete(spec);
-        String progress = Challenges.progressText(spec);
+        boolean possible = Challenges.possible(spec);
         Color color = Misc.getGrayColor();
         String text;
         if (complete) {
             text = "Done";
             color = RulePickerPanel.POSITIVE;
-        } else if (Challenges.spent(spec)) {
-            text = progress;
+        } else if (!possible) {
+            text = Challenges.statusText(spec);
+            color = Misc.getNegativeHighlightColor();
         } else if (Challenges.conditionsMet(spec, working)) {
-            text = progress.isEmpty() ? "Rules met" : "Rules met   " + progress;
+            text = Challenges.isRunning(spec) ? Challenges.statusText(spec) : "Rules met   " + Challenges.statusText(spec);
             color = RulePickerPanel.GOLD;
         } else {
-            text = Challenges.progress(spec) > 0 ? "Paused   " + progress : "";
+            text = Challenges.isRunning(spec) ? "Fails on Confirm" : Challenges.statusText(spec);
+            if (Challenges.isRunning(spec)) color = Misc.getNegativeHighlightColor();
         }
         status.setText(text);
         status.setColor(color);
         title.setColor(complete ? RulePickerPanel.POSITIVE : RulePickerPanel.GOLD);
-        enable.setEnabled(!complete && unlocked);
+        enable.setEnabled(!complete && possible && unlocked);
     }
 
     /** The required rule whose icon is under the point (screen coordinates, y up), or null. */

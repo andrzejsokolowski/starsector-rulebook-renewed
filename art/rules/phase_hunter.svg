@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Phase Hunter (rbr_phase_hunter): Damage taken by enemy phase ships increased by {value}%. -->
+<g>
+<g transform="translate(68 64) scale(0.78) translate(-64 -64)">
+<g transform="translate(50 74) scale(0.8) translate(-64 -64)">
+<path d="M64 18 L76 46 L76 60 L102 80 L102 94 L76 88 L72 106 L56 106 L52 88 L26 94 L26 80 L52 60 L52 46 Z" fill="#3CEB8C" fill-opacity="0.18" stroke="#3CEB8C" stroke-opacity="0.4" stroke-width="12.8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(72 60) scale(0.8) translate(-64 -64)">
+<path d="M64 18 L76 46 L76 60 L102 80 L102 94 L76 88 L72 106 L56 106 L52 88 L26 94 L26 80 L52 60 L52 46 Z" fill="#175A36" stroke-dasharray="9 8" stroke="#3CEB8C" stroke-width="12.8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+<circle cx="64" cy="64" r="42" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 10 L64 34 M64 94 L64 118 M10 64 L34 64 M94 64 L118 64" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

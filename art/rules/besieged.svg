@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Besieged (rbr_besieged): Deployment points you start a battle with decreased by {value}% of the battle size. -->
+<g>
+<path d="M34 106 L34 42 L26 42 L26 20 L42 20 L42 30 L56 30 L56 20 L72 20 L72 30 L86 30 L86 20 L102 20 L102 42 L94 42 L94 106 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M54 106 L54 84 A10 10 0 0 1 74 84 L74 106 Z" fill="#FF5064" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

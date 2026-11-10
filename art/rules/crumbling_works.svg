@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Crumbling Works (rbr_crumbling_works): Upkeep of your colonies increased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M64 36 Q44 24 16 28 L16 98 Q44 94 64 106 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 36 Q84 24 112 28 L112 98 Q84 94 64 106 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M28 46 Q42 44 52 50 M28 64 Q42 62 52 68 M76 50 Q86 44 100 46 M76 68 Q86 62 100 64" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M107.0 5.0 L122.0 22.0 L112.5 22.0 L112.5 36.0 L101.5 36.0 L101.5 22.0 L92.0 22.0 Z" fill="#FFC2C9"/>
+</svg>

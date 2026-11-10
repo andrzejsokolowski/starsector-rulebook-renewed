@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Super Sol (rbr_super_sol): One random resource deposit on every planet in the Sol system improved by one grade. Once per campaign. -->
+<g>
+<circle cx="64" cy="64" r="26" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M99.6 58.4 L116.0 64.0 L99.6 69.6 Z" fill="#3CEB8C"/>
+<path d="M93.1 85.2 L100.8 100.8 L85.2 93.1 Z" fill="#3CEB8C"/>
+<path d="M69.6 99.6 L64.0 116.0 L58.4 99.6 Z" fill="#3CEB8C"/>
+<path d="M42.8 93.1 L27.2 100.8 L34.9 85.2 Z" fill="#3CEB8C"/>
+<path d="M28.4 69.6 L12.0 64.0 L28.4 58.4 Z" fill="#3CEB8C"/>
+<path d="M34.9 42.8 L27.2 27.2 L42.8 34.9 Z" fill="#3CEB8C"/>
+<path d="M58.4 28.4 L64.0 12.0 L69.6 28.4 Z" fill="#3CEB8C"/>
+<path d="M85.2 34.9 L100.8 27.2 L93.1 42.8 Z" fill="#3CEB8C"/>
+</g>
+</svg>

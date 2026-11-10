@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Elite Reserves (rbr_elite_reserves): Spare crew increases the maximum combat readiness of your ships by up to {value}%, the full amount at twice th -->
+<g>
+<g transform="translate(38 62) scale(0.62) translate(-64 -64)">
+<path d="M28 106 Q28 74 64 74 Q100 74 100 106 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="12.9" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="48" r="18" fill="#175A36" stroke="#3CEB8C" stroke-width="12.9" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(90 62) scale(0.62) translate(-64 -64)">
+<path d="M28 106 Q28 74 64 74 Q100 74 100 106 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="12.9" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="48" r="18" fill="#175A36" stroke="#3CEB8C" stroke-width="12.9" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(64 70) scale(0.74) translate(-64 -64)">
+<path d="M28 106 Q28 74 64 74 Q100 74 100 106 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="10.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="48" r="18" fill="#175A36" stroke="#3CEB8C" stroke-width="10.8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>

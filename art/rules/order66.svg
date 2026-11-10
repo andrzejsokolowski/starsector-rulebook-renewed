@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Order 66 (rbr_order66): Damage your ships and your allies' ships take from your own side increased by {value}%. -->
+<g>
+<g transform="translate(42 92) scale(0.5) translate(-64 -64)">
+<path d="M64 18 L76 46 L76 60 L102 80 L102 94 L76 88 L72 106 L56 106 L52 88 L26 94 L26 80 L52 60 L52 46 Z" fill="#661F28" stroke="#FF5064" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M54 56 C60 20 106 14 106 48 C106 70 86 80 66 82" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M54.0 84.0 L70.0 72.0 L72.0 92.0 Z" fill="#FF5064"/>
+</g>
+</svg>

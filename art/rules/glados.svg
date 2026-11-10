@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- GLaDOS (rbr_glados): Industries run by an Alpha Core at your colonies produce {value} more of each commodity. -->
+<g>
+<circle cx="64" cy="64" r="44" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="64" r="26" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="64" r="12" fill="#3CEB8C"/>
+<circle cx="52" cy="50" r="4" fill="#B4F7D2"/>
+</g>
+</svg>

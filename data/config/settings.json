@@ -20,7 +20,6 @@
 		"rbr_icons": {
 			"positive": "graphics/rulebook/icons/positive_icon.png",
 			"negative": "graphics/rulebook/icons/negative_icon.png",
-			"unknown": "graphics/rulebook/rules/unknown.png",
 		},
 	},
 }

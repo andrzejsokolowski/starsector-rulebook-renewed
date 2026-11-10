@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Heavy Drives (rbr_heavy_drives): Burn level of your fleet decreased by {value}. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M64 14 C70 34 94 48 94 76 C94 96 80 108 64 108 C48 108 34 96 34 76 C34 62 40 54 46 46 C48 56 52 60 58 62 C56 46 58 30 64 14 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 66 C70 74 78 80 78 90 C78 98 72 102 64 102 C56 102 50 98 50 90 C50 82 58 76 64 66 Z" fill="#FF5064"/>
+</g>
+<path d="M107.0 37.0 L122.0 20.0 L112.5 20.0 L112.5 6.0 L101.5 6.0 L101.5 20.0 L92.0 20.0 Z" fill="#FFC2C9"/>
+</svg>

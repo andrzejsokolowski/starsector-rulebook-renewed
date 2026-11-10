@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Fragment Graveyard (rbr_fragment_graveyard): Wrecks of destroyed ships fly off {value} times faster and are much heavier. Ships break apart twice as often. -->
+<g>
+<g transform="rotate(-20 40 34)">
+<path d="M40 20 L52 44 L28 42 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="rotate(30 90 40)">
+<path d="M90 26 L102 50 L78 48 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="rotate(-60 30 84)">
+<path d="M30 70 L42 94 L18 92 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="rotate(70 84 92)">
+<path d="M84 78 L96 102 L72 100 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="rotate(10 62 62)">
+<path d="M62 48 L74 72 L50 70 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>

@@ -11,7 +11,6 @@
 	"rbr_phasingghost_warning": [{"file": "sounds/rulebook/phasingghost_warning.ogg", "pitch": 1, "volume": 1}],
 	"rbr_headhunting_mark": [{"file": "sounds/rulebook/headhunting_mark.ogg", "pitch": 1, "volume": 1}],
 	"rbr_headhunting_ready": [{"file": "sounds/rulebook/headhunting_ready.ogg", "pitch": 1, "volume": 1}],
-	"rbr_collector": [{"file": "sounds/rulebook/collector.ogg", "pitch": 1, "volume": 1}],
 	"rbr_fraudulent": [{"file": "sounds/rulebook/fraudulent.ogg", "pitch": 1, "volume": 1}],
 	"rbr_fungus": [{"file": "sounds/rulebook/fungus.ogg", "pitch": 1, "volume": 1}],
 	"rbr_still_growing_up": [{"file": "sounds/rulebook/still_growing_up.ogg", "pitch": 1, "volume": 1}],

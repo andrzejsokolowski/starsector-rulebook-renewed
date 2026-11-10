@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Peerless (rbr_peerless): Grants {value} Peerless point, once per campaign. -->
+<g>
+<path d="M50 104 C24 92 16 60 30 30 M78 104 C104 92 112 60 98 30" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="32" cy="46" rx="11" ry="6" fill="#3CEB8C" transform="rotate(-30 32 46)"/>
+<ellipse cx="96" cy="46" rx="11" ry="6" fill="#3CEB8C" transform="rotate(30 96 46)"/>
+<ellipse cx="28" cy="66" rx="11" ry="6" fill="#3CEB8C" transform="rotate(-10 28 66)"/>
+<ellipse cx="100" cy="66" rx="11" ry="6" fill="#3CEB8C" transform="rotate(10 100 66)"/>
+<ellipse cx="36" cy="86" rx="11" ry="6" fill="#3CEB8C" transform="rotate(20 36 86)"/>
+<ellipse cx="92" cy="86" rx="11" ry="6" fill="#3CEB8C" transform="rotate(-20 92 86)"/>
+<path d="M64.0 38.0 L70.3 53.3 L86.8 54.6 L74.3 65.3 L78.1 81.4 L64.0 72.8 L49.9 81.4 L53.7 65.3 L41.2 54.6 L57.7 53.3 Z" fill="#3CEB8C"/>
+</g>
+</svg>

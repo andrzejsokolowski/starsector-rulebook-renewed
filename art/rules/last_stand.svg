@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Last Stand (rbr_last_stand): While the ship you fly is your last ship on the field, its flux capacity and dissipation are increased by {val -->
+<g>
+<path d="M34 16 L34 110 M20 110 L52 110" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M34 22 L104 22 L88 44 L104 66 L34 66 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

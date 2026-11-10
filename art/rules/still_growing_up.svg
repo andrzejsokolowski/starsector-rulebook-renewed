@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Still Growing Up (rbr_still_growing_up): After 3 months a random positive rule is switched on at level I, the next one 6 months later, then 9, and so o -->
+<g>
+<path d="M64 106 L64 60 M38 106 L90 106" fill="none" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 76 C44 76 30 64 26 44 C48 44 62 56 64 76 Z" fill="#664F16" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 62 C66 40 82 26 104 24 C104 46 88 62 64 62 Z" fill="#664F16" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

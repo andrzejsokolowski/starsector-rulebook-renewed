@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Primed Systems (rbr_primed_systems): Cooldown of your ship systems decreased by {value}%, charge regeneration increased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M88.4 36.9 A38 38 0 1 1 39.6 36.9" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50.3 27.9 L28.8 30.3 L44.2 48.7 Z" fill="#3CEB8C"/>
+<path d="M64.0 46.0 L68.9 61.1 L84.0 66.0 L68.9 70.9 L64.0 86.0 L59.1 70.9 L44.0 66.0 L59.1 61.1 Z" fill="#3CEB8C"/>
+</g>
+<path d="M107.0 37.0 L122.0 20.0 L112.5 20.0 L112.5 6.0 L101.5 6.0 L101.5 20.0 L92.0 20.0 Z" fill="#B4F7D2"/>
+</svg>

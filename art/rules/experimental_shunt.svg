@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Experimental Shunt (rbr_experimental_shunt): Your ships dissipate hard flux while shields are raised, at {value}% of their flux dissipation. -->
+<g>
+<path d="M14 64 A52 52 0 0 1 114 64 L100 64 A38 38 0 0 0 28 64 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44 108 C36 100 52 92 44 82 M64 108 C56 100 72 92 64 82 M84 108 C76 100 92 92 84 82" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Cruising Hunting (rbr_cruising_hunting): Deployment points of your cruisers decreased by {value}%, at least by 2. -->
+<g>
+<g transform="translate(64 66) scale(0.66) translate(-64 -64)">
+<path d="M64 18 L76 46 L76 60 L102 80 L102 94 L76 88 L72 106 L56 106 L52 88 L26 94 L26 80 L52 60 L52 46 Z" fill="#664F16" stroke="#FFC83C" stroke-width="12.1" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<circle cx="64" cy="64" r="40" fill="none" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 12 L64 36 M64 92 L64 116 M12 64 L36 64 M92 64 L116 64" fill="none" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

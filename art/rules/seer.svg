@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Seer (rbr_seer): Every 20 seconds, the fog of war lifts from the whole battlefield for {value} seconds. -->
+<g>
+<g transform="translate(64 78) scale(0.8) translate(-64 -64)">
+<path d="M14 64 Q64 12 114 64 Q64 116 14 64 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="64" r="20" fill="none" stroke="#3CEB8C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="64" r="9" fill="#3CEB8C"/>
+</g>
+<path d="M20.7 45.0 L10.3 39.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M39.0 26.7 L33.0 16.3" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.0 20.0 L64.0 8.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M89.0 26.7 L95.0 16.3" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M107.3 45.0 L117.7 39.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

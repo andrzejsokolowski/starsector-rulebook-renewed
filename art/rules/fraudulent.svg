@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Fraudulent (rbr_fraudulent): Each sale has a {value}% chance, doubled at black markets, to lose 20% of what it earned. -->
+<defs>
+<clipPath id="kL">
+<path d="M0 0 L58 0 L70 40 L54 62 L72 86 L60 128 L0 128 Z"/>
+</clipPath>
+<clipPath id="kR">
+<path d="M128 0 L58 0 L70 40 L54 62 L72 86 L60 128 L128 128 Z"/>
+</clipPath>
+</defs>
+<g>
+<g transform="translate(-8 0)">
+<g clip-path="url(#kL)">
+<circle cx="64" cy="64" r="42" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="64" r="27" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+<g transform="translate(8 0)">
+<g clip-path="url(#kR)">
+<circle cx="64" cy="64" r="42" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="64" r="27" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</svg>

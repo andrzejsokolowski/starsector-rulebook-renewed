@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Explosive Sniper (rbr_explosive_sniper): Speed and maneuverability of enemy missiles increased by {value}%. -->
+<g>
+<g transform="rotate(45 64 64)">
+<path d="M64 10 Q78 24 78 44 L78 82 L92 96 L92 108 L78 102 L50 102 L36 108 L36 96 L50 82 L50 44 Q50 24 64 10 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50 44 L78 44" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>

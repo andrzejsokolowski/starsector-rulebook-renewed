@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Wholesale Shells (rbr_wholesale_shells): Ballistic-type shots fired by your side have a {value}% chance to deal half damage. -->
+<g>
+<path d="M46 58 L46 46 Q46 22 64 14 Q82 22 82 46 L82 48 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M54 74 L90 64 L90 110 L54 110 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M54 96 L90 96" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Lucky Seven (rbr_lucky_seven): Every 7th non-beam hit by the ship you fly deals 7% more damage, sometimes 77% or 777% more. -->
+<g>
+<path d="M84.7 25.2 A44 44 0 1 1 43.3 25.2 L52.7 42.8 A24 24 0 1 0 75.3 42.8 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="95.9495" cy="52.3713" r="3.6" fill="#3CEB8C"/>
+<circle cx="95.9495" cy="75.6287" r="3.6" fill="#3CEB8C"/>
+<circle cx="81" cy="93.4449" r="3.6" fill="#3CEB8C"/>
+<circle cx="47" cy="93.4449" r="3.6" fill="#3CEB8C"/>
+<circle cx="32.0505" cy="75.6287" r="3.6" fill="#3CEB8C"/>
+<circle cx="32.0505" cy="52.3713" r="3.6" fill="#3CEB8C"/>
+</g>
+</svg>

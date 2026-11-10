@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Jinxed (rbr_jinxed): Your weapons have a {value}% chance to malfunction and your engines a smaller one, at any combat readiness. -->
+<g>
+<path d="M40 30 L42 12 L54 24 L64 24 L76 12 L78 30 Q84 44 74 52 Q94 60 94 86 L94 106 L34 106 Q30 90 36 74 Q40 60 46 52 Q34 44 40 30 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M94 100 Q116 100 110 72" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="52" cy="36" r="4" fill="#FF5064"/>
+<circle cx="66" cy="36" r="4" fill="#FF5064"/>
+</g>
+</svg>

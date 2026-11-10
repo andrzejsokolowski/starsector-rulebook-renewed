@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Living Plating (rbr_living_plating): In combat, the ship you fly repairs {value}% of its maximum armor per second. -->
+<g>
+<path d="M30 36 L44 22 L84 22 L98 36 L98 92 L84 106 L44 106 L30 92 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 92 C40 86 40 56 72 40 C82 66 78 86 64 92 Z" fill="#3CEB8C"/>
+<path d="M64 92 Q62 72 70 56" fill="none" stroke="#175A36" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

@@ -181,6 +181,7 @@ tasks.register('checkReleaseFiles') {
         }
         def ruleLevels = [:]
         def ruleUnlocks = [:]
+        def ruleTypes = [:]
         def ids = [] as Set
         def pairRows = [:]
         lines.drop(1).findAll { it.trim() && !it.startsWith('#') }.each { line ->
@@ -190,7 +191,12 @@ tasks.register('checkReleaseFiles') {
             if (!ids.add(row.id)) problems << "rules.csv ${row.id}: id used twice"
             ruleLevels[row.id] = row.levels as int
             ruleUnlocks[row.id] = row.unlock
-            if (!row.section) problems << "rules.csv ${row.id}: no section"
+            ruleTypes[row.id] = row.type
+            if (!(row.section in ['Combat', 'Fleet', 'Colonies', 'Economy', 'Exploration'])) problems << "rules.csv ${row.id}: section must be Combat, Fleet, Colonies, Economy or Exploration"
+            // Points grow by steps that never shrink (4|9|15, not 6|9|15).
+            def pts = row.points.tokenize('|').collect { Math.abs(it.trim() as int) }
+            def steps = [pts[0]] + (1..<pts.size()).collect { pts[it] - pts[it - 1] }
+            if ((1..<steps.size()).any { steps[it] < steps[it - 1] }) problems << "rules.csv ${row.id}: points ${row.points} have a smaller step after a bigger one"
             // A rule with several levels names its number, unless it has a text per level (||).
             if (!row.description.contains('{value}') && (row.levels as int) > 1 && !row.description.contains('||')) problems << "rules.csv ${row.id}: description has no {value}"
             def levels = row.levels as int
@@ -226,14 +232,19 @@ tasks.register('checkReleaseFiles') {
             if (cells.size() != challengeHeader.size()) { problems << "challenges.csv row has ${cells.size()} cells, header has ${challengeHeader.size()}: ${line.take(40)}"; return }
             def row = [challengeHeader, cells].transpose().collectEntries { it }
             if (!challengeIds.add(row.id)) problems << "challenges.csv ${row.id}: id used twice"
+            // A challenge always needs its rules at full level, so the column names rules without levels.
             row.rules.split('\\|').each { part ->
-                def bits = part.trim().split(':')
-                if (!ruleLevels.containsKey(bits[0])) problems << "challenges.csv ${row.id}: unknown rule ${bits[0]}"
-                else if (bits.size() > 1 && (bits[1] as int) > ruleLevels[bits[0]]) problems << "challenges.csv ${row.id}: ${bits[0]} has no level ${bits[1]}"
+                def ruleId = part.trim()
+                if (ruleId.contains(':')) problems << "challenges.csv ${row.id}: ${ruleId}: name the rule only, challenges need full level"
+                else if (!ruleLevels.containsKey(ruleId)) problems << "challenges.csv ${row.id}: unknown rule ${ruleId}"
+                else if (ruleTypes[ruleId] != 'negative') problems << "challenges.csv ${row.id}: ${ruleId} is not a negative rule"
             }
-            def goal = row.goal.split(':')
-            if (goal[0] == 'feat') { if (!(goal[1] in featIds)) problems << "challenges.csv ${row.id}: unknown feat ${goal[1]}" }
-            else if (!(goal[0] in ['wins', 'days']) || goal.size() != 2 || !(goal[1] ==~ /\d+/)) problems << "challenges.csv ${row.id}: bad goal ${row.goal}"
+            if (row.goal) {
+                def goal = row.goal.split(':')
+                if (goal[0] != 'feat' || goal.size() < 2 || goal.size() > 3) problems << "challenges.csv ${row.id}: goal must be feat:<id>[:<count>]"
+                else if (!(goal[1] in featIds)) problems << "challenges.csv ${row.id}: unknown feat ${goal[1]}"
+            }
+            if (row.deadlineDays && !(row.deadlineDays ==~ /\d+/)) problems << "challenges.csv ${row.id}: bad deadlineDays ${row.deadlineDays}"
             if (!ruleUnlocks.values().contains("challenge:${row.id}".toString())) problems << "challenges.csv ${row.id}: no rule unlocks from it"
         }
         ruleUnlocks.each { id, unlock ->

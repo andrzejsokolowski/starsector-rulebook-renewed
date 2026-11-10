@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Fireworks (rbr_fireworks): Destroyed ships explode with fireworks. No other effect. -->
+<g>
+<circle cx="64" cy="64" r="7" fill="#3CEB8C"/>
+<path d="M82.0 64.0 L104.0 64.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="113" cy="64" r="4.5" fill="#3CEB8C"/>
+<path d="M79.6 73.0 L93.4 81.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="101.239" cy="85.5" r="4.5" fill="#3CEB8C"/>
+<path d="M73.0 79.6 L84.0 98.6" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="88.5" cy="106.435" r="4.5" fill="#3CEB8C"/>
+<path d="M64.0 82.0 L64.0 98.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="107" r="4.5" fill="#3CEB8C"/>
+<path d="M55.0 79.6 L44.0 98.6" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="39.5" cy="106.435" r="4.5" fill="#3CEB8C"/>
+<path d="M48.4 73.0 L34.6 81.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="26.7609" cy="85.5" r="4.5" fill="#3CEB8C"/>
+<path d="M46.0 64.0 L24.0 64.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="15" cy="64" r="4.5" fill="#3CEB8C"/>
+<path d="M48.4 55.0 L34.6 47.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="26.7609" cy="42.5" r="4.5" fill="#3CEB8C"/>
+<path d="M55.0 48.4 L44.0 29.4" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="39.5" cy="21.5648" r="4.5" fill="#3CEB8C"/>
+<path d="M64.0 46.0 L64.0 30.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="21" r="4.5" fill="#3CEB8C"/>
+<path d="M73.0 48.4 L84.0 29.4" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="88.5" cy="21.5648" r="4.5" fill="#3CEB8C"/>
+<path d="M79.6 55.0 L93.4 47.0" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="101.239" cy="42.5" r="4.5" fill="#3CEB8C"/>
+</g>
+</svg>

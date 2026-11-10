@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Greedy Crews (rbr_greedy_crews): Monthly wages of your crew and marines doubled. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M32 82 L32 94 A32 11 0 0 0 96 94 L96 82 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="64" cy="82" rx="32" ry="11" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M32 62 L32 74 A32 11 0 0 0 96 74 L96 62 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="64" cy="62" rx="32" ry="11" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M32 42 L32 54 A32 11 0 0 0 96 54 L96 42 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="64" cy="42" rx="32" ry="11" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M107.0 5.0 L122.0 22.0 L112.5 22.0 L112.5 36.0 L101.5 36.0 L101.5 22.0 L92.0 22.0 Z" fill="#FFC2C9"/>
+</svg>

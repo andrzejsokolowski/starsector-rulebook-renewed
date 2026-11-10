@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Lone Legend (rbr_lone_legend): Damage dealt by your flagship increased by {value}%, damage taken decreased by {value}%. -->
+<g>
+<path d="M64 18 L76 46 L76 60 L102 80 L102 94 L76 88 L72 106 L56 106 L52 88 L26 94 L26 80 L52 60 L52 46 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.0 62.0 L67.7 70.9 L77.3 71.7 L70.0 77.9 L72.2 87.3 L64.0 82.3 L55.8 87.3 L58.0 77.9 L50.7 71.7 L60.3 70.9 Z" fill="#3CEB8C"/>
+</g>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Abyss Ward (rbr_abyss_ward): Energy damage taken by your ships decreased by {value}%. -->
+<g>
+<path d="M64 18 L102 30 L102 60 C102 84 86 98 64 108 C42 98 26 84 26 60 L26 30 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M70.0 32.0 L48.0 68.0 L62.0 68.0 L56.0 96.0 L80.0 58.0 L66.0 58.0 L74.0 32.0 Z" fill="#3CEB8C"/>
+</g>
+</svg>

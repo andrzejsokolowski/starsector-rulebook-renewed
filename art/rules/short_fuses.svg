@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Short Fuses (rbr_short_fuses): Peak performance time of your ships decreased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M42 24 L42 34 Q42 52 58 64 Q42 76 42 94 L42 104 L86 104 L86 94 Q86 76 70 64 Q86 52 86 34 L86 24 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50 100 Q52 86 64 80 Q76 86 78 100 Z" fill="#FF5064"/>
+<path d="M54 40 L74 40 Q72 50 64 56 Q56 50 54 40 Z" fill="#FF5064"/>
+<path d="M32 22 L96 22 M32 106 L96 106" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M107.0 37.0 L122.0 20.0 L112.5 20.0 L112.5 6.0 L101.5 6.0 L101.5 20.0 L92.0 20.0 Z" fill="#FFC2C9"/>
+</svg>

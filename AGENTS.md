@@ -17,8 +17,8 @@ board during the work, not only at release time.
   to use and distribute, but it's better to notice me. DO NOT copy entirely. All rights reserved." On
   2026-11-10 Andrzej also got a yes from the fork's author to continue its work and told this project to use
   its code and art. Taken so far: the picker's layout and flow, `ui/UIRect`, `ui/UIPanelManager`,
-  `ui/BackgroundUI`, the tile and background art under `graphics/rulebook` (rule icons recoloured per rule
-  by a script) and the four tile sounds. Every copied or adapted file says so in its header and
+  `ui/BackgroundUI`, the tile and background art under `graphics/rulebook` and the four tile sounds (the rule
+  icons were too until 0.10.0; they are now our own vector art). Every copied or adapted file says so in its header and
   `CREDITS.txt` lists it. Never copy the mod wholesale; its music was not taken. In 0.9.0 its golden rules and
   the rules with a mechanic of their own were adapted as effect classes in `rules/ungp` (our hooks, not its
   framework); `Tools` there replaces LazyLib. Its plain stat rules were not, since ours cover them.
@@ -32,8 +32,12 @@ lines, no explaining paragraphs (Andrzej, 2026-11-10).
 
 ## Balance rules (Andrzej, 2026-11-10)
 
-- At most three levels. The standard curve is 1x, 1.5x, 2.5x of the level 1 number (20/30/50, 10/15/25),
-  with points on the same curve. Count rules (burn level, officers, stability) go 1/2/3.
+- At most three levels. Values go 1x, 1.5x, 2.5x of the level 1 number (20/30/50, 10/15/25). Count rules
+  (burn level, officers, stability) go 1/2/3. Points grow by steps that never shrink: from the top points P,
+  level 2 is 0.6 P and level 1 is 0.27 P (4/9/15, 7/15/25); a two-level rule has 0.4 P at level 1. "Instead
+  of +2, +1, +2, do +1, +2, +2" (Andrzej, 2026-11-10). The build checks the steps.
+- Numbers are measured against Unofficial New Game Plus (Andrzej finds it well balanced): about 7.5 of our
+  level III points per UNGP cost point, its Gamma/Beta/Omega values as our levels I/II/III.
 - A minor effect is not worth three small levels: make it one strong single-level rule (Calm Currents: no
   storm damage; Greedy Crews: wages doubled), or two levels where the top one has a price (Loyal Hands).
 - A rule locked behind another mod (its challenge or achievement) must be about that mod: Super Sol for Sol
@@ -55,17 +59,25 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
 - `data/config/rulebook/rules.csv` - one row per rule: type (`positive` or `negative`; a rule just for fun is
   a positive rule worth 0 points), levels, points and values per level (`|` separated), required mod, unlock
   (`feat:<id>`, `challenge:<id>` or `achievement:<id>` for another mod's achievement), effect class, icon, description with `{value}`, order, pair, section.
+  `section` is the picker's heading: Combat, Fleet, Colonies, Economy or Exploration, by what the effect
+  touches. The picker's "Unlocked by" shows the achievement's how-to (its exact condition), never the hint.
+  Icons are vector art: `art/rules/<name>.svg` rendered by `art/render_icons.py` to
+  `graphics/rulebook/rules/<name>.png` (transparent, green / red / gold by type); edit the SVG, not the PNG.
   Loaded merged over all mods by `RuleCatalog` at startup; rows whose required mod is off are dropped before
   their effect class is loaded. A negative rule and its positive mirror share a `pair`; only one can be on.
   Points: negative rules are below zero and give the player points, positive rules cost them; the picker
   shows the cost (`-points`). With the LunaLib setting "Point budget" on, a set that costs more than it
   gives cannot be confirmed.
-- `data/config/rulebook/challenges.csv` - one row per challenge: required rules (`rule_id:level|...`), goal
-  (`feat:<id>[:<count>]`, `wins:<n>` or `days:<n>`), helpfulLimit (points of positive rules allowed, 0 = none,
-  empty = no cap), deadlineDays. Nothing is taken on: `Challenges.check` (daily, after battles, after every
-  rule change) counts progress whenever a challenge's conditions hold. Counted goals pause when they do
-  not; "hold out" goals start over; a one-time deed must happen while they hold; a state goal that was
-  already true (five colonies, a million credits) counts after 90 days. Completion is the achievement
+- `data/config/rulebook/challenges.csv` - one row per challenge, the way UNGP runs them (Andrzej,
+  2026-11-10): required negative rules (`rule_id|...`, always at full level; the build refuses a level),
+  optional goal (`feat:<id>[:<count>]`, must hold at the end), helpfulLimit (points of positive rules
+  allowed, 0 = none, empty = no cap), optional deadlineDays (the campaign day by which the end must come).
+  A challenge starts by itself when its conditions first hold within `Challenges.START_DAYS` (90) days of
+  the campaign start (`RuleState.campaignStart`, recorded on the first load; saves older than 0.10.0 that
+  are past level 1 get none), fails for the save when they break after that, and completes at the maximum
+  player level. Checked daily, after battles and after every rule change; the picker's Confirm applies its
+  changes in one batch (`Challenges.beginBatch`). Challenges are never about another mod: a rule about a
+  mod is unlocked by that mod's feat (Super Sol by `feat:sol_quest`). Completion is the achievement
   `rbr_challenge_<id>`, which opens rules whose unlock is `challenge:<id>`.
 - `src/rulebookrenewed/rules` - `RuleEffect` hooks: campaign apply/unapply (every 0.25 days and on change),
   `onSwitchedOn`, `applyToShip` (combat, first frame each ship is on the field), `applyToMember` (fleet buff),

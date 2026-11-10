@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Antagonism (rbr_antagonism): Enemy ships gain {value} random combat hullmods for the battle. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="21" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M28 40 L52 40 A12 12 0 1 1 76 40 L100 40 L100 64 A12 12 0 1 1 100 88 L100 108 L28 108 L28 88 A12 12 0 1 0 28 64 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M8 20 A13 13 0 0 1 34 20 L34 25 Q34 29 29 30 L29 36 L13 36 L13 30 Q8 29 8 25 Z M12 22 A4.2 4.2 0 1 0 20.4 22 A4.2 4.2 0 1 0 12 22 Z M21.6 22 A4.2 4.2 0 1 0 30 22 A4.2 4.2 0 1 0 21.6 22 Z" fill="#FFC2C9" fill-rule="evenodd"/>
+</svg>

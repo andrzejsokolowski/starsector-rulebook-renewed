@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Bloody Decks (rbr_bloody_decks): Crew lost due to hull damage on your ships increased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<g transform="translate(52 66) scale(0.86) translate(-64 -64)">
+<path d="M28 106 Q28 74 64 74 Q100 74 100 106 Z" fill="#661F28" stroke="#FF5064" stroke-width="9.3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="48" r="18" fill="#661F28" stroke="#FF5064" stroke-width="9.3" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(98 52) scale(0.4) translate(-64 -64)">
+<path d="M64 14 C78 38 94 58 94 78 C94 96 80 108 64 108 C48 108 34 96 34 78 C34 58 50 38 64 14 Z" fill="#661F28" stroke="#FF5064" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+<path d="M107.0 5.0 L122.0 22.0 L112.5 22.0 L112.5 36.0 L101.5 36.0 L101.5 22.0 L92.0 22.0 Z" fill="#FFC2C9"/>
+</svg>

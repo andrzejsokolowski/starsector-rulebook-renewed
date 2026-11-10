@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Giant Killer (rbr_giant_killer): Damage taken by enemy capital ships increased by {value}%. -->
+<g>
+<path d="M56 110 L56 72 L26 32 L40 22 L64 54 L88 22 L102 32 L72 72 L72 110 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M33 27 Q64 62 95 27" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="44" r="9" fill="#3CEB8C"/>
+</g>
+</svg>

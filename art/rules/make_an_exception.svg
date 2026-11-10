@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Make an Exception (rbr_make_an_exception): Each AI inspection sent against you while you are not hostile to its faction has a {value}% chance to be bribe -->
+<g>
+<rect x="12" y="30" width="88" height="62" rx="6" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 34 L56 66 L98 34" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="94" cy="88" r="22" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="94" cy="88" r="9.24" fill="#3CEB8C"/>
+</g>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Iron Quartermaster (rbr_iron_quartermaster): Maintenance supply use of your ships decreased by {value}%, fuel use decreased by {value}%. -->
+<g>
+<rect x="28" y="26" width="72" height="82" rx="8" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="46" y="16" width="36" height="18" rx="5" fill="#3CEB8C" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M42 54 L48 60 L58 48 M66 56 L88 56 M42 80 L48 86 L58 74 M66 82 L88 82" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

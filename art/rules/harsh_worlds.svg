@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Harsh Worlds (rbr_harsh_worlds): Hazard rating of your colonies increased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M56.0 50.1 L41.0 24.2 A46 46 0 0 1 87.0 24.2 L72.0 50.1 A16 16 0 0 0 56.0 50.1 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M80.0 64.0 L110.0 64.0 A46 46 0 0 1 87.0 103.8 L72.0 77.9 A16 16 0 0 0 80.0 64.0 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M56.0 77.9 L41.0 103.8 A46 46 0 0 1 18.0 64.0 L48.0 64.0 A16 16 0 0 0 56.0 77.9 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="64" r="8" fill="#FF5064"/>
+</g>
+<path d="M107.0 5.0 L122.0 22.0 L112.5 22.0 L112.5 36.0 L101.5 36.0 L101.5 22.0 L92.0 22.0 Z" fill="#FFC2C9"/>
+</svg>

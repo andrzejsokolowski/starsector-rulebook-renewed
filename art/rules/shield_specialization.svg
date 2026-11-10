@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Shield Specialization (rbr_shield_specialization): Damage taken by your shields and their upkeep decreased by {value}%, their turn and unfold rates increased by  -->
+<g>
+<path d="M14 72 A52 52 0 0 1 114 72 L100 72 A38 38 0 0 0 28 72 Z" fill="#664F16" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(64 94) scale(0.46) translate(-64 -64)">
+<path d="M64 18 L76 46 L76 60 L102 80 L102 94 L76 88 L72 106 L56 106 L52 88 L26 94 L26 80 L52 60 L52 46 Z" fill="#664F16" stroke="#FFC83C" stroke-width="17.4" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M14 40 A58 58 0 0 1 114 40" fill="none" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

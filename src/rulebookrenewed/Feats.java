@@ -137,7 +137,7 @@ public final class Feats {
 
         // Oddisz's other mods.
         modFlag("sol_reach", "Reach Sol", SOL, Feats::inSol);
-        modFlag("sol_quest", "Finish the Translocator quest in Sol", SOL,
+        modFlag("sol_quest", "Bring Sol into the Sector", SOL,
                 () -> "DONE".equals(sectorString("$sr_quest_stage")));
         modFlag("sol_shroud", "Defeat the Shroud in Sol", SOL, () -> sector("$sr_quest_shroud_killed"));
         modFlag("sol_crisis", "Deter the Sol crisis", SOL, () -> sector("$sr_crisis_deterred"));

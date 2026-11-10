@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Omega Shard (rbr_omega_shard): Grants {value} Omega core, once per campaign. -->
+<g>
+<path d="M60 14 L88 40 L80 100 L58 114 L40 52 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M40 52 L66 58 L88 40 M66 58 L58 114" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

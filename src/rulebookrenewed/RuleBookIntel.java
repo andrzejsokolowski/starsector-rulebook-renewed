@@ -74,10 +74,10 @@ public final class RuleBookIntel extends BaseIntelPlugin {
 
         boolean anyChallenge = false;
         for (ChallengeSpec spec : Challenges.all()) {
-            if (Challenges.isComplete(spec) || !Challenges.conditionsMet(spec, Challenges.LIVE)) continue;
+            if (Challenges.isComplete(spec) || !Challenges.isRunning(spec)) continue;
             if (!anyChallenge) info.addSectionHeading("Challenges in progress", Alignment.MID, pad);
             anyChallenge = true;
-            info.addPara(spec.name + "   " + Challenges.progressText(spec), Misc.getHighlightColor(), 5f);
+            info.addPara(spec.name + "   " + Challenges.statusText(spec), Misc.getHighlightColor(), 5f);
             info.addPara(spec.goalText() + ".", Misc.getGrayColor(), 1f);
         }
 

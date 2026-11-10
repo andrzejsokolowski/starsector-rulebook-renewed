@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Superconductors (rbr_superconductors): Flux capacity and dissipation of your ships increased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<rect x="34" y="32" width="60" height="76" rx="8" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="52" y="18" width="24" height="12" rx="3" fill="#3CEB8C"/>
+<path d="M70.0 42.0 L50.0 74.0 L62.0 74.0 L56.0 98.0 L78.0 64.0 L66.0 64.0 L74.0 42.0 Z" fill="#3CEB8C"/>
+</g>
+<path d="M107.0 5.0 L122.0 22.0 L112.5 22.0 L112.5 36.0 L101.5 36.0 L101.5 22.0 L92.0 22.0 Z" fill="#B4F7D2"/>
+</svg>

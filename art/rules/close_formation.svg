@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Naval Phalanx (rbr_close_formation): Your ships with another of your side within 600 units have their flux dissipation increased by {value}% and th -->
+<g>
+<g transform="translate(36 68) scale(0.6) translate(-64 -64)">
+<path d="M64 18 L102 30 L102 60 C102 84 86 98 64 108 C42 98 26 84 26 60 L26 30 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="13.3" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(92 68) scale(0.6) translate(-64 -64)">
+<path d="M64 18 L102 30 L102 60 C102 84 86 98 64 108 C42 98 26 84 26 60 L26 30 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="13.3" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(64 64) scale(0.72) translate(-64 -64)">
+<path d="M64 18 L102 30 L102 60 C102 84 86 98 64 108 C42 98 26 84 26 60 L26 30 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="11.1" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>

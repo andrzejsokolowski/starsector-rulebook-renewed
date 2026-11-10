@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Ghost Reinforcements (rbr_phasing_ghost): About once a minute, the enemy has a {value}% chance to receive a phase ship. The chance doubles after each mi -->
+<g>
+<g transform="translate(44 54) scale(0.66) translate(-64 -64)">
+<path d="M30 106 L30 56 A34 34 0 0 1 98 56 L98 106 L87 96 L76 106 L64 96 L52 106 L41 96 Z" fill="#661F28" stroke="#FF5064" stroke-width="12.1" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="52" cy="58" r="7" fill="#FF5064"/>
+<circle cx="76" cy="58" r="7" fill="#FF5064"/>
+</g>
+<g transform="translate(80 76) scale(0.74) translate(-64 -64)">
+<path d="M30 106 L30 56 A34 34 0 0 1 98 56 L98 106 L87 96 L76 106 L64 96 L52 106 L41 96 Z" fill="#661F28" stroke="#FF5064" stroke-width="10.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="52" cy="58" r="7" fill="#FF5064"/>
+<circle cx="76" cy="58" r="7" fill="#FF5064"/>
+</g>
+</g>
+</svg>

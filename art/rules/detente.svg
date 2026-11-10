@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- The Detente (rbr_detente): Maintenance supply use of your ships increased by {value}% for each ship in your fleet above 15. -->
+<g>
+<path d="M18 72 Q20 56 34 54 Q42 54 46 60 Q58 40 96 22 Q92 52 70 70 Q90 66 106 74 Q96 86 74 88 L64 102 L54 90 Q34 92 24 82 L10 78 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="32" cy="62" r="4" fill="#FF5064"/>
+<path d="M58 92 Q72 104 90 104" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

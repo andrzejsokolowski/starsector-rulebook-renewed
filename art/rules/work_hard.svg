@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Work Harder! (rbr_work_hard): While your marines number less than {value}% of your crew, each day has an 8% chance of a riot: one ship loses -->
+<g>
+<path d="M36 60 L36 46 Q36 36 46 36 L86 36 Q96 36 96 46 L96 76 Q96 92 80 92 L78 92 L78 110 L46 110 L46 92 Q36 88 36 76 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50 36 L50 54 M64 36 L64 54 M80 36 L80 54" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M36 62 L60 62 Q68 62 68 72" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

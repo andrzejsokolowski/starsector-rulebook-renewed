@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Raw Officers (rbr_raw_officers): Number of skills of enemy officers decreased by {value}. Each keeps at least one. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+<circle cx="21" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M28 106 Q28 74 64 74 Q100 74 100 106 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="48" r="18" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M38 40 L36 26 Q64 12 92 26 L90 40 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M34 42 L94 42" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.0 81.0 L66.9 88.0 L74.5 88.6 L68.7 93.5 L70.5 100.9 L64.0 97.0 L57.5 100.9 L59.3 93.5 L53.5 88.6 L61.1 88.0 Z" fill="#3CEB8C"/>
+</g>
+<path d="M107.0 37.0 L122.0 20.0 L112.5 20.0 L112.5 6.0 L101.5 6.0 L101.5 20.0 L92.0 20.0 Z" fill="#B4F7D2"/>
+<path d="M8 20 A13 13 0 0 1 34 20 L34 25 Q34 29 29 30 L29 36 L13 36 L13 30 Q8 29 8 25 Z M12 22 A4.2 4.2 0 1 0 20.4 22 A4.2 4.2 0 1 0 12 22 Z M21.6 22 A4.2 4.2 0 1 0 30 22 A4.2 4.2 0 1 0 21.6 22 Z" fill="#B4F7D2" fill-rule="evenodd"/>
+</svg>

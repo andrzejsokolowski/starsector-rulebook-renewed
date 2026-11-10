@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Industrial Zone (rbr_industrial_zone): Maximum number of industries at your colonies increased by {value}. A colony of size 5 or smaller over its old -->
+<g>
+<path d="M14 106 L14 60 L38 44 L38 60 L62 44 L62 60 L86 44 L86 22 L106 22 L106 106 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="24" y="76" width="14" height="12" rx="3" fill="#3CEB8C"/>
+<rect x="48" y="76" width="14" height="12" rx="3" fill="#3CEB8C"/>
+<rect x="72" y="76" width="14" height="12" rx="3" fill="#3CEB8C"/>
+</g>
+</svg>

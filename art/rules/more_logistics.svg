@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Logistics Overhaul (rbr_more_logistics): Number of logistics hullmods each of your ships can have increased by {value}. -->
+<g>
+<path d="M30 16 L44 16 L44 100 L104 100" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="54" cy="102" r="10" fill="#3CEB8C"/>
+<rect x="54" y="62" width="44" height="32" rx="3" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="58" y="28" width="36" height="30" rx="3" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Swarming Wings (rbr_swarming_wings): Refit time of enemy fighters decreased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+<circle cx="21" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M24 106 L24 66 A40 40 0 0 1 104 66 L104 106" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 106 L114 106" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64.0 55.0 L85.2 98.8 L64.0 90.0 L42.8 98.8 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M107.0 37.0 L122.0 20.0 L112.5 20.0 L112.5 6.0 L101.5 6.0 L101.5 20.0 L92.0 20.0 Z" fill="#FFC2C9"/>
+<path d="M8 20 A13 13 0 0 1 34 20 L34 25 Q34 29 29 30 L29 36 L13 36 L13 30 Q8 29 8 25 Z M12 22 A4.2 4.2 0 1 0 20.4 22 A4.2 4.2 0 1 0 12 22 Z M21.6 22 A4.2 4.2 0 1 0 30 22 A4.2 4.2 0 1 0 21.6 22 Z" fill="#FFC2C9" fill-rule="evenodd"/>
+</svg>

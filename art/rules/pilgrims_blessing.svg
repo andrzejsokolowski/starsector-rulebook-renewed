@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Pilgrim's Blessing (rbr_pilgrims_blessing): Repair and combat readiness recovery rates of your ships increased by {value}%. -->
+<g>
+<rect x="48" y="56" width="32" height="52" rx="4" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 14 C72 26 76 32 76 38 A12 12 0 0 1 52 38 C52 32 56 26 64 14 Z" fill="#3CEB8C" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 50 L64 56" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30 30 L38 34 M98 30 L90 34 M26 52 L36 52 M102 52 L92 52" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

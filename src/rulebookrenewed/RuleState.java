@@ -10,6 +10,7 @@ public final class RuleState {
 
     private static final String LEVELS_KEY = "rbr_ruleLevels";
     private static final String PICKER_PENDING_KEY = "rbr_pickerPending";
+    private static final String START_KEY = "rbr_campaignStart";
 
     private RuleState() {}
 
@@ -34,6 +35,23 @@ public final class RuleState {
     public static void setLevel(RuleSpec rule, int level) {
         if (level <= 0) levels().remove(rule.id);
         else levels().put(rule.id, Math.min(level, rule.levels));
+    }
+
+    /** Game timestamp of the campaign start, or -1 for a save started before Rule Book kept it. */
+    public static long campaignStart() {
+        Object value = Global.getSector().getPersistentData().get(START_KEY);
+        return value instanceof Long ? (Long) value : -1L;
+    }
+
+    /**
+     * Records the campaign start once per save. A new game, or a save still at level 1, starts now; an
+     * older save gets -1, so challenges cannot start in it.
+     */
+    public static void recordCampaignStart(boolean newGame) {
+        Map<String, Object> data = Global.getSector().getPersistentData();
+        if (data.containsKey(START_KEY)) return;
+        boolean fresh = newGame || Global.getSector().getPlayerStats().getLevel() <= 1;
+        data.put(START_KEY, fresh ? Global.getSector().getClock().getTimestamp() : -1L);
     }
 
     public static boolean isPickerPending() {

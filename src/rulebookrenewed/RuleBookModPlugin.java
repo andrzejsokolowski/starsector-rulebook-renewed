@@ -29,6 +29,8 @@ public final class RuleBookModPlugin extends BaseModPlugin {
 
     @Override
     public void onGameLoad(boolean newGame) {
+        RuleState.recordCampaignStart(newGame);
+        Challenges.dropOldState();
         RuleBookIntel.ensure();
         Global.getSector().addTransientScript(new RuleBookScript());
         Global.getSector().addTransientListener(new RuleBattleListener());

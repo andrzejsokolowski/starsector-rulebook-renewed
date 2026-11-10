@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Trade Embargo (rbr_trade_embargo): Accessibility of your colonies decreased by {value}% for each hostile market within 15 light-years. -->
+<g>
+<g transform="translate(64 64) scale(0.62) translate(-64 -64)">
+<rect x="22" y="26" width="84" height="80" rx="4" fill="#661F28" stroke="#FF5064" stroke-width="12.9" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="32" y="36" width="64" height="60" rx="2" fill="none" stroke="#FF5064" stroke-width="12.9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M32 36 L96 96 M96 36 L32 96" fill="none" stroke="#FF5064" stroke-width="12.9" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<circle cx="64" cy="64" r="44" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M33 33 L95 95" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

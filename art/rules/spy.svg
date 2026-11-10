@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Spy (rbr_spy): Stability of your colonies decreased by {value} for each hostile market within 15 light-years. -->
+<g>
+<path d="M12 52 Q12 38 28 38 L100 38 Q116 38 116 52 Q116 88 90 88 Q74 88 64 72 Q54 88 38 88 Q12 88 12 52 Z M32 60 A12 9 0 1 0 56 60 A12 9 0 1 0 32 60 Z M72 60 A12 9 0 1 0 96 60 A12 9 0 1 0 72 60 Z" fill="#661F28" fill-rule="evenodd" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

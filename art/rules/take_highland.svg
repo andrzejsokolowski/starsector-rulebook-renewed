@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- I Have the High Ground! (rbr_take_highland): Range of ballistic and energy weapons of your ships within 2000 units of an objective increased by {value}%. -->
+<g>
+<path d="M12 106 L50 44 L66 66 L80 50 L116 106 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50 44 L50 14" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50 16 L76 24 L50 34 Z" fill="#3CEB8C" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

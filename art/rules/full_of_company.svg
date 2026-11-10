@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Full of Company (rbr_full_of_company): The first time this rule is switched on, your standing with the independents and the pirates becomes Friendly. -->
+<g>
+<g transform="rotate(-14 46 70)">
+<rect x="30" y="40" width="34" height="56" rx="5" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30 56 Q14 56 14 68 Q14 82 30 82" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26 40 Q30 26 46 30 Q58 24 66 38 Z" fill="#3CEB8C" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="rotate(14 82 70)">
+<g transform="translate(128 0) scale(-1 1)">
+<rect x="30" y="40" width="34" height="56" rx="5" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30 56 Q14 56 14 68 Q14 82 30 82" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26 40 Q30 26 46 30 Q58 24 66 38 Z" fill="#3CEB8C" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</svg>

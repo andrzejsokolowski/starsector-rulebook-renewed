@@ -6,11 +6,12 @@ import rulebookrenewed.RuleSpec;
 
 /**
  * Positive, only with Astral Ascension Renewed: the player's ascended colonies (past size 10, marked by
- * that mod with $aar_ascended) gain stability.
+ * that mod with $aar_ascended) gain a fixed 3 stability and a share more income.
  */
 public final class AscendedStability extends MarketRule {
 
     private static final String ASCENDED = "$aar_ascended";
+    private static final float STABILITY = 3f;
 
     @Override
     protected boolean playerMarkets() {
@@ -19,12 +20,17 @@ public final class AscendedStability extends MarketRule {
 
     @Override
     protected void modify(MarketAPI market, String id, float value, RuleSpec rule) {
-        if (market.getMemoryWithoutUpdate().contains(ASCENDED)) market.getStability().modifyFlat(id, value, rule.name);
-        else market.getStability().unmodify(id);
+        if (market.getMemoryWithoutUpdate().contains(ASCENDED)) {
+            market.getStability().modifyFlat(id, STABILITY, rule.name);
+            market.getIncomeMult().modifyPercent(id, value, rule.name);
+        } else {
+            clear(market, id);
+        }
     }
 
     @Override
     protected void clear(MarketAPI market, String id) {
         market.getStability().unmodify(id);
+        market.getIncomeMult().unmodify(id);
     }
 }

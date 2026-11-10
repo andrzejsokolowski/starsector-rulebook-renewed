@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Imperial Charter (rbr_imperial_charter): Stability of your colonies increased by {value}. -->
+<g>
+<path d="M28 20 L88 20 L88 82 L100 94 L100 108 L40 108 Q28 108 28 96 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M42 40 L74 40 M42 56 L74 56 M42 72 L62 72" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="82" cy="92" r="14" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M74 104 L70 118 L80 112 Z" fill="#3CEB8C"/>
+</g>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Doomslayer (rbr_doomslayer): Enemy ships within 1000 units of the ship you fly have their maneuverability decreased by {value}% and their f -->
+<g>
+<path d="M22 72 Q22 18 64 18 Q106 18 106 72 L106 96 Q92 108 64 108 Q36 108 22 96 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M32 54 L96 54 L90 76 L38 76 Z" fill="#3CEB8C" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50 92 L78 92" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

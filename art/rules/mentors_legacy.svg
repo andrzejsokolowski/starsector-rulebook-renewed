@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Mentor's Legacy (rbr_mentors_legacy): Maximum level of your officers increased by {value}. -->
+<g>
+<path d="M26 50 L64 26 L102 50 L102 62 L64 38 L26 62 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26 74 L64 50 L102 74 L102 86 L64 62 L26 86 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26 98 L64 74 L102 98 L102 110 L64 86 L26 110 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

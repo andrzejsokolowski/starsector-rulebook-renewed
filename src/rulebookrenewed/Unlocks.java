@@ -31,12 +31,11 @@ public final class Unlocks {
         return Achievements.complete(FeatAchievement.PREFIX + featId);
     }
 
-    /** How the picker names the achievement that opens a rule: its name once done, its hint (or how-to) before. */
+    /** How the picker names the achievement that opens a rule: its exact condition (the how-to), else its name. */
     public static String label(String achievementId) {
         AchievementSpec spec = Achievements.get(achievementId);
         if (spec == null) return achievementId;
-        if (spec.isDone()) return spec.name;
-        return Achievements.showHowTo() && !spec.howTo.isEmpty() ? spec.howTo : spec.hint;
+        return spec.howTo.isEmpty() ? spec.name : spec.howTo;
     }
 
     /** Whether the player may pick this rule. Rules already active stay usable regardless. */

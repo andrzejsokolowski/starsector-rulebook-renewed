@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Merchant Prince (rbr_merchant_prince): Tariffs at markets that are not yours decreased by {value} percentage points. Income of your colonies increase -->
+<g>
+<path d="M29.6 35.2 L47.6 50.0 L64.0 22.1 L80.4 50.0 L98.4 35.2 L90.2 71.3 L37.8 71.3 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="92" r="16" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="92" r="6.72" fill="#3CEB8C"/>
+<circle cx="36" cy="96" r="12" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="36" cy="96" r="5.04" fill="#3CEB8C"/>
+<circle cx="92" cy="96" r="12" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="92" cy="96" r="5.04" fill="#3CEB8C"/>
+</g>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Black in Black (rbr_black_in_black): Trade on black markets raises no suspicion. -->
+<g>
+<path d="M8 46 L120 46" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 46 L58 46 L54 74 Q50 86 36 86 Q20 86 16 74 Z" fill="#3CEB8C" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M70 46 L114 46 L112 74 Q108 86 92 86 Q78 86 74 74 Z" fill="#3CEB8C" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M58 52 Q64 46 70 52" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M26 58 L36 54 M82 58 L92 54" fill="none" stroke="#B4F7D2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

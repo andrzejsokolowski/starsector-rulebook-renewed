@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Dead Weight (rbr_dead_weight): Maximum combat readiness of your ships decreased by {value}% for each mothballed ship in your fleet. -->
+<g>
+<circle cx="64" cy="24" r="9" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 33 L64 106 M46 46 L82 46" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M24 74 C26 94 44 106 64 106 C84 106 102 94 104 74" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M24.0 64.0 L14.0 80.0 L32.0 80.0 Z" fill="#FF5064"/>
+<path d="M104.0 64.0 L96.0 80.0 L114.0 80.0 Z" fill="#FF5064"/>
+</g>
+</svg>

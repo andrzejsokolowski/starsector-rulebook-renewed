@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Festering Damage (rbr_festering_damage): D-mods on your ships have their effects increased by {value}%. -->
+<defs>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+<rect width="128" height="128" fill="#fff"/>
+<circle cx="107" cy="21" r="21" fill="#000"/>
+</mask>
+</defs>
+<g mask="url(#cut)">
+<path d="M97.1 56.4 L109.6 57.6 L109.6 70.4 L97.1 71.6 L92.8 82.0 L100.7 91.7 L91.7 100.7 L82.0 92.8 L71.6 97.1 L70.4 109.6 L57.6 109.6 L56.4 97.1 L46.0 92.8 L36.3 100.7 L27.3 91.7 L35.2 82.0 L30.9 71.6 L18.4 70.4 L18.4 57.6 L30.9 56.4 L35.2 46.0 L27.3 36.3 L36.3 27.3 L46.0 35.2 L56.4 30.9 L57.6 18.4 L70.4 18.4 L71.6 30.9 L82.0 35.2 L91.7 27.3 L100.7 36.3 L92.8 46.0 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="64" r="14" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M56 20 L66 40 L56 52" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M107.0 5.0 L122.0 22.0 L112.5 22.0 L112.5 36.0 L101.5 36.0 L101.5 22.0 L92.0 22.0 Z" fill="#FFC2C9"/>
+</svg>
