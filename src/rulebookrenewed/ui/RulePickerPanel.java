@@ -31,6 +31,7 @@ import com.fs.starfarer.api.util.Misc;
 
 import rulebookrenewed.Balance;
 import rulebookrenewed.ChallengeSpec;
+import rulebookrenewed.Presets;
 import rulebookrenewed.Challenges;
 import rulebookrenewed.RuleCatalog;
 import rulebookrenewed.RuleManager;
@@ -45,7 +46,8 @@ import rulebookrenewed.Unlocks;
  * and Confirm / Cancel.
  *
  * Picks are made on a working copy and applied on Confirm. A left click picks a rule and then raises
- * its level (past the top it is dropped); a right click lowers it. A rule and its mirror are never on
+ * its level (past the top it is dropped); a right click lowers it. Four preset slots, kept across saves,
+ * save and load whole rule sets. A rule and its mirror are never on
  * together: picking one disables the other tile. With the point budget on (LunaLib), a rule set that
  * costs more than it gives cannot be confirmed.
  */
@@ -109,7 +111,9 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
     private UIRect pageRect, positiveGrid, negativeGrid, challengeList;
     private UIRect detailRect, positiveSummary, negativeSummary, challengeSummary, reasonRect, warningRect;
     private LabelAPI positiveCount, negativeCount, pointsLabel, countLabel, careerLabel;
-    private ButtonAPI confirmBtn, rulesTab, challengesTab;
+    private ButtonAPI confirmBtn, rulesTab, challengesTab, presetLoad;
+    private final ButtonAPI[] presetButtons = new ButtonAPI[Presets.SLOTS];
+    private int presetSlot;
     private ChallengeSpec tracked;
     private RuleSpec hovered;
     private int hoveredLevel = -1, tab = TAB_RULES;
@@ -166,14 +170,21 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         UIRect left = temp[0];
         UIRect right = temp[1];
 
-        // Left: the pages, and the tab buttons where UNGP keeps its presets.
+        // Left: the pages; under them the tab buttons and, as in UNGP, the presets.
         temp = left.splitVertically(0.92f, 0.08f);
         pageRect = temp[0];
         UIRect tabRect = temp[1].shrink(5f);
         tabRect.addBoarder(panel, border, 2f);
-        temp = tabRect.shrink(10f).splitHorizontally(1f, 1f, 4f);
+        temp = tabRect.shrink(10f).splitHorizontally(1.2f, 1.2f, 0.4f, 1f, 1f, 1f, 1f, 1f, 1f);
         rulesTab = tabButton(temp[0], "Rules", "tab_rules");
         challengesTab = tabButton(temp[1], "Challenges", "tab_challenges");
+        for (int i = 0; i < Presets.SLOTS; i++) {
+            presetButtons[i] = tabButton(temp[3 + i], "Preset " + (i + 1), "preset_" + i);
+        }
+        presetButtons[0].setChecked(true);
+        presetLoad = plainButton(temp[8], "Load", "preset_load");
+        plainButton(temp[7], "Save", "preset_save");
+        presetLoad.setEnabled(Presets.exists(presetSlot));
 
         buildRulesPage();
         buildChallengesPage();
@@ -241,6 +252,43 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
                 Misc.getBrightPlayerColor(), rect.getWidth(), rect.getHeight(), 0f);
         rect.addTooltip();
         return button;
+    }
+
+    private ButtonAPI plainButton(UIRect rect, String text, String id) {
+        rect = rect.shrink(4f, 0f);
+        TooltipMakerAPI tip = rect.beginTooltip(panel, false);
+        ButtonAPI button = tip.addButton(text, id, rect.getWidth(), rect.getHeight(), 0f);
+        rect.addTooltip();
+        return button;
+    }
+
+    private void selectPreset(int slot) {
+        presetSlot = slot;
+        for (int i = 0; i < presetButtons.length; i++) presetButtons[i].setChecked(i == slot);
+        presetLoad.setEnabled(Presets.exists(slot));
+    }
+
+    private void savePreset() {
+        Map<String, Integer> out = new HashMap<>();
+        for (Map.Entry<RuleSpec, Integer> e : working.entrySet()) out.put(e.getKey().id, e.getValue());
+        Presets.save(presetSlot, out);
+        presetLoad.setEnabled(Presets.exists(presetSlot));
+    }
+
+    /** Replaces the working rules with a preset; rules that are locked or no longer exist are left out. */
+    private void loadPreset() {
+        Map<String, Integer> preset = Presets.load(presetSlot);
+        if (preset.isEmpty()) return;
+        working.clear();
+        for (RuleSpec rule : RuleCatalog.all()) {
+            Integer level = preset.get(rule.id);
+            if (level == null || level <= 0 || !Unlocks.isUnlocked(rule)) continue;
+            RuleSpec mirror = mirror(rule);
+            if (mirror != null && working.containsKey(mirror)) continue;
+            working.put(rule, Math.min(level, rule.levels));
+        }
+        tracked = null;
+        refresh();
     }
 
     /** Puts a section heading at the top of a box and returns the space under it. */
@@ -585,7 +633,17 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
     public void buttonPressed(Object buttonId) {
         if (closed) return;
         String id = String.valueOf(buttonId);
+        if (id.startsWith("preset_") && id.length() == 8 && Character.isDigit(id.charAt(7))) {
+            selectPreset(id.charAt(7) - '0');
+            return;
+        }
         switch (id) {
+            case "preset_save":
+                savePreset();
+                break;
+            case "preset_load":
+                loadPreset();
+                break;
             case "tab_rules":
                 showTab(TAB_RULES);
                 break;

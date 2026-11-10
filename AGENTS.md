@@ -101,6 +101,7 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   is a page panel built once and moved off screen when hidden (never remove a scrolling TooltipMakerAPI
   with removeComponent). `ChallengeRow` is one challenge with its rule icons and "Enable required rules",
   which replaces the working rules with exactly the required ones; a later pick that breaks that
-  challenge, or one with progress, shows a warning box once. `RuleBookDialog` hosts the picker;
+  challenge, or one with progress, shows a warning box once. `Presets` keeps four saved rule sets in saves/common
+  (`rulebook_renewed_presets.json`); the buttons sit next to the tabs. `RuleBookDialog` hosts the picker;
   `RuleBookIntel` is the permanent intel entry with the open button.
 - `compat/peerless` - the only package that may name Peerless Skills (`checkPeerlessIsolated`).

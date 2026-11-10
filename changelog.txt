@@ -2,6 +2,7 @@ Version 0.7.1 (2026-11-10)
 - Rule Book's achievements are sorted into tabs: base game ones in the Achievements tab, each other mod's in that mod's own tab, challenges under Rule Book - Renewed. Needs Achievements - Renewed 0.2.0.
 - New achievement Supergrowth in the Cloning tab: own a Cloning Megafactory with an Omega core and a Pristine Nanoforge installed. It shows when a mod that provides Omega cores is on.
 - Mentor's Legacy now unlocks from the base achievement Reach level 15, which no longer exists twice.
+- Four preset slots next to the tabs save and load whole rule sets. Presets are kept across campaigns.
 - New mod description in the launcher.
 
 Version 0.7.0 (2026-11-10)
