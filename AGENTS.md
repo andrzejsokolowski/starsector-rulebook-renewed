@@ -38,7 +38,7 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
 
 - `data/config/rulebook/rules.csv` - one row per rule: type (`positive` or `negative`; a rule just for fun is
   a positive rule worth 0 points), levels, points and values per level (`|` separated), required mod, unlock
-  (`feat:<id>` or `challenge:<id>`), effect class, icon, description with `{value}`, order, pair, section.
+  (`feat:<id>`, `challenge:<id>` or `achievement:<id>` for another mod's achievement), effect class, icon, description with `{value}`, order, pair, section.
   Loaded merged over all mods by `RuleCatalog` at startup; rows whose required mod is off are dropped before
   their effect class is loaded. A negative rule and its positive mirror share a `pair`; only one can be on.
   Points: negative rules are below zero and give the player points, positive rules cost them; the picker
@@ -75,7 +75,9 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
 - `RuleState` - chosen levels per save (sector persistent data). `Unlocks` - a thin layer over
   Achievements - Renewed (a required mod, `achievementsrenewed.api.Achievements`): the feat `x` is the
   achievement `rbr_x`, a finished challenge is `rbr_challenge_<id>`. Their rows (name, hint, how-to, reward
-  line, chain) are in `data/config/achievements_renewed/achievements.csv`; feat rows name the script
+  line, chain, tab) are in `data/config/achievements_renewed/achievements.csv`. `tab` is `vanilla` for
+  base-game achievements, otherwise the name of the mod the achievement is about (never rank Oddisz's mods
+  above others; Andrzej, 2026-11-10); feat rows name the script
   `achievements/FeatAchievement`, which reports the feat's count, and that mod polls it, keeps what is done
   across saves and shows the notification. `Feats` - every feat with a count: story flags (0 or 1), colonies,
   credits, and battle counters from `Counters` (per save, filled by `RuleBattleListener` when the player's
@@ -83,8 +85,11 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   save, never their classes, and exist only while one of their mod ids is enabled. Checked daily and after
   battles; the build reads the feat ids from `Feats.java` and `Counters.java` to check the CSV files.
   Challenge column `deadlineDays` is a time limit. Challenges only unlock Rule Book rules; they never pay
-  New Game Plus career points (Andrzej, 2026-11-10). The only link to New Game Plus - Renewed is
-  `$rbr_ngpMultiplier`.
+  New Game Plus career points (Andrzej, 2026-11-10). Rule Book writes one thing for New Game Plus - Renewed:
+  `$rbr_ngpMultiplier`. New Game Plus - Renewed 0.6.0 pays its own career points, through its own listener,
+  when these achievements of ours are done, so never rename them or change their conditions: `rbr_atg`,
+  `rbr_planetkiller`, `rbr_ziggurat`, `rbr_academy`, `rbr_usurpers`, `rbr_knight`, `rbr_duel`, `rbr_kanta`,
+  `rbr_sol_crisis`, `rbr_sol_quest`. Our `rbr_ngp_ledger` reads its hull mod id `ngp_ledger_refit`.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
   `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
 - `ui/RulePickerPanel` - UNGP's picker layout with native UI: positive grid over negative grid (or the

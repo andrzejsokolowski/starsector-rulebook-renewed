@@ -238,12 +238,10 @@ Five colonies or a million credits that you already had when the rules went on c
 
 ## Achievements
 
-- **Story**: Finish The Kallichore Archive, Finish Finding Coureuse, Finish Project Ziggurat, Defeat the Ziggurat, Return the ISS Hamatsu, Finish At The Gates, Finish Abyssal Space Oddity, Finish The Usurpers, Finish Princess of Persea, Win the duel on Eventide, Finish Pilgrim's Path, Finish Knight Errant, Finish False Idols, Find the lost Luddic heretics, Finish Passage To Volturn, Recover the planetkiller, Earn Kanta's protection.
-- **Campaign**: Reach level 15, Hold a million credits, Found a colony, Grow a colony to size 6, Own five colonies.
-- **Battles**: Win a battle, Beat a fleet twice your size, Defeat an orbital station, Defeat a Remnant fleet, Defeat an Omega, Threat or Dweller fleet.
+- **Base game**: Finish The Kallichore Archive, Finish Finding Coureuse, Finish Project Ziggurat, Defeat the Ziggurat, Return the ISS Hamatsu, Finish At The Gates, Finish Abyssal Space Oddity, Finish The Usurpers, Finish Princess of Persea, Win the duel on Eventide, Finish Pilgrim's Path, Finish Knight Errant, Finish False Idols, Find the lost Luddic heretics, Finish Passage To Volturn, Recover the planetkiller, Earn Kanta's protection, Hold a million credits, Found a colony, Grow a colony to size 6, Own five colonies, Win a battle, Beat a fleet twice your size, Defeat an orbital station, Defeat a Remnant fleet, Defeat an Omega, Threat or Dweller fleet.
 - **Sol Renewed**: Destroy a shrouded ship, Bring Sol into the Sector, Reach Sol, Deter the Sol crisis.
 - **Gambling Den**: Play the slot machine, Win at the slot machine.
-- **Starsector Cloning**: Build a Cloning Megafactory.
+- **Cloning**: Own a Cloning Megafactory, Supergrowth.
 - **Reverse Engineered Private Arsenal**: Reverse-engineer 10 weapons, Reverse-engineer a ship.
 - **StarterPack**: Start with a Starter Pack.
 - **Missions - Renewed**: Sign a contract.
@@ -253,7 +251,7 @@ Five colonies or a million credits that you already had when the rules went on c
 - **Extra Submarkets**: Visit the Great Mall.
 - **New Game Plus - Renewed**: Refit a ship at the Ledger.
 
-Achievements from other mods show only while that mod is enabled.
+In the achievements list each group is its own tab. Achievements about another mod show only while that mod is enabled. "Reach level 15", which unlocks Mentor's Legacy, comes from Achievements - Renewed itself.
 
 ## Adding rules and challenges
 

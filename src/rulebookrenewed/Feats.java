@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.SpecialItemData;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
@@ -46,6 +48,7 @@ public final class Feats {
         public final boolean repeatable;
         /** Mod ids of which one must be enabled; empty for vanilla feats. */
         private final String[] mods;
+        private String[] also = {};
         private final Count count;
 
         Feat(String id, String name, boolean repeatable, String[] mods, Count count) {
@@ -56,7 +59,17 @@ public final class Feats {
             this.count = count;
         }
 
+        /** Asks for one mod of a second group as well. */
+        Feat alsoNeeding(String[] mods) {
+            this.also = mods;
+            return this;
+        }
+
         public boolean available() {
+            return anyEnabled(mods) && anyEnabled(also);
+        }
+
+        private static boolean anyEnabled(String[] mods) {
             if (mods.length == 0) return true;
             for (String mod : mods) {
                 if (Global.getSettings().getModManager().isModEnabled(mod)) return true;
@@ -83,6 +96,8 @@ public final class Feats {
     private static final String[] MISSIONS = {"missions_renewed"};
     private static final String[] ASCENSION = {"astral_ascension_renewed"};
     private static final String[] OMEGA_CORE = {"omega_core_everywhere"};
+    /** Mods that make Omega cores obtainable and installable. */
+    private static final String[] OMEGA_CORES = {"astral_ascension_renewed", "omega_core_everywhere"};
     private static final String[] CHICKEN = {"chickentechshop"};
     private static final String[] SUBMARKETS = {"MM_ESM_Vanilla"};
     private static final String[] NGP = {"ngp_renewed"};
@@ -109,7 +124,6 @@ public final class Feats {
         add("planetkiller", "Recover the planetkiller", () -> sector("$pk_recovered"));
         add("kanta", "Earn Kanta's protection", () -> character("$everHadKantaProtection"));
         // The campaign at large.
-        add("level15", "Reach level 15", () -> Global.getSector().getPlayerStats().getLevel() >= 15);
         add("colony", "Found a colony", () -> colonies(1) >= 1);
         add("colony6", "Grow a colony to size 6", () -> colonies(6) >= 1);
         add("colonies5", "Own five colonies", () -> colonies(1) >= 5);
@@ -129,7 +143,10 @@ public final class Feats {
         modFlag("sol_crisis", "Deter the Sol crisis", SOL, () -> sector("$sr_crisis_deterred"));
         modCount("gd_wins", "Win a spin at the Gambling Den", GAMBLING, () -> persistentInt("gd_wins"));
         modCount("gd_pulls", "Pull a Gambling Den slot lever", GAMBLING, () -> persistentInt("gd_pulls"));
-        modFlag("cloning", "Build a Cloning Megafactory", CLONING, () -> playerIndustry("oddisz_cloning_megafactory"));
+        modFlag("cloning", "Own a Cloning Megafactory", CLONING, () -> playerIndustry("oddisz_cloning_megafactory"));
+        FEATS.add(new Feat("cloning_supergrowth", "Own a Cloning Megafactory with an Omega core and a Pristine Nanoforge",
+                false, CLONING, () -> playerIndustryWith("oddisz_cloning_megafactory", "omega_core", "pristine_nanoforge") ? 1 : 0)
+                .alsoNeeding(OMEGA_CORES));
         modFlag("arsenal_weapons", "Reverse-engineer 10 weapons", ARSENAL, () -> sectorSetSize("$RePA_ProducedWeapons") >= 10);
         modFlag("arsenal_ship", "Reverse-engineer a ship", ARSENAL, () -> sectorSetSize("$RePA_ProducedShips") >= 1);
         modFlag("starterpack", "Start a campaign with a Starter Pack", STARTER,
@@ -210,6 +227,16 @@ public final class Feats {
     private static boolean playerIndustry(String industryId) {
         for (MarketAPI market : Misc.getPlayerMarkets(false)) {
             if (market.hasIndustry(industryId)) return true;
+        }
+        return false;
+    }
+
+    private static boolean playerIndustryWith(String industryId, String coreId, String itemId) {
+        for (MarketAPI market : Misc.getPlayerMarkets(false)) {
+            Industry industry = market.getIndustry(industryId);
+            if (industry == null || !coreId.equals(industry.getAICoreId())) continue;
+            SpecialItemData item = industry.getSpecialItem();
+            if (item != null && itemId.equals(item.getId())) return true;
         }
         return false;
     }

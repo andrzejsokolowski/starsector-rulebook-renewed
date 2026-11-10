@@ -1,4 +1,4 @@
-Subject: [0.98a] Rule Book - Renewed 0.7.0 - house rules for one campaign, each with its own level
+Subject: [0.98a] Rule Book - Renewed 0.7.1 - house rules for one campaign, each with its own level
 
 [center][size=28pt][url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][b]Rule Book - Renewed[/b][/url][/size]
 [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][img]https://img.shields.io/github/downloads/andrzejsokolowski/starsector-rulebook-renewed/total?style=for-the-badge&label=download[/img][/url]  [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed][img]https://img.shields.io/github/v/release/andrzejsokolowski/starsector-rulebook-renewed?display_name=tag&sort=semver&style=for-the-badge&label=source[/img][/url]
@@ -212,12 +212,10 @@ A challenge names negative rules to keep on and a goal. Progress counts whenever
 [hr][center][size=12pt][b]Achievements[/b][/size][/center][hr]
 Some rules are unlocked by achievements, kept by Achievements - Renewed. They count for every later campaign.
 [list]
-[li][b]Story[/b]: Finish The Kallichore Archive, Finish Finding Coureuse, Finish Project Ziggurat, Defeat the Ziggurat, Return the ISS Hamatsu, Finish At The Gates, Finish Abyssal Space Oddity, Finish The Usurpers, Finish Princess of Persea, Win the duel on Eventide, Finish Pilgrim's Path, Finish Knight Errant, Finish False Idols, Find the lost Luddic heretics, Finish Passage To Volturn, Recover the planetkiller, Earn Kanta's protection.[/li]
-[li][b]Campaign[/b]: Reach level 15, Hold a million credits, Found a colony, Grow a colony to size 6, Own five colonies.[/li]
-[li][b]Battles[/b]: Win a battle, Beat a fleet twice your size, Defeat an orbital station, Defeat a Remnant fleet, Defeat an Omega, Threat or Dweller fleet.[/li]
+[li][b]Base game[/b]: Finish The Kallichore Archive, Finish Finding Coureuse, Finish Project Ziggurat, Defeat the Ziggurat, Return the ISS Hamatsu, Finish At The Gates, Finish Abyssal Space Oddity, Finish The Usurpers, Finish Princess of Persea, Win the duel on Eventide, Finish Pilgrim's Path, Finish Knight Errant, Finish False Idols, Find the lost Luddic heretics, Finish Passage To Volturn, Recover the planetkiller, Earn Kanta's protection, Hold a million credits, Found a colony, Grow a colony to size 6, Own five colonies, Win a battle, Beat a fleet twice your size, Defeat an orbital station, Defeat a Remnant fleet, Defeat an Omega, Threat or Dweller fleet.[/li]
 [li][b]Sol Renewed[/b]: Destroy a shrouded ship, Bring Sol into the Sector, Reach Sol, Deter the Sol crisis.[/li]
 [li][b]Gambling Den[/b]: Play the slot machine, Win at the slot machine.[/li]
-[li][b]Starsector Cloning[/b]: Build a Cloning Megafactory.[/li]
+[li][b]Cloning[/b]: Own a Cloning Megafactory, Supergrowth.[/li]
 [li][b]Reverse Engineered Private Arsenal[/b]: Reverse-engineer 10 weapons, Reverse-engineer a ship.[/li]
 [li][b]StarterPack[/b]: Start with a Starter Pack.[/li]
 [li][b]Missions - Renewed[/b]: Sign a contract.[/li]
@@ -249,9 +247,12 @@ The rule picker (layout, background, icons and sounds) comes from Unofficial New
 [spoiler=License]
 This mod is under the CC0 (Creative Commons Zero) License, allowing you to do whatever you want with the code, without giving any credit to anyone.
 The rules based on Unofficial Rule Book by DemonX3 keep its MIT licence notice (CREDITS.txt).
+The rule picker parts taken from Unofficial New Game Plus by Originem (layout code, background, icons and sounds) stay under its terms and are not CC0.
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.7.1[/b]
+[list][li]Rule Book's achievements are sorted into tabs: base game ones in the Achievements tab, each other mod's in that mod's own tab, challenges under Rule Book - Renewed. Needs Achievements - Renewed 0.2.0.[/li][li]New achievement Supergrowth in the Cloning tab: own a Cloning Megafactory with an Omega core and a Pristine Nanoforge installed. It shows when a mod that provides Omega cores is on.[/li][li]Mentor's Legacy now unlocks from the base achievement Reach level 15, which no longer exists twice.[/li][li]New mod description in the launcher.[/li][/list]
 [b]0.7.0[/b]
 [list][li]New look: the Rule Book now uses the rule picker of Unofficial New Game Plus (layout, background, icons and sounds), with permission. Every rule has an icon.[/li][li]Rules are positive or negative. Picking a rule greys out its mirror ("Conflict with ..."). Left click picks a rule and then raises its level, right click lowers it. Changes apply when you press Confirm.[/li][li]Point budget: positive rules cost points and negative rules give points, and a set that costs more than it gives cannot be confirmed. On by default; a LunaLib setting turns it off.[/li][li]Challenges need no taking on. Progress counts whenever the required rules are on. The Challenges tab lists each challenge with the icons and levels of its rules and a button that enables exactly those rules.[/li][li]Feats are now achievements in the new mod Achievements - Renewed, which this mod requires. Each shows a hint until it is done, and a setting there shows how to get it.[/li][li]The side panel shows only the effect that applies now. Locked rules show as [ ? ] with what unlocks them.[/li][li]Rule texts reworded in the game's own style, and the flavour lines are gone.[/li][li]The top levels of many rules are steeper: 10/20/40/75/100 instead of 10/20/30/40/50.[/li][/list]
 [b]0.6.0[/b]

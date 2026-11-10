@@ -445,7 +445,7 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
             for (ChallengeSpec spec : Challenges.all()) if (spec.id.equals(id)) return "the challenge " + spec.name;
             return "a challenge";
         }
-        if (rule.unlock.startsWith("feat:")) return Unlocks.label(rule.unlock.substring(5));
+        if (rule.achievementId() != null) return Unlocks.label(rule.achievementId());
         if (!rule.requiredMod.isEmpty()) {
             for (String id : rule.requiredMod.split("[|]")) {
                 if (Global.getSettings().getModManager().isModEnabled(id.trim())) {

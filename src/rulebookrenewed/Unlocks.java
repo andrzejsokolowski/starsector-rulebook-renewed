@@ -31,22 +31,19 @@ public final class Unlocks {
         return Achievements.complete(FeatAchievement.PREFIX + featId);
     }
 
-    /** How the picker names the feat that opens a rule: its name once done, its hint (or how-to) before. */
-    public static String label(String featId) {
-        AchievementSpec spec = Achievements.get(FeatAchievement.PREFIX + featId);
-        if (spec == null) {
-            Feats.Feat feat = Feats.get(featId);
-            return feat == null ? featId : feat.name;
-        }
+    /** How the picker names the achievement that opens a rule: its name once done, its hint (or how-to) before. */
+    public static String label(String achievementId) {
+        AchievementSpec spec = Achievements.get(achievementId);
+        if (spec == null) return achievementId;
         if (spec.isDone()) return spec.name;
         return Achievements.showHowTo() && !spec.howTo.isEmpty() ? spec.howTo : spec.hint;
     }
 
     /** Whether the player may pick this rule. Rules already active stay usable regardless. */
     public static boolean isUnlocked(RuleSpec rule) {
-        String feat = rule.featId();
-        if (feat == null) return true;
-        return Settings.unlockAll() || hasFeat(feat);
+        String id = rule.achievementId();
+        if (id == null) return true;
+        return Settings.unlockAll() || Achievements.isDone(id);
     }
 
     /** Carries feats from the pre-0.7.0 file over to Achievements - Renewed, then removes the file. */
@@ -57,7 +54,9 @@ public final class Unlocks {
             JSONArray list = text == null || text.trim().isEmpty() ? null : new JSONObject(text).optJSONArray("feats");
             for (int i = 0; list != null && i < list.length(); i++) {
                 String id = list.optString(i, "").trim();
-                if (!id.isEmpty() && !id.equals("null")) addFeat(id);
+                if (id.isEmpty() || id.equals("null")) continue;
+                if (id.equals("level15")) Achievements.complete("acr_level15"); // now the base mod's achievement
+                else addFeat(id);
             }
             Global.getSettings().deleteTextFileFromCommon(OLD_FILE);
         } catch (Exception e) {

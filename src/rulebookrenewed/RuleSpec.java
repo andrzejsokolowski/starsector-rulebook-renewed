@@ -17,7 +17,7 @@ public final class RuleSpec {
     private final float[] values;
     /** Mod ids, `|` between them, of which one must be enabled; empty for none. */
     public final String requiredMod;
-    /** `feat:<id>`, `challenge:<id>` or empty. */
+    /** `feat:<id>`, `challenge:<id>`, `achievement:<id of any mod's achievement>` or empty. */
     public final String unlock;
     public final String icon;
     public final String description;
@@ -72,6 +72,14 @@ public final class RuleSpec {
     public String featId() {
         if (unlock.startsWith("feat:")) return unlock.substring(5);
         if (unlock.startsWith("challenge:")) return "challenge_" + unlock.substring(10);
+        return null;
+    }
+
+    /** The achievement that opens this rule (Achievements - Renewed id), or null. */
+    public String achievementId() {
+        if (unlock.startsWith("feat:")) return "rbr_" + unlock.substring(5);
+        if (unlock.startsWith("challenge:")) return "rbr_challenge_" + unlock.substring(10);
+        if (unlock.startsWith("achievement:")) return unlock.substring(12);
         return null;
     }
 

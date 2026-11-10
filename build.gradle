@@ -234,7 +234,7 @@ tasks.register('checkReleaseFiles') {
         // Every feat and challenge that unlocks a rule has its achievement row.
         def achievementLines = file('data/config/achievements_renewed/achievements.csv').readLines('UTF-8')
         def achievementHeader = parseCsv(achievementLines[0])
-        ['id', 'mod', 'name', 'hint', 'howTo', 'description', 'icon', 'category', 'goal', 'secret', 'reward', 'chain', 'step', 'after', 'script', 'requiredMod', 'order'].each {
+        ['id', 'mod', 'name', 'hint', 'howTo', 'description', 'icon', 'tab', 'category', 'goal', 'secret', 'reward', 'chain', 'step', 'after', 'script', 'requiredMod', 'order'].each {
             if (!achievementHeader.contains(it)) problems << "achievements.csv has no ${it} column"
         }
         def achievementIds = [] as Set
@@ -246,6 +246,7 @@ tasks.register('checkReleaseFiles') {
             if (!row.name || !row.hint || !row.howTo) problems << "achievements.csv ${row.id}: needs a name, a hint and a how-to"
             if (row.script && !file("src/${row.script.replace('.', '/')}.java").isFile()) problems << "achievements.csv ${row.id}: script ${row.script} not found"
             if (row.after && !achievementLines.any { it.startsWith(row.after + ',') }) problems << "achievements.csv ${row.id}: unknown after ${row.after}"
+            if (!row.tab) problems << "achievements.csv ${row.id}: needs a tab (vanilla, or the name of the mod it is about)"
         }
         featIds.findAll { !it.startsWith('rbr_') }.each { if (!(("rbr_" + it).toString() in achievementIds)) problems << "achievements.csv has no row rbr_${it}" }
         challengeIds.each { if (!(("rbr_challenge_" + it).toString() in achievementIds)) problems << "achievements.csv has no row rbr_challenge_${it}" }
