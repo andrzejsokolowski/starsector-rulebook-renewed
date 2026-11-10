@@ -285,7 +285,7 @@ tasks.named('check') {
 // Only what the game loads, plus the credits file the MIT licence asks for.
 def releaseFiles = copySpec {
     from(projectDir) {
-        include 'mod_info.json', 'rulebook_renewed.version', 'CREDITS.txt'
+        include 'mod_info.json', 'rulebook_renewed.version', 'CREDITS.txt', 'icon.png'
         include 'data/**', 'graphics/**', 'sounds/**', 'jars/RuleBookRenewed.jar'
     }
 }

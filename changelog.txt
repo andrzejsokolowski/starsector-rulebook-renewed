@@ -1,3 +1,6 @@
+Version 0.10.1 (2026-11-10)
+- New gold icon in mod managers (TriOS) and in LunaLib's settings.
+
 Version 0.10.0 (2026-11-10)
 - Challenges work like in Unofficial New Game Plus: have a challenge's negative rules at full level by day 90 of the campaign and keep them until you reach level 15. Lowering one fails the challenge for that campaign. Blitz must be finished by day 730, Colonial Empire with five colonies. Saves started before this version and already past level 1 cannot start challenges.
 - The challenges about other mods are gone. Their rules are unlocked by that mod's achievement: Super Sol (Bring Sol into the Sector), Lucky Streak (Win at the slot machine), Omega Shard (Train an officer under an Omega core), Ascendant Worlds (Grow a colony past size 10).

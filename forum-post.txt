@@ -1,3 +1,4 @@
+[img width=128]https://raw.githubusercontent.com/andrzejsokolowski/starsector-rulebook-renewed/main/icon.png[/img]
 [center][size=28pt][url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][b]Rule Book - Renewed[/b][/url][/size]
 [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][img]https://img.shields.io/github/downloads/andrzejsokolowski/starsector-rulebook-renewed/total?style=for-the-badge&label=download[/img][/url]  [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed][img]https://img.shields.io/github/v/release/andrzejsokolowski/starsector-rulebook-renewed?display_name=tag&sort=semver&style=for-the-badge&label=source[/img][/url]
 [/center]
@@ -299,6 +300,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.10.1[/b]
+[list][li]New gold icon in mod managers (TriOS) and in LunaLib's settings.[/li][/list]
 [b]0.10.0[/b]
 [list][li]Challenges work like in Unofficial New Game Plus: have a challenge's negative rules at full level by day 90 of the campaign and keep them until you reach level 15. Lowering one fails the challenge for that campaign. Blitz must be finished by day 730, Colonial Empire with five colonies. Saves started before this version and already past level 1 cannot start challenges.[/li][li]The challenges about other mods are gone. Their rules are unlocked by that mod's achievement: Super Sol (Bring Sol into the Sector), Lucky Streak (Win at the slot machine), Omega Shard (Train an officer under an Omega core), Ascendant Worlds (Grow a colony past size 10).[/li][li]Rules are grouped under Combat, Fleet, Colonies, Economy and Exploration.[/li][li]New vector icons for every rule.[/li][li]Points grow with each level: for example 4, 9 and 15 instead of 6, 9 and 15.[/li][li]56 rules rebalanced against Unofficial New Game Plus. Among them: Inflation takes 2, 3 or 5 percent of your credits a month; Flagship costs 30; Trade Embargo and Ghost Reinforcements give more points.[/li][li]"Unlocked by" names the exact condition, for example "Reach level 15."[/li][li]Price Gouging and Free Trade change tariffs by 30, 45 or 75 percent.[/li][li]GLaDOS costs 10, 20 or 30 points.[/li][li]Collector pays by ship size (250 to 5,000 credits) and makes no sound.[/li][li]Ascendant Worlds gives ascended colonies 3 stability and 10, 15 or 25 percent more income.[/li][/list]
 [b]0.9.2[/b]
