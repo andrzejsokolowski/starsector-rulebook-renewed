@@ -1,4 +1,4 @@
-Subject: [0.98a] Rule Book - Renewed 0.9.0 - house rules for one campaign, each with its own level
+Subject: [0.98a] Rule Book - Renewed 0.9.1 - house rules for one campaign, each with its own level
 
 [center][size=28pt][url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][b]Rule Book - Renewed[/b][/url][/size]
 [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest][img]https://img.shields.io/github/downloads/andrzejsokolowski/starsector-rulebook-renewed/total?style=for-the-badge&label=download[/img][/url]  [url=https://github.com/andrzejsokolowski/starsector-rulebook-renewed][img]https://img.shields.io/github/v/release/andrzejsokolowski/starsector-rulebook-renewed?display_name=tag&sort=semver&style=for-the-badge&label=source[/img][/url]
@@ -243,8 +243,7 @@ The numbers are the values of level I up to the highest level.
 [b]Golden[/b]
 [list]
 [li][b]Technological Revolution[/b] (positive, costs 8/12/20): Ordnance points of your ships increased by 10/15/25%. Above 240 deployment points of combat ships in your fleet the bonus shrinks, down to half at 480.[/li]
-[li][b]HSS Phoenix[/b] (positive, costs 15): While your flagship is an Onslaught, its hull, armor, flux capacity and flux dissipation are increased by 20%, its speed and maneuverability are doubled and its maximum combat readiness is increased by 10%.[/li]
-[li][b]TTS Invincible[/b] (positive, costs 15): While your flagship is a Paragon, its weapon damage and rate of fire are increased by 15%, its shield unfolds and turns 50% faster for 50% less upkeep, and its maximum combat readiness is increased by 10%.[/li]
+[li][b]Flagship[/b] (positive, costs 15): Hull, armor, flux capacity, flux dissipation, weapon damage and rate of fire of your flagship increased by 20%. Its speed and maneuverability increased by 30%, shield upkeep decreased by 50%, shield unfold and turn rate increased by 50%, maximum combat readiness increased by 10%.[/li]
 [li][b]Shield Specialization[/b] (positive, costs 8/12/20): Damage taken by your shields and their upkeep decreased by 10/15/25%, their turn and unfold rates increased by 10/15/25%.[/li]
 [li][b]Stay Calm[/b] (positive, costs 10): When enemy missiles about to hit the ship you fly carry more damage than 20% of its hull, time slows to a third for 2 seconds, except for your ship. 15 second cooldown.[/li]
 [li][b]Gravity Disruptor[/b] (positive, costs 8/12/20): Time runs 4/6/10% faster for your ships and 4/6/10% slower for enemy ships.[/li]
@@ -315,6 +314,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.9.1[/b]
+[list][li]The golden rules HSS Phoenix (Onslaught only) and TTS Invincible (Paragon only) are now one golden rule, Flagship, that works on any flagship: hull, armor, flux, weapon damage and rate of fire +20%, speed and maneuverability +30%, better shields, +10% maximum combat readiness.[/li][/list]
 [b]0.9.0[/b]
 [list][li]59 new rules adapted from Unofficial New Game Plus, among them its eight golden rules (only one golden rule can be picked): Technological Revolution, HSS Phoenix, TTS Invincible, Shield Specialization, Stay Calm, Gravity Disruptor, Cruising Hunting and Still Growing Up.[/li][li]New icons that match what each rule does. Pristine Foes and Junker Foes show the Phoenix.[/li][/list]
 [b]0.8.0[/b]

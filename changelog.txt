@@ -1,3 +1,6 @@
+Version 0.9.1 (2026-11-10)
+- The golden rules HSS Phoenix (Onslaught only) and TTS Invincible (Paragon only) are now one golden rule, Flagship, that works on any flagship: hull, armor, flux, weapon damage and rate of fire +20%, speed and maneuverability +30%, better shields, +10% maximum combat readiness.
+
 Version 0.9.0 (2026-11-10)
 - 59 new rules adapted from Unofficial New Game Plus, among them its eight golden rules (only one golden rule can be picked): Technological Revolution, HSS Phoenix, TTS Invincible, Shield Specialization, Stay Calm, Gravity Disruptor, Cruising Hunting and Still Growing Up.
 - New icons that match what each rule does. Pristine Foes and Junker Foes show the Phoenix.

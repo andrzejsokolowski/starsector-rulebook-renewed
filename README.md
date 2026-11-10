@@ -262,8 +262,7 @@ The numbers are the values of level I up to the highest level.
 | Rule | Type | Effect per level | Points | Unlocked by |
 | --- | --- | --- | --- | --- |
 | Technological Revolution | positive | Ordnance points of your ships increased by 10/15/25%. Above 240 deployment points of combat ships in your fleet the bonus shrinks, down to half at 480. | costs 8/12/20 |  |
-| HSS Phoenix | positive | While your flagship is an Onslaught, its hull, armor, flux capacity and flux dissipation are increased by 20%, its speed and maneuverability are doubled and its maximum combat readiness is increased by 10%. | costs 15 |  |
-| TTS Invincible | positive | While your flagship is a Paragon, its weapon damage and rate of fire are increased by 15%, its shield unfolds and turns 50% faster for 50% less upkeep, and its maximum combat readiness is increased by 10%. | costs 15 |  |
+| Flagship | positive | Hull, armor, flux capacity, flux dissipation, weapon damage and rate of fire of your flagship increased by 20%. Its speed and maneuverability increased by 30%, shield upkeep decreased by 50%, shield unfold and turn rate increased by 50%, maximum combat readiness increased by 10%. | costs 15 |  |
 | Shield Specialization | positive | Damage taken by your shields and their upkeep decreased by 10/15/25%, their turn and unfold rates increased by 10/15/25%. | costs 8/12/20 |  |
 | Stay Calm | positive | When enemy missiles about to hit the ship you fly carry more damage than 20% of its hull, time slows to a third for 2 seconds, except for your ship. 15 second cooldown. | costs 10 |  |
 | Gravity Disruptor | positive | Time runs 4/6/10% faster for your ships and 4/6/10% slower for enemy ships. | costs 8/12/20 |  |
