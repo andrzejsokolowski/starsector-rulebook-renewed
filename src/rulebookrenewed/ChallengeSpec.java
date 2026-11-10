@@ -3,6 +3,9 @@ package rulebookrenewed;
 import java.util.Collections;
 import java.util.List;
 
+import achievementsrenewed.api.AchievementSpec;
+import achievementsrenewed.api.Achievements;
+
 /**
  * One line of data/config/rulebook/challenges.csv: hard rules that must be at full level from the first
  * days of the campaign until the maximum level, an optional cap on positive rules, an optional time limit
@@ -24,8 +27,14 @@ public final class ChallengeSpec {
     public final String id;
     public final String name;
     public final List<Requirement> requirements;
-    /** A feat whose count must be at least goalAmount when the maximum level is reached, or null. */
-    public final Feats.Feat goalFeat;
+    /** Achievements - Renewed prefix of a finished challenge; New Game Plus - Renewed skips these ids. */
+    public static final String PREFIX = "rbr_challenge_";
+
+    /**
+     * An Achievements - Renewed achievement whose count in this save must be at least goalAmount when the
+     * maximum level is reached, or null.
+     */
+    public final String goalId;
     public final int goalAmount;
     /** Most positive points allowed while the challenge runs; -1 for no cap. */
     public final int helpfulLimit;
@@ -33,30 +42,36 @@ public final class ChallengeSpec {
     public final int deadlineDays;
     public final float order;
 
-    ChallengeSpec(String id, String name, List<Requirement> requirements, Feats.Feat goalFeat, int goalAmount,
+    ChallengeSpec(String id, String name, List<Requirement> requirements, String goalId, int goalAmount,
                   int helpfulLimit, int deadlineDays, float order) {
         this.id = id;
         this.name = name;
         this.requirements = Collections.unmodifiableList(requirements);
-        this.goalFeat = goalFeat;
+        this.goalId = goalId;
         this.goalAmount = goalAmount;
         this.helpfulLimit = helpfulLimit;
         this.deadlineDays = Math.max(0, deadlineDays);
         this.order = order;
     }
 
-    /** The feat id recorded in saves/common when the challenge is done. */
-    public String featId() {
-        return "challenge_" + id;
+    /** The achievement that records this challenge as done. */
+    public String achievementId() {
+        return PREFIX + id;
+    }
+
+    /** The goal achievement's name, or its id while Achievements - Renewed does not know it. */
+    private String goalName() {
+        AchievementSpec spec = Achievements.get(goalId);
+        return spec == null || spec.name.isEmpty() ? goalId : spec.name;
     }
 
     public String goalText() {
         String text = "Have these rules at full level by day " + Challenges.START_DAYS
                 + " and keep them until you reach level " + Challenges.maxLevel();
         if (deadlineDays > 0) text += " by day " + deadlineDays;
-        if (goalFeat != null) {
-            String what = goalFeat.name.isEmpty() ? goalFeat.id
-                    : Character.toLowerCase(goalFeat.name.charAt(0)) + goalFeat.name.substring(1);
+        if (goalId != null) {
+            String name = goalName();
+            String what = Character.toLowerCase(name.charAt(0)) + name.substring(1);
             text += ", and " + what + (goalAmount > 1 ? " (" + goalAmount + ")" : "");
         }
         return text;
@@ -71,8 +86,8 @@ public final class ChallengeSpec {
             out.append(out.length() > 0 ? "  " : "").append("Reach level ").append(Challenges.maxLevel())
                     .append(" by day ").append(deadlineDays).append('.');
         }
-        if (goalFeat != null) {
-            out.append(out.length() > 0 ? "  " : "").append("At the end: ").append(goalFeat.name)
+        if (goalId != null) {
+            out.append(out.length() > 0 ? "  " : "").append("At the end: ").append(goalName())
                     .append(goalAmount > 1 ? " (" + goalAmount + ")" : "").append('.');
         }
         return out.toString();

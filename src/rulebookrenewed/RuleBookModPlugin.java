@@ -8,6 +8,7 @@ public final class RuleBookModPlugin extends BaseModPlugin {
 
     @Override
     public void onApplicationLoad() {
+        AchievementsVersion.require();
         RuleCatalog.load();
         Challenges.load();
         loadIcon(Ids.BOOK_ICON);

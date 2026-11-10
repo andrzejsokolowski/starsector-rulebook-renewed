@@ -9,17 +9,17 @@ import rulebookrenewed.ui.RuleBookDialog;
 
 /**
  * Campaign upkeep, added as a transient script on every load: re-applies rules every few hours of game
- * time (new ships, new colonies), checks feats and challenges once a day, and opens the picker once on a
+ * time (new ships, new colonies), checks achievements and challenges once a day, and opens the picker once on a
  * new game.
  */
 public final class RuleBookScript implements EveryFrameScript {
 
     private static final float REFRESH_DAYS = 0.25f;
-    private static final float FEAT_DAYS = 1f;
+    private static final float CHECK_DAYS = 1f;
     private static final float PICKER_DELAY_SECONDS = 2f;
 
     private float refreshDays;
-    private float featDays;
+    private float checkDays;
     private float pickerSeconds;
 
     @Override
@@ -54,9 +54,9 @@ public final class RuleBookScript implements EveryFrameScript {
             refreshDays = 0f;
             RuleManager.refreshAll();
         }
-        featDays += days;
-        if (featDays >= FEAT_DAYS) {
-            featDays = 0f;
+        checkDays += days;
+        if (checkDays >= CHECK_DAYS) {
+            checkDays = 0f;
             achievementsrenewed.api.Achievements.check();
             Challenges.check();
         }

@@ -1,3 +1,6 @@
+Version 0.11.0 (2026-11-11)
+- The achievements that unlock rules are now part of Achievements - Renewed, which holds every achievement except the challenges. Needs Achievements - Renewed 0.3.0 or newer. Achievements you already have are kept.
+
 Version 0.10.3 (2026-11-10)
 - The Rule Book intel entry is under Personal.
 

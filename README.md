@@ -21,7 +21,7 @@ it easier and cost points. Every rule has its own level.
 - **New Game Plus - Renewed**: the Rule Book writes a career point multiplier that New Game Plus - Renewed
   reads. Each point of budget left over adds 1 percent, each point over budget takes 1 percent away.
 
-Requires LunaLib and Achievements - Renewed.
+Requires LunaLib and Achievements - Renewed 0.3.0 or newer.
 
 ## Rules
 
@@ -282,20 +282,8 @@ campaign. Saves started before 0.10.0 and already past level 1 cannot start chal
 
 ## Achievements
 
-- **Base game**: Finish The Kallichore Archive, Finish Finding Coureuse, Finish Project Ziggurat, Defeat the Ziggurat, Return the ISS Hamatsu, Finish At The Gates, Finish Abyssal Space Oddity, Finish The Usurpers, Finish Princess of Persea, Win the duel on Eventide, Finish Pilgrim's Path, Finish Knight Errant, Finish False Idols, Find the lost Luddic heretics, Finish Passage To Volturn, Recover the planetkiller, Earn Kanta's protection, Hold a million credits, Found a colony, Grow a colony to size 6, Own five colonies, Win a battle, Beat a fleet twice your size, Defeat an orbital station, Defeat a Remnant fleet, Defeat an Omega, Threat or Dweller fleet.
-- **Sol Renewed**: Destroy a shrouded ship, Bring Sol into the Sector, Reach Sol, Deter the Sol crisis.
-- **Gambling Den**: Play the slot machine, Win at the slot machine.
-- **Cloning**: Own a Cloning Megafactory, Supergrowth.
-- **Reverse Engineered Private Arsenal**: Reverse-engineer 10 weapons, Reverse-engineer a ship.
-- **StarterPack**: Start with a Starter Pack.
-- **Missions - Renewed**: Sign a contract.
-- **Astral Ascension Renewed**: Grow a colony past size 10, Build an Ecumenopolis.
-- **Omega Core Everywhere**: Train an officer under an Omega core.
-- **Chicken's Tech Shop**: Meet Chicken, Max out Chicken's Tech Market.
-- **Extra Submarkets**: Visit the Great Mall.
-- **New Game Plus - Renewed**: Use a consumable item.
-
-In the achievements list each group is its own tab. Achievements about another mod show only while that mod is enabled.
+The achievements that unlock rules belong to Achievements - Renewed; the rules table names them. Finished
+challenges are achievements too, in the Rule Book - Renewed tab of its list.
 
 ## Adding rules and challenges
 
@@ -303,8 +291,8 @@ One row per rule in `data/config/rulebook/rules.csv` and one row per challenge i
 `data/config/rulebook/challenges.csv` (other mods can add rows to the same paths). The rule `type` is
 `positive` or `negative`; a rule with 0 points is free. The `effect` column names a class implementing
 `rulebookrenewed.rules.RuleEffect`. Rules with the same `pair` are mirrors: only one of them can be on. A
-rule with `challenge:<id>` in its `unlock` column is the reward of that challenge, and `feat:<id>` names the
-achievement `rbr_<id>`. `requiredMod` may name several mods with `|` between them; one of them must be
+rule with `challenge:<id>` in its `unlock` column is the reward of that challenge, and `achievement:<id>` names an
+achievement of Achievements - Renewed. `requiredMod` may name several mods with `|` between them; one of them must be
 enabled.
 
 New Game Plus - Renewed reads one sector memory key: `$rbr_ngpMultiplier`, the career point multiplier.

@@ -1,5 +1,5 @@
 fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
 rbr_header_general,General Header,Header,Rule Book,,,,,
 rbr_openOnNewGame,Open the Rule Book on a new game,Boolean,true,,"Opens the rule picker once, a few seconds after a new game starts. You can open it again at any time from the Rule Book entry on the intel screen.",,,
-rbr_unlockAll,Every rule unlocked,Boolean,false,,"Lets you pick every rule, also the ones you have not unlocked through feats or challenges yet. Your real unlocks are kept and come back when you switch this off.",,,
+rbr_unlockAll,Every rule unlocked,Boolean,false,,"Lets you pick every rule, also the ones you have not unlocked through achievements or challenges yet. Your real unlocks are kept and come back when you switch this off.",,,
 rbr_enforceBudget,Point budget,Boolean,true,,"Positive rules cost points and negative rules give points. With this on, you cannot confirm a rule set that costs more than it gives.",,,

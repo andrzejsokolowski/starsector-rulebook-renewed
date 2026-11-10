@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import com.fs.starfarer.api.Global;
 
+import achievementsrenewed.api.Achievements;
+
 /**
  * Challenges, the way Unofficial New Game Plus runs them: a set of hard rules at full level, switched on
  * within START_DAYS days of the campaign start and kept on until the player reaches the maximum level.
@@ -21,7 +23,7 @@ import com.fs.starfarer.api.Global;
  * Some challenges also have a time limit (reach the maximum level by a day of the campaign) or a goal
  * that must hold when the maximum level is reached (five colonies).
  *
- * State is kept per save. Completion is the feat challenge_&lt;id&gt;, which opens the reward rules.
+ * State is kept per save. Completion is the achievement rbr_challenge_&lt;id&gt;, which opens the reward rules.
  */
 public final class Challenges {
 
@@ -74,15 +76,15 @@ public final class Challenges {
             requirements.add(new ChallengeSpec.Requirement(rule, rule.levels));
         }
 
-        Feats.Feat feat = null;
+        String goalId = null;
         int amount = 1;
         String goal = str(row, "goal");
         if (!goal.isEmpty()) {
             String[] bits = goal.split(":");
-            if (!bits[0].trim().equals("feat") || bits.length < 2) throw new IllegalArgumentException("goal must be feat:<id>[:<count>]");
-            feat = Feats.get(bits[1].trim());
-            if (feat == null) throw new IllegalArgumentException("unknown feat " + bits[1]);
-            if (!feat.available()) return null; // the feat's mod is off
+            if (!bits[0].trim().equals("achievement") || bits.length < 2) {
+                throw new IllegalArgumentException("goal must be achievement:<id>[:<count>]");
+            }
+            goalId = bits[1].trim();
             if (bits.length > 2) amount = Integer.parseInt(bits[2].trim());
         }
         String limitText = str(row, "helpfulLimit");
@@ -90,7 +92,7 @@ public final class Challenges {
         String orderText = str(row, "order");
         float order = orderText.isEmpty() ? 1000f : Float.parseFloat(orderText);
         String deadline = str(row, "deadlineDays");
-        return new ChallengeSpec(id, str(row, "name"), requirements, feat, Math.max(1, amount), limit,
+        return new ChallengeSpec(id, str(row, "name"), requirements, goalId, Math.max(1, amount), limit,
                 deadline.isEmpty() ? 0 : Integer.parseInt(deadline), order);
     }
 
@@ -106,7 +108,7 @@ public final class Challenges {
 
     public static List<RuleSpec> rewards(ChallengeSpec spec) {
         List<RuleSpec> out = new ArrayList<>();
-        for (RuleSpec rule : RuleCatalog.all()) if (spec.featId().equals(rule.featId())) out.add(rule);
+        for (RuleSpec rule : RuleCatalog.all()) if (spec.id.equals(rule.challengeId())) out.add(rule);
         return out;
     }
 
@@ -142,7 +144,7 @@ public final class Challenges {
     }
 
     public static boolean isComplete(ChallengeSpec spec) {
-        return Unlocks.hasFeat(spec.featId());
+        return Achievements.isDone(spec.achievementId());
     }
 
     // ---- per-save state ----
@@ -213,6 +215,8 @@ public final class Challenges {
 
     public static void dropOldState() {
         Global.getSector().getPersistentData().remove(OLD_STATE_KEY);
+        // Battle counts of Rule Book 0.10.3 and older; Achievements - Renewed counts battles now.
+        Global.getSector().getPersistentData().remove("rbr_counters");
     }
 
     /** Starts, fails and completes challenges. Called daily, after battles and after every rule change. */
@@ -221,7 +225,7 @@ public final class Challenges {
         for (ChallengeSpec spec : CHALLENGES.values()) {
             if (isComplete(spec)) continue;
             try {
-                if (advance(spec)) Unlocks.addFeat(spec.featId());
+                if (advance(spec)) Achievements.complete(spec.achievementId());
             } catch (Throwable t) {
                 LOG.error("Rule Book: challenge " + spec.id + " could not be checked", t);
             }
@@ -244,6 +248,7 @@ public final class Challenges {
             runs.put(spec.id, RUNNING);
         }
         if (Global.getSector().getPlayerStats().getLevel() < maxLevel()) return false;
-        return spec.goalFeat == null || spec.goalFeat.count() >= spec.goalAmount;
+        // The goal is counted by Achievements - Renewed in this save (rbr_colonies5: five colonies now).
+        return spec.goalId == null || Achievements.progress(spec.goalId) >= spec.goalAmount;
     }
 }

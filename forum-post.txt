@@ -7,7 +7,7 @@ WHAT DOES THIS MOD DO?
 Pick rules for your campaign: negative rules make the game harder and give points, positive rules make it easier and cost points.
 Every rule has its own level, so you tune each one instead of one difficulty slider for everything.
 Change them whenever you like, mid-campaign included.
-Needs LunaLib and Achievements - Renewed.
+Needs LunaLib and Achievements - Renewed 0.3.0 or newer.
 [/b][/center]
 
 [hr][center][size=12pt][b]How it works[/b][/size][/center][hr]
@@ -259,21 +259,7 @@ Every challenge: have its negative rules at full level by day 90 of the campaign
 [/list]
 
 [hr][center][size=12pt][b]Achievements[/b][/size][/center][hr]
-Some rules are unlocked by achievements, kept by Achievements - Renewed. They count for every later campaign.
-[list]
-[li][b]Base game[/b]: Finish The Kallichore Archive, Finish Finding Coureuse, Finish Project Ziggurat, Defeat the Ziggurat, Return the ISS Hamatsu, Finish At The Gates, Finish Abyssal Space Oddity, Finish The Usurpers, Finish Princess of Persea, Win the duel on Eventide, Finish Pilgrim's Path, Finish Knight Errant, Finish False Idols, Find the lost Luddic heretics, Finish Passage To Volturn, Recover the planetkiller, Earn Kanta's protection, Hold a million credits, Found a colony, Grow a colony to size 6, Own five colonies, Win a battle, Beat a fleet twice your size, Defeat an orbital station, Defeat a Remnant fleet, Defeat an Omega, Threat or Dweller fleet.[/li]
-[li][b]Sol Renewed[/b]: Destroy a shrouded ship, Bring Sol into the Sector, Reach Sol, Deter the Sol crisis.[/li]
-[li][b]Gambling Den[/b]: Play the slot machine, Win at the slot machine.[/li]
-[li][b]Cloning[/b]: Own a Cloning Megafactory, Supergrowth.[/li]
-[li][b]Reverse Engineered Private Arsenal[/b]: Reverse-engineer 10 weapons, Reverse-engineer a ship.[/li]
-[li][b]StarterPack[/b]: Start with a Starter Pack.[/li]
-[li][b]Missions - Renewed[/b]: Sign a contract.[/li]
-[li][b]Astral Ascension Renewed[/b]: Grow a colony past size 10, Build an Ecumenopolis.[/li]
-[li][b]Omega Core Everywhere[/b]: Train an officer under an Omega core.[/li]
-[li][b]Chicken's Tech Shop[/b]: Meet Chicken, Max out Chicken's Tech Market.[/li]
-[li][b]Extra Submarkets[/b]: Visit the Great Mall.[/li]
-[li][b]New Game Plus - Renewed[/b]: Use a consumable item.[/li]
-[/list]
+Some rules are unlocked by achievements of Achievements - Renewed. They count for every later campaign.
 
 [hr][center][size=12pt][b]Works with[/b][/size][/center][hr]
 [list]
@@ -300,6 +286,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.11.0[/b]
+[list][li]The achievements that unlock rules are now part of Achievements - Renewed, which holds every achievement except the challenges. Needs Achievements - Renewed 0.3.0 or newer. Achievements you already have are kept.[/li][/list]
 [b]0.10.3[/b]
 [list][li]The Rule Book intel entry is under Personal.[/li][/list]
 [b]0.10.2[/b]

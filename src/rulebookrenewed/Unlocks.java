@@ -8,12 +8,12 @@ import com.fs.starfarer.api.Global;
 
 import achievementsrenewed.api.AchievementSpec;
 import achievementsrenewed.api.Achievements;
-import rulebookrenewed.achievements.FeatAchievement;
 
 /**
- * What the player has unlocked. Feats and finished challenges are achievements of Achievements - Renewed
- * (ids rbr_<feat id> and rbr_challenge_<id>), which keeps them across saves and announces them. Before
- * 0.7.0 they were kept in this mod's own file in saves/common; that file is carried over once.
+ * What the player has unlocked: achievements of Achievements - Renewed, which keeps them across saves.
+ * Since 0.11.0 that mod also holds and checks the achievements that used to be Rule Book feats (ids
+ * rbr_<feat id>); finished challenges stay here (rbr_challenge_<id>). Before 0.7.0 feats were kept in this
+ * mod's own file in saves/common; that file is carried over once.
  */
 public final class Unlocks {
 
@@ -21,15 +21,6 @@ public final class Unlocks {
     private static final String OLD_FILE = "rulebook_renewed_unlocks.json";
 
     private Unlocks() {}
-
-    public static boolean hasFeat(String featId) {
-        return Achievements.isDone(FeatAchievement.PREFIX + featId);
-    }
-
-    /** Records a feat. Returns true when it is new. */
-    public static boolean addFeat(String featId) {
-        return Achievements.complete(FeatAchievement.PREFIX + featId);
-    }
 
     /** How the picker names the achievement that opens a rule: its exact condition (the how-to), else its name. */
     public static String label(String achievementId) {
@@ -55,7 +46,7 @@ public final class Unlocks {
                 String id = list.optString(i, "").trim();
                 if (id.isEmpty() || id.equals("null")) continue;
                 if (id.equals("level15")) Achievements.complete("acr_level15"); // now the base mod's achievement
-                else addFeat(id);
+                else Achievements.complete("rbr_" + id);
             }
             Global.getSettings().deleteTextFileFromCommon(OLD_FILE);
         } catch (Exception e) {

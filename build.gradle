@@ -22,7 +22,7 @@ dependencies {
     compileOnly fileTree(dir: "${starsectorPath}/starsector-core", include: '*.jar')
     // LunaLib supplies the settings page. Found wherever the mod happens to be installed.
     compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/LunaLib.jar')
-    // Achievements - Renewed keeps the feats. Built next door, or found among the installed mods.
+    // Achievements - Renewed keeps the achievements. Built next door, or found among the installed mods.
     compileOnly files('../Achievements - Renewed/jars/AchievementsRenewed.jar')
     compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/AchievementsRenewed.jar')
     // Peerless Skills is optional. Only rulebookrenewed.compat.peerless may name its classes, and that
@@ -217,10 +217,18 @@ tasks.register('checkReleaseFiles') {
             }
         }
 
-        // Challenges: required rules exist at a level they have, goals name a known feat, and every
+        // Challenges: required rules exist at a level they have, goals name a known achievement, and every
         // challenge unlocks at least one rule (and every challenge unlock names a real challenge).
-        def featIds = (file('src/rulebookrenewed/Feats.java').getText('UTF-8') =~ /(?:add|counter|modFlag|modCount)\(\s*"([a-z0-9_]+)"/).collect { it[1] } as Set
-        (file('src/rulebookrenewed/Counters.java').getText('UTF-8') =~ /String [A-Z_]+ = "([a-z0-9_]+)"/).each { featIds << it[1] }
+        // Achievements - Renewed holds every achievement but our challenges: read its CSV next door, or the
+        // installed copy's.
+        def baseCsv = file('../Achievements - Renewed/data/config/achievements_renewed/achievements.csv')
+        if (!baseCsv.isFile()) {
+            baseCsv = fileTree(dir: "${starsectorPath}/mods", include: '**/data/config/achievements_renewed/achievements.csv')
+                    .files.find { it.text.contains('achievementsrenewed.scripts.FeatScript') }
+        }
+        def baseAchievementIds = [] as Set
+        if (baseCsv == null || !baseCsv.isFile()) problems << "Achievements - Renewed's achievements.csv not found (next door or in the mods folder)"
+        else baseCsv.readLines('UTF-8').drop(1).each { line -> if (line.trim()) baseAchievementIds << parseCsv(line)[0] }
         def challengeLines = file('data/config/rulebook/challenges.csv').readLines('UTF-8')
         def challengeHeader = challengeLines[0].split(',', -1) as List
         ['id', 'name', 'rules', 'goal', 'helpfulLimit', 'deadlineDays', 'order', 'requiredMod'].each {
@@ -241,18 +249,21 @@ tasks.register('checkReleaseFiles') {
             }
             if (row.goal) {
                 def goal = row.goal.split(':')
-                if (goal[0] != 'feat' || goal.size() < 2 || goal.size() > 3) problems << "challenges.csv ${row.id}: goal must be feat:<id>[:<count>]"
-                else if (!(goal[1] in featIds)) problems << "challenges.csv ${row.id}: unknown feat ${goal[1]}"
+                if (goal[0] != 'achievement' || goal.size() < 2 || goal.size() > 3) problems << "challenges.csv ${row.id}: goal must be achievement:<id>[:<count>]"
+                else if (!(goal[1] in baseAchievementIds)) problems << "challenges.csv ${row.id}: Achievements - Renewed has no ${goal[1]}"
+                else if (goal.size() == 3 && !(goal[2] ==~ /\d+/)) problems << "challenges.csv ${row.id}: bad goal count ${goal[2]}"
             }
             if (row.deadlineDays && !(row.deadlineDays ==~ /\d+/)) problems << "challenges.csv ${row.id}: bad deadlineDays ${row.deadlineDays}"
             if (!ruleUnlocks.values().contains("challenge:${row.id}".toString())) problems << "challenges.csv ${row.id}: no rule unlocks from it"
         }
         ruleUnlocks.each { id, unlock ->
             if (unlock.startsWith('challenge:') && !(unlock.substring(10) in challengeIds)) problems << "rules.csv ${id}: unknown challenge ${unlock}"
-            if (unlock.startsWith('feat:') && !(unlock.substring(5) in featIds)) problems << "rules.csv ${id}: unknown feat ${unlock}"
+            if (unlock.startsWith('achievement:') && !(unlock.substring(12) in baseAchievementIds)) problems << "rules.csv ${id}: Achievements - Renewed has no ${unlock.substring(12)}"
+            if (unlock && !unlock.startsWith('achievement:') && !unlock.startsWith('challenge:')) problems << "rules.csv ${id}: unlock must be achievement:<id> or challenge:<id>, not ${unlock}"
         }
 
-        // Every feat and challenge that unlocks a rule has its achievement row.
+        // Every challenge has its achievement row here; no other row belongs here (Achievements - Renewed
+        // holds them since its 0.3.0).
         def achievementLines = file('data/config/achievements_renewed/achievements.csv').readLines('UTF-8')
         def achievementHeader = parseCsv(achievementLines[0])
         ['id', 'mod', 'name', 'hint', 'howTo', 'description', 'icon', 'tab', 'category', 'goal', 'secret', 'reward', 'chain', 'step', 'after', 'script', 'requiredMod', 'order'].each {
@@ -269,7 +280,7 @@ tasks.register('checkReleaseFiles') {
             if (row.after && !achievementLines.any { it.startsWith(row.after + ',') }) problems << "achievements.csv ${row.id}: unknown after ${row.after}"
             if (!row.tab) problems << "achievements.csv ${row.id}: needs a tab (vanilla, or the name of the mod it is about)"
         }
-        featIds.findAll { !it.startsWith('rbr_') }.each { if (!(("rbr_" + it).toString() in achievementIds)) problems << "achievements.csv has no row rbr_${it}" }
+        achievementIds.findAll { !it.startsWith('rbr_challenge_') }.each { problems << "achievements.csv ${it}: only challenges belong here, the rest is in Achievements - Renewed" }
         challengeIds.each { if (!(("rbr_challenge_" + it).toString() in achievementIds)) problems << "achievements.csv has no row rbr_challenge_${it}" }
 
         if (problems) throw new GradleException("Release files are not ready:\n  " + problems.join('\n  '))
