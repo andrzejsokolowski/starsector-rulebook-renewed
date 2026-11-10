@@ -1,3 +1,6 @@
+Version 0.10.2 (2026-11-10)
+- The New Game Plus - Renewed achievement is now "Use a consumable item": use any of its four ship items (S-mod slot, D-mod removal, Stat tuning, Extra ordnance points). D-mod removal and Extra ordnance points did not count before.
+
 Version 0.10.1 (2026-11-10)
 - New gold icon in mod managers (TriOS) and in LunaLib's settings.
 

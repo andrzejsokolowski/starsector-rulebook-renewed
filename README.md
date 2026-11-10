@@ -293,7 +293,7 @@ campaign. Saves started before 0.10.0 and already past level 1 cannot start chal
 - **Omega Core Everywhere**: Train an officer under an Omega core.
 - **Chicken's Tech Shop**: Meet Chicken, Max out Chicken's Tech Market.
 - **Extra Submarkets**: Visit the Great Mall.
-- **New Game Plus - Renewed**: Refit a ship at the Ledger.
+- **New Game Plus - Renewed**: Use a consumable item.
 
 In the achievements list each group is its own tab. Achievements about another mod show only while that mod is enabled.
 

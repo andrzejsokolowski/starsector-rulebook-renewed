@@ -119,8 +119,9 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   `$rbr_ngpMultiplier`. New Game Plus - Renewed (0.7.0 on) pays its own career points, through its own
   listener, for every achievement except our challenges, which it recognises by the id prefix
   `rbr_challenge_` and the category `Challenges`. So never rename an `rbr_*` achievement or change its
-  condition, and keep that prefix and category for challenges. Our `rbr_ngp_ledger` reads its hull mod id
-  `ngp_ledger_refit`.
+  condition, and keep that prefix and category for challenges. Our `rbr_ngp_ledger` ("Use a consumable item") reads its
+  sector memory flag `$ngp_usedConsumable` (NGP 0.7.2 on, any of its four ship items) or, for older NGP, the
+  hull mod `ngp_ledger_refit`.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
   `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
 - `ui/RulePickerPanel` - UNGP's picker layout with native UI: positive grid over negative grid (or the

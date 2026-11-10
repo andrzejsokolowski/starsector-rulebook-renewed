@@ -272,7 +272,7 @@ Some rules are unlocked by achievements, kept by Achievements - Renewed. They co
 [li][b]Omega Core Everywhere[/b]: Train an officer under an Omega core.[/li]
 [li][b]Chicken's Tech Shop[/b]: Meet Chicken, Max out Chicken's Tech Market.[/li]
 [li][b]Extra Submarkets[/b]: Visit the Great Mall.[/li]
-[li][b]New Game Plus - Renewed[/b]: Refit a ship at the Ledger.[/li]
+[li][b]New Game Plus - Renewed[/b]: Use a consumable item.[/li]
 [/list]
 
 [hr][center][size=12pt][b]Works with[/b][/size][/center][hr]
@@ -300,6 +300,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.10.2[/b]
+[list][li]The New Game Plus - Renewed achievement is now "Use a consumable item": use any of its four ship items (S-mod slot, D-mod removal, Stat tuning, Extra ordnance points). D-mod removal and Extra ordnance points did not count before.[/li][/list]
 [b]0.10.1[/b]
 [list][li]New gold icon in mod managers (TriOS) and in LunaLib's settings.[/li][/list]
 [b]0.10.0[/b]

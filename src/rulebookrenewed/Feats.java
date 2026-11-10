@@ -162,7 +162,10 @@ public final class Feats {
             StarSystemAPI system = Global.getSector().getStarSystem("Gilgamesh Nebula");
             return system != null && system.isEnteredByPlayer();
         });
-        modFlag("ngp_ledger", "Refit a ship at the New Game Plus Ledger", NGP, () -> fleetHasPermaMod("ngp_ledger_refit"));
+        // New Game Plus - Renewed 0.7.2 sets $ngp_usedConsumable when any of its ship items is fitted; older
+        // versions only leave the hull mod of the S-mod slot and Stat tuning items.
+        modFlag("ngp_ledger", "Use a consumable item", NGP,
+                () -> sector("$ngp_usedConsumable") || fleetHasPermaMod("ngp_ledger_refit"));
     }
 
     private static void add(String id, String name, Flag flag) {
