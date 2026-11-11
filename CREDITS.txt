@@ -18,6 +18,17 @@ Some rule effects are adapted from Unofficial Rule Book by DemonX3, used under t
 - Antagonism (from Antagonism; extra hull mods instead of S-mods)
 - Doomslayer (from Doomslayer)
 - Last Stand (from The Unyielding)
+- Deathless (from Deathless)
+- Dazing Pilotage (from Dazing Pilotage)
+- Phase Ghosts: enemy phase ships cannot be targeted (from Mirage)
+- Celebrity (from Celebrity)
+- Same Old Story (from Same Old Story)
+- Delayed Potential (from Delayed Potential)
+- Full Throttle (from Full Throttle)
+- Wish Upon a Star (from Wish Upon a Star)
+- Weeping Fungus (from Weeping Fungus)
+- Criminal Imperium (from Criminal Imperium)
+- MSS Garuda (from MSS Garuda)
 - The challenge Junkyard Baron (idea from Junkyard Baron's Curse)
 
 Unofficial Rule Book licence:

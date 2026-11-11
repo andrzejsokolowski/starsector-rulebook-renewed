@@ -38,19 +38,16 @@ public final class ChallengeSpec {
     public final int goalAmount;
     /** Most positive points allowed while the challenge runs; -1 for no cap. */
     public final int helpfulLimit;
-    /** The campaign day by which the maximum level must be reached, or 0 for no time limit. */
-    public final int deadlineDays;
     public final float order;
 
     ChallengeSpec(String id, String name, List<Requirement> requirements, String goalId, int goalAmount,
-                  int helpfulLimit, int deadlineDays, float order) {
+                  int helpfulLimit, float order) {
         this.id = id;
         this.name = name;
         this.requirements = Collections.unmodifiableList(requirements);
         this.goalId = goalId;
         this.goalAmount = goalAmount;
         this.helpfulLimit = helpfulLimit;
-        this.deadlineDays = Math.max(0, deadlineDays);
         this.order = order;
     }
 
@@ -66,9 +63,8 @@ public final class ChallengeSpec {
     }
 
     public String goalText() {
-        String text = "Have these rules at full level by day " + Challenges.START_DAYS
+        String text = "Switch these rules on at full level while you are level " + Challenges.START_LEVEL
                 + " and keep them until you reach level " + Challenges.maxLevel();
-        if (deadlineDays > 0) text += " by day " + deadlineDays;
         if (goalId != null) {
             String name = goalName();
             String what = Character.toLowerCase(name.charAt(0)) + name.substring(1);
@@ -77,15 +73,11 @@ public final class ChallengeSpec {
         return text;
     }
 
-    /** What this challenge asks beyond the common rule: the cap on positive rules, the time limit, the goal. */
+    /** What this challenge asks beyond the common rule: the cap on positive rules and the goal. */
     public String extraText() {
         StringBuilder out = new StringBuilder();
         String limit = limitText();
         if (!limit.isEmpty()) out.append(limit).append('.');
-        if (deadlineDays > 0) {
-            out.append(out.length() > 0 ? "  " : "").append("Reach level ").append(Challenges.maxLevel())
-                    .append(" by day ").append(deadlineDays).append('.');
-        }
         if (goalId != null) {
             out.append(out.length() > 0 ? "  " : "").append("At the end: ").append(goalName())
                     .append(goalAmount > 1 ? " (" + goalAmount + ")" : "").append('.');

@@ -121,11 +121,20 @@ public final class RuleBookIntel extends BaseIntelPlugin {
         return Misc.getTextColor();
     }
 
-    /** Adds the intel entry once per save. */
+    /** Marks the entry important once per save (from 0.12.0); after that the player's own choice stays. */
+    private static final String IMPORTANT_KEY = "rbr_intelImportant";
+
+    /** Adds the intel entry once per save, marked important. */
     public static void ensure() {
-        if (Global.getSector().getIntelManager().hasIntelOfClass(RuleBookIntel.class)) return;
-        RuleBookIntel intel = new RuleBookIntel();
-        intel.setNew(false);
-        Global.getSector().getIntelManager().addIntel(intel, true);
+        RuleBookIntel intel = (RuleBookIntel) Global.getSector().getIntelManager().getFirstIntel(RuleBookIntel.class);
+        if (intel == null) {
+            intel = new RuleBookIntel();
+            intel.setNew(false);
+            Global.getSector().getIntelManager().addIntel(intel, true);
+        }
+        if (!Global.getSector().getPersistentData().containsKey(IMPORTANT_KEY)) {
+            Global.getSector().getPersistentData().put(IMPORTANT_KEY, true);
+            intel.setImportant(true);
+        }
     }
 }

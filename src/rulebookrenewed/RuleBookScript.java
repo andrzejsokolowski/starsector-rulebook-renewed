@@ -9,8 +9,8 @@ import rulebookrenewed.ui.RuleBookDialog;
 
 /**
  * Campaign upkeep, added as a transient script on every load: re-applies rules every few hours of game
- * time (new ships, new colonies), checks achievements and challenges once a day, and opens the picker once on a
- * new game.
+ * time (new ships, new colonies), checks achievements and challenges once a day, and shows the message that
+ * offers the picker once on a new game.
  */
 public final class RuleBookScript implements EveryFrameScript {
 
@@ -72,7 +72,7 @@ public final class RuleBookScript implements EveryFrameScript {
         if (pickerSeconds < PICKER_DELAY_SECONDS) return;
         RuleState.setPickerPending(false);
         if (Settings.openOnNewGame()) {
-            ui.showInteractionDialog(new RuleBookDialog(), Global.getSector().getPlayerFleet());
+            ui.showInteractionDialog(new RuleBookDialog(true), Global.getSector().getPlayerFleet());
         }
     }
 }

@@ -73,10 +73,10 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   2026-11-10): required negative rules (`rule_id|...`, always at full level; the build refuses a level),
   optional goal (`achievement:<id>[:<count>]`, its count in this save from `Achievements.progress`, must
   hold at the end), helpfulLimit (points of positive rules
-  allowed, 0 = none, empty = no cap), optional deadlineDays (the campaign day by which the end must come).
-  A challenge starts by itself when its conditions first hold within `Challenges.START_DAYS` (90) days of
-  the campaign start (`RuleState.campaignStart`, recorded on the first load; saves older than 0.10.0 that
-  are past level 1 get none), fails for the save when they break after that, and completes at the maximum
+  allowed, 0 = none, empty = no cap). No time limits of any kind: no days, no deadline ("Remove all timing
+  from challenges. I hate "do it in 180 days"", Andrzej, 2026-11-12); the build refuses a deadlineDays
+  column. A challenge starts by itself when its conditions first hold while the player is at
+  `Challenges.START_LEVEL` (1), fails for the save when they break after that, and completes at the maximum
   player level. Checked daily, after battles and after every rule change; the picker's Confirm applies its
   changes in one batch (`Challenges.beginBatch`). Challenges are never about another mod: a rule about a
   mod is unlocked by that mod's achievement (Super Sol by `achievement:rbr_sol_quest`). Completion is the achievement
@@ -132,5 +132,7 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   which replaces the working rules with exactly the required ones; a later pick that breaks that
   challenge, or one with progress, shows a warning box once. `Presets` keeps four saved rule sets in saves/common
   (`rulebook_renewed_presets.json`); the buttons sit next to the tabs. `RuleBookDialog` hosts the picker;
-  `RuleBookIntel` is the permanent intel entry with the open button.
+  `RuleBookIntel` is the permanent intel entry with the open button, under the tag Personal and marked
+  important once per save. On a new game `RuleBookDialog(true)` shows the message "You have installed Rule
+  Book - Renewed." with "Open it now" / "Later" (LunaLib setting "Ask on a new game").
 - `compat/peerless` - the only package that may name Peerless Skills (`checkPeerlessIsolated`).

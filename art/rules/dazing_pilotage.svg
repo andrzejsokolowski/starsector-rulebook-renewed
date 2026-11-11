@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Dazing Pilotage (rbr_dazing_pilotage): Your ships sometimes lose control. -->
+<g>
+<path d="M18 30 L56 30 L18 74 L56 74" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M66 60 L96 60 L66 94 L96 94" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M98 18 L114 18 L98 38 L114 38" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

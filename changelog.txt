@@ -1,3 +1,9 @@
+Version 0.12.0 (2026-11-12)
+- The Rule Book intel entry is marked important. A new game shows a short message that offers to open the Rule Book.
+- Challenges have no time limits. Switch a challenge's rules on while you are level 1 and keep them until level 15. Blitz no longer has a deadline.
+- Ten more rules from Unofficial Rule Book: Deathless, Dazing Pilotage, Celebrity, Same Old Story, Delayed Potential, Full Throttle, Wish Upon a Star, Weeping Fungus, Criminal Imperium and the golden MSS Garuda.
+- Phase Ghosts: phased enemy ships also cannot be targeted. It gives 8 points.
+
 Version 0.11.0 (2026-11-11)
 - The achievements that unlock rules are now part of Achievements - Renewed, which holds every achievement except the challenges. Needs Achievements - Renewed 0.3.0 or newer. Achievements you already have are kept.
 

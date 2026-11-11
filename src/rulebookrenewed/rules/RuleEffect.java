@@ -45,6 +45,11 @@ public interface RuleEffect {
     /** Called once after every battle the player's fleet took part in, won or lost (RuleBattleListener). */
     default void onPlayerBattleFinished(RuleSpec rule, BattleAPI battle, int level, float value) {}
 
+    /** True for a rule no challenge can run with (Delayed Potential: its free levels would shorten one). */
+    default boolean blocksChallenges() {
+        return false;
+    }
+
     /** Called by the fleet buff that MemberStatRule keeps on every ship in the player's fleet. */
     default void applyToMember(RuleSpec rule, FleetMemberAPI member, int level, float value) {}
 

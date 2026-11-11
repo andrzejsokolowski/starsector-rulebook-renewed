@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Full Throttle (rbr_full_throttle): Fast ships have more mass. -->
+<g>
+<path d="M16 28 L52 64 L16 100" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M48 28 L84 64 L48 100" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M80 28 L116 64 L80 100" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

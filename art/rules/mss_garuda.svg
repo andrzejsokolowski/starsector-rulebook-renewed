@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- MSS Garuda (rbr_mss_garuda): A Conquest flagship fights better. -->
+<g>
+<path d="M64 26 L74 46 L74 92 L64 108 L54 92 L54 46 Z" fill="#664F16" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M54 56 L14 40 L22 66 L54 76" fill="#664F16" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M74 56 L114 40 L106 66 L74 76" fill="#664F16" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 26 L64 12" fill="none" stroke="#FFC83C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

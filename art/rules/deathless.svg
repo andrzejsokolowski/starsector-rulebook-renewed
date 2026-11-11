@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Deathless (rbr_deathless): Enemy ships survive one fatal hit and recover. -->
+<g>
+<path d="M64 16 Q100 16 100 52 Q100 70 88 78 L88 96 L40 96 L40 78 Q28 70 28 52 Q28 16 64 16 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="50" cy="54" r="8" fill="#FF5064"/>
+<circle cx="78" cy="54" r="8" fill="#FF5064"/>
+<path d="M54 96 L54 112 M64 96 L64 112 M74 96 L74 112" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M104 116 L104 92 M94 102 L104 92 L114 102" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

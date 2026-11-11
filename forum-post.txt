@@ -12,7 +12,7 @@ Needs LunaLib and Achievements - Renewed 0.3.0 or newer.
 
 [hr][center][size=12pt][b]How it works[/b][/size][/center][hr]
 [list]
-[li]The Rule Book opens a few seconds into a new game. Open it again any time from the Rule Book entry under Personal on the intel screen.[/li]
+[li]A few seconds into a new game, a message offers to open the Rule Book. Open it any time from the Rule Book entry under Personal on the intel screen.[/li]
 [li]Left click increases a rule's intensity, right click diminishes it. Most rules have three levels: 1x, 1.5x and 2.5x. Nothing changes until you press Confirm.[/li]
 [li]Only one golden rule can be picked.[/li]
 [li]Four preset slots save and load whole rule sets, across campaigns.[/li]
@@ -89,7 +89,7 @@ The numbers are the values of level I up to the highest level.
 [li][b]Dead Weight[/b] (negative, gives 3/6/10): Maximum combat readiness of your ships decreased by 2/3/5% for each mothballed ship in your fleet.[/li]
 [li][b]Pristine Foes[/b] (negative, gives 4/9/15): Ship quality of fleets from markets that are not yours increased by 20/30/50%.[/li]
 [li][b]Junker Foes[/b] (positive, costs 4/9/15): Ship quality of fleets from markets that are not yours decreased by 20/30/50%.[/li]
-[li][b]Abyss Ward[/b] (positive, costs 4/9/15): Energy damage taken by your ships decreased by 20/30/50%. Unlocked by: Achievement: Defeat an Omega, Threat or Dweller fleet.[/li]
+[li][b]Abyss Ward[/b] (positive, costs 4/9/15): Energy damage taken by your ships decreased by 20/30/50%. Unlocked by: Achievement: Defeat a Shrouded Dweller fleet.[/li]
 [li][b]Phase Hunter[/b] (positive, costs 5/12/20): Damage taken by enemy phase ships increased by 20/30/50%. Unlocked by: Challenge: The Ziggurat Gambit.[/li]
 [li][b]Iron Hulls[/b] (positive, costs 5/11/18): Armor and hull damage taken by your ships and your allies' ships decreased by 6/9/15%. Unlocked by: Challenge: Iron Gauntlet.[/li]
 [li][b]Lone Legend[/b] (positive, costs 5/12/20): Damage dealt by your flagship increased by 10/15/25%, damage taken decreased by 10/15/25%. Unlocked by: Challenge: The Lone Admiral.[/li]
@@ -98,7 +98,7 @@ The numbers are the values of level I up to the highest level.
 [li][b]Station Breaker[/b] (positive, costs 3/6/10): Damage taken by enemy stations increased by 20/30/50%. Unlocked by: Challenge: Fortress Breaker.[/li]
 [li][b]Giant Killer[/b] (positive, costs 5/12/20): Damage taken by enemy capital ships increased by 20/30/50%. Unlocked by: Challenge: Big Game.[/li]
 [li][b]Living Plating[/b] (positive, costs 5/12/20): In combat, the ship you fly repairs 1/1.5/2.5% of its maximum armor per second.[/li]
-[li][b]Phase Ghosts[/b] (negative, gives 6): Enemy ships are invisible while phased.[/li]
+[li][b]Phase Ghosts[/b] (negative, gives 8): Enemy ships are invisible while phased and cannot be targeted.[/li]
 [li][b]Fireworks[/b] (positive, free): Destroyed ships explode with fireworks. No other effect.[/li]
 [li][b]Flagship[/b] (positive, costs 30): Hull, armor, flux capacity, flux dissipation, weapon damage and rate of fire of your flagship increased by 20%. Its speed and maneuverability increased by 30%, shield upkeep decreased by 50%, shield unfold and turn rate increased by 50%, maximum combat readiness increased by 10%.[/li]
 [li][b]Shield Specialization[/b] (positive, costs 8/18/30): Damage taken by your shields and their upkeep decreased by 10/15/25%, their turn and unfold rates increased by 10/15/25%.[/li]
@@ -133,6 +133,10 @@ The numbers are the values of level I up to the highest level.
 [li][b]V for Vent[/b] (positive, costs 3): While the ship you fly vents, each press of the vent key raises its vent rate by 25% for a third of a second, up to twice.[/li]
 [li][b]Let there be Light![/b] (positive, costs 4/9/15): Damage dealt to shields by beams of the ship you fly increased by 10/15/25%.[/li]
 [li][b]Symbol Perseus[/b] (positive, costs 3/6/10): When the ship you fly destroys its third enemy ship within 8 seconds, and with each further kill in that time, 10/15/25% of its maximum flux is removed.[/li]
+[li][b]Deathless[/b] (negative, gives 10/22/37): Once per battle, enemy destroyers, cruisers and fleet flagships survive a fatal hit and recover: hull, armor and missile ammunition back to 40/60/100%, flux emptied, peak performance time gone. Capital ships recover half as much.[/li]
+[li][b]Dazing Pilotage[/b] (negative, gives 8/18/30): Every 7 seconds, each of your ships has a 8/12/20% chance to lose control for 1 to 5 seconds, longer for larger ships.[/li]
+[li][b]Full Throttle[/b] (positive, costs 7): Your ships moving at 90% of their top speed or more have 40% more mass.[/li]
+[li][b]MSS Garuda[/b] (positive, costs 30): While your flagship is a Conquest, its ship system cooldown is halved, its vent rate increased by 50%, its weapon range by 30% and its maximum combat readiness by 10%.[/li]
 [/list]
 [b]Fleet[/b]
 [list]
@@ -174,6 +178,10 @@ The numbers are the values of level I up to the highest level.
 [li][b]Logistics Overhaul[/b] (positive, costs 3/7/12): Number of logistics hullmods each of your ships can have increased by 1/2/3.[/li]
 [li][b]Birthday Present[/b] (positive, costs 2): One cycle after this rule is switched on, it is replaced by a random positive rule at level I.[/li]
 [li][b]Entropius Mind[/b] (positive, free): Every 7 days, all your other rules are replaced by 1 to 12 random rules at random levels.[/li]
+[li][b]Celebrity[/b] (negative, gives 15): Your flagship is known everywhere: other fleets know who you are even with the transponder off.[/li]
+[li][b]Same Old Story[/b] (negative, gives 8): Every day, 2% of your bonus experience is lost.[/li]
+[li][b]Delayed Potential[/b] (negative, gives 22): When first switched on, you gain 4 levels without their skill and story points. You get those points at the maximum level. No challenge can run with this rule.[/li]
+[li][b]Weeping Fungus[/b] (positive, costs 7): After your fleet moves faster than burn 15 for 2 days, the repair rate of your ships is increased by 25% and their supply use decreased by 25% until it slows down.[/li]
 [/list]
 [b]Colonies[/b]
 [list]
@@ -196,6 +204,7 @@ The numbers are the values of level I up to the highest level.
 [li][b]GLaDOS[/b] (positive, costs 10/20/30): Industries run by an Alpha Core at your colonies produce 1/2/3 more of each commodity.[/li]
 [li][b]Industrial Zone[/b] (positive, costs 15): Maximum number of industries at your colonies increased by 1. A colony of size 5 or smaller over its old limit has the output of each industry decreased by 1.[/li]
 [li][b]Make an Exception[/b] (positive, costs 3/7/12): Each AI inspection sent against you while you are not hostile to its faction has a 40/60/100% chance to be bribed away at no cost.[/li]
+[li][b]Criminal Imperium[/b] (positive, costs 8/18/30): Each of your free port colonies decreases the accessibility of hostile markets within 10 light-years by 4/6/10%.[/li]
 [/list]
 [b]Economy[/b]
 [list]
@@ -239,14 +248,15 @@ The numbers are the values of level I up to the highest level.
 [li][b]Thermodynamics[/b] (positive, costs 10): While Emergency Burn is on, your fleet moves at the highest burn level.[/li]
 [li][b]Tachyon Labour[/b] (positive, costs 6): The first time this rule is switched on, your standing with the Remnants becomes Cooperative.[/li]
 [li][b]Full of Company[/b] (positive, costs 4): The first time this rule is switched on, your standing with the independents and the pirates becomes Friendly.[/li]
+[li][b]Wish Upon a Star[/b] (positive, costs 15): In star coronas and event horizons, your ships lose 40% less combat readiness, and in battles there their maneuverability is increased by 100% and their top speed by 20 to 60, more for smaller ships.[/li]
 [/list]
 [hr][center][size=12pt][b]Challenges[/b][/size][/center][hr]
-Every challenge: have its negative rules at full level by day 90 of the campaign and keep them until you reach level 15. Lowering one fails the challenge for that campaign. Finishing one unlocks a reward rule for every later campaign.
+Every challenge: switch its negative rules on at full level while you are level 1 and keep them until you reach level 15. There is no time limit. Lowering one fails the challenge for that campaign. Finishing one unlocks a reward rule for every later campaign.
 [list]
 [li][b]The Ziggurat Gambit[/b]: Phase Shadows III, Phase Ghosts, Plated Foes III. Positive rules: none. Reward: [b]Phase Hunter[/b].[/li]
 [li][b]Iron Gauntlet[/b]: Hardened Foes III, Deadly Foes III, Plated Foes III. Positive rules: none. Reward: [b]Iron Hulls[/b].[/li]
 [li][b]The Lone Admiral[/b]: Short-Staffed II, Garbled Orders III, Green Crews III. Positive rules: none. Reward: [b]Lone Legend[/b].[/li]
-[li][b]Blitz[/b]: Hasty Foes III, Deadly Foes III, Rapid Loaders III. Reach level 15 by day 730. Positive rules: none. Reward: [b]Blitz Doctrine[/b].[/li]
+[li][b]Blitz[/b]: Hasty Foes III, Deadly Foes III, Rapid Loaders III. Positive rules: none. Reward: [b]Blitz Doctrine[/b].[/li]
 [li][b]Big Game[/b]: Seasoned Officers III, Antagonism III, Swelling Ranks III. Positive rules: none. Reward: [b]Giant Killer[/b].[/li]
 [li][b]Junkyard Baron[/b]: Festering Damage III, Shattering Hulls III, Slow Repairs III. Positive rules: up to 10 points. Reward: [b]Scarred Veterans[/b].[/li]
 [li][b]The Long Night[/b]: Swelling Ranks III, Pristine Foes III, Swift Pursuers III. Positive rules: none. Reward: [b]Shadow Fleet[/b].[/li]
@@ -270,7 +280,7 @@ Some rules are unlocked by achievements of Achievements - Renewed. They count fo
 [/list]
 
 [hr][center][size=12pt][b]Credits[/b][/size][/center][hr]
-Sixteen rules and one challenge are based on rules from Unofficial Rule Book by DemonX3 (MIT licence, the list and the notice are in CREDITS.txt).
+Twenty-six rules and one challenge are based on rules from Unofficial Rule Book by DemonX3 (MIT licence, the list and the notice are in CREDITS.txt).
 The rule picker (layout, background, icons and sounds) comes from Unofficial New Game Plus by Originem, used with permission. Icons by Originem, Light of Shadow and Helai, some based on Game-icons.net.
 
 [spoiler=AI use disclaimer]Some or all assets and code in this mod were created using AI tools:
@@ -286,6 +296,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.12.0[/b]
+[list][li]The Rule Book intel entry is marked important. A new game shows a short message that offers to open the Rule Book.[/li][li]Challenges have no time limits. Switch a challenge's rules on while you are level 1 and keep them until level 15. Blitz no longer has a deadline.[/li][li]Ten more rules from Unofficial Rule Book: Deathless, Dazing Pilotage, Celebrity, Same Old Story, Delayed Potential, Full Throttle, Wish Upon a Star, Weeping Fungus, Criminal Imperium and the golden MSS Garuda.[/li][li]Phase Ghosts: phased enemy ships also cannot be targeted. It gives 8 points.[/li][/list]
 [b]0.11.0[/b]
 [list][li]The achievements that unlock rules are now part of Achievements - Renewed, which holds every achievement except the challenges. Needs Achievements - Renewed 0.3.0 or newer. Achievements you already have are kept.[/li][/list]
 [b]0.10.3[/b]

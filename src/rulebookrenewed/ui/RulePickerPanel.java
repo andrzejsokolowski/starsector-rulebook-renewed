@@ -406,9 +406,9 @@ public final class RulePickerPanel extends BaseCustomUIPanelPlugin implements Ru
         challengeList = new UIRect(0, 0, pageRect.getWidth(), pageRect.getHeight()).shrink(5f);
         float rowWidth = challengeList.getWidth() - 16f;
         TooltipMakerAPI tip = challengeList.beginTooltip(page, true);
-        tip.addPara("Have a challenge's rules at full level by day %s of the campaign and keep them until you reach level %s.",
+        tip.addPara("Switch a challenge's rules on at full level while you are level %s and keep them until you reach level %s.",
                 4f, Misc.getTextColor(), Misc.getHighlightColor(),
-                String.valueOf(Challenges.START_DAYS), String.valueOf(Challenges.maxLevel()));
+                String.valueOf(Challenges.START_LEVEL), String.valueOf(Challenges.maxLevel()));
         tip.addSpacer(8f);
         for (ChallengeSpec spec : Challenges.all()) {
             ChallengeRow row = new ChallengeRow(spec, this);

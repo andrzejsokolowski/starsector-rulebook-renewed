@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Same Old Story (rbr_same_old_story): Bonus experience fades every day. -->
+<g>
+<path d="M64 34 Q44 22 16 26 L16 98 Q44 94 64 106 Q84 94 112 98 L112 26 Q84 22 64 34 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M64 34 L64 104" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30 46 L50 48 M30 62 L50 64 M78 48 L98 46" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M88 62 L88 86 M78 76 L88 86 L98 76" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

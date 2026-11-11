@@ -10,9 +10,11 @@ import com.fs.starfarer.api.combat.ShipAPI;
 import rulebookrenewed.RuleSpec;
 
 /**
- * Hard: enemy ships fade out completely while phased and fade back in when they drop out. Uses the
- * ship's second extra alpha multiplier, which the phase cloak itself does not touch, so the two do not
- * fight over the ship's look. Only the look changes; the ship still shows on the HUD when targeted.
+ * Hard: enemy ships fade out completely while phased and fade back in when they drop out, and while phased
+ * they cannot be targeted: a target lock of the player's side on a phased enemy is dropped. Uses the ship's
+ * second extra alpha multiplier, which the phase cloak itself does not touch, so the two do not fight over
+ * the ship's look. The target lock part is from Mirage in Unofficial Rule Book by DemonX3 (MIT licence, see
+ * CREDITS.txt).
  */
 public final class PhaseGhosts implements RuleEffect {
 
@@ -29,6 +31,11 @@ public final class PhaseGhosts implements RuleEffect {
             engine.getCustomData().put(KEY, alphas);
         }
         for (ShipAPI ship : engine.getShips()) {
+            if (ship.getOwner() == 0) {
+                ShipAPI target = ship.getShipTarget();
+                if (target != null && target.getOwner() == 1 && target.isPhased()) ship.setShipTarget(null);
+                continue;
+            }
             if (ship.getOwner() != 1 || ship.isFighter() || !ship.isPhased() || alphas.containsKey(ship)) continue;
             alphas.put(ship, 1f);
         }

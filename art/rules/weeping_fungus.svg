@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Weeping Fungus (rbr_weeping_fungus): Fast travel repairs ships and saves supplies. -->
+<g>
+<path d="M14 62 Q14 20 64 20 Q114 20 114 62 Z" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50 62 L46 108 L82 108 L78 62" fill="#175A36" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="44" cy="42" r="6" fill="#3CEB8C"/>
+<circle cx="80" cy="38" r="6" fill="#3CEB8C"/>
+<path d="M24 76 L24 88 M104 76 L104 92" fill="none" stroke="#3CEB8C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

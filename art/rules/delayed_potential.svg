@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Delayed Potential (rbr_delayed_potential): Levels now, their points at the maximum level. -->
+<g>
+<path d="M34 16 L94 16 M34 112 L94 112" fill="none" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M40 16 Q40 50 64 64 Q88 50 88 16 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M40 112 Q40 78 64 64 Q88 78 88 112 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M52 104 L76 104 L64 88 Z" fill="#FF5064" stroke="#FF5064" stroke-width="4" stroke-linejoin="round"/>
+</g>
+</svg>

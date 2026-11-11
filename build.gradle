@@ -231,7 +231,7 @@ tasks.register('checkReleaseFiles') {
         else baseCsv.readLines('UTF-8').drop(1).each { line -> if (line.trim()) baseAchievementIds << parseCsv(line)[0] }
         def challengeLines = file('data/config/rulebook/challenges.csv').readLines('UTF-8')
         def challengeHeader = challengeLines[0].split(',', -1) as List
-        ['id', 'name', 'rules', 'goal', 'helpfulLimit', 'deadlineDays', 'order', 'requiredMod'].each {
+        ['id', 'name', 'rules', 'goal', 'helpfulLimit', 'order', 'requiredMod'].each {
             if (!challengeHeader.contains(it)) problems << "challenges.csv has no ${it} column"
         }
         def challengeIds = [] as Set
@@ -253,7 +253,7 @@ tasks.register('checkReleaseFiles') {
                 else if (!(goal[1] in baseAchievementIds)) problems << "challenges.csv ${row.id}: Achievements - Renewed has no ${goal[1]}"
                 else if (goal.size() == 3 && !(goal[2] ==~ /\d+/)) problems << "challenges.csv ${row.id}: bad goal count ${goal[2]}"
             }
-            if (row.deadlineDays && !(row.deadlineDays ==~ /\d+/)) problems << "challenges.csv ${row.id}: bad deadlineDays ${row.deadlineDays}"
+            if (challengeHeader.contains('deadlineDays')) problems << "challenges.csv: challenges have no time limit (Andrzej, 2026-11-12); drop deadlineDays"
             if (!ruleUnlocks.values().contains("challenge:${row.id}".toString())) problems << "challenges.csv ${row.id}: no rule unlocks from it"
         }
         ruleUnlocks.each { id, unlock ->

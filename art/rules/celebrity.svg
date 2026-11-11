@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<!-- Celebrity (rbr_celebrity): Other fleets know who you are with the transponder off. -->
+<g>
+<path d="M64 14 L77 48 L114 50 L85 72 L95 108 L64 88 L33 108 L43 72 L14 50 L51 48 Z" fill="#661F28" stroke="#FF5064" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="64" cy="62" r="8" fill="#FF5064"/>
+</g>
+</svg>

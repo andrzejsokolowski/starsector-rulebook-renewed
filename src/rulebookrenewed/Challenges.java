@@ -17,11 +17,11 @@ import achievementsrenewed.api.Achievements;
 
 /**
  * Challenges, the way Unofficial New Game Plus runs them: a set of hard rules at full level, switched on
- * within START_DAYS days of the campaign start and kept on until the player reaches the maximum level.
- * A challenge starts by itself the first time its conditions hold inside that window. Once started,
- * lowering a required rule or going over its cap on positive rules fails it for the rest of the campaign.
- * Some challenges also have a time limit (reach the maximum level by a day of the campaign) or a goal
- * that must hold when the maximum level is reached (five colonies).
+ * while the player is still at level START_LEVEL and kept on until the player reaches the maximum level.
+ * A challenge starts by itself the first time its conditions hold at that level. Once started, lowering a
+ * required rule or going over its cap on positive rules fails it for the rest of the campaign. There is no
+ * time limit of any kind (Andrzej, 2026-11-12: "Remove all timing from challenges"). Some challenges have a
+ * goal that must hold when the maximum level is reached (five colonies).
  *
  * State is kept per save. Completion is the achievement rbr_challenge_&lt;id&gt;, which opens the reward rules.
  */
@@ -32,8 +32,10 @@ public final class Challenges {
     private static final String RUNS_KEY = "rbr_challengeRuns";
     /** The pre-0.10.0 progress map; dropped on load. */
     private static final String OLD_STATE_KEY = "rbr_challengeState";
-    /** Days from the campaign start in which a challenge can start. */
-    public static final int START_DAYS = 90;
+    /** The player level at which a challenge can start: the rules are on from the start of the campaign. */
+    public static final int START_LEVEL = 1;
+    /** The campaign start day of Rule Book 0.10 and 0.11 (for the old 90-day window); dropped on load. */
+    private static final String OLD_START_KEY = "rbr_campaignStart";
     private static final String RUNNING = "running", FAILED = "failed";
     private static final Map<String, ChallengeSpec> CHALLENGES = new LinkedHashMap<>();
     private static int batch;
@@ -91,9 +93,7 @@ public final class Challenges {
         int limit = limitText.isEmpty() ? -1 : Integer.parseInt(limitText);
         String orderText = str(row, "order");
         float order = orderText.isEmpty() ? 1000f : Float.parseFloat(orderText);
-        String deadline = str(row, "deadlineDays");
-        return new ChallengeSpec(id, str(row, "name"), requirements, goalId, Math.max(1, amount), limit,
-                deadline.isEmpty() ? 0 : Integer.parseInt(deadline), order);
+        return new ChallengeSpec(id, str(row, "name"), requirements, goalId, Math.max(1, amount), limit, order);
     }
 
     private static String str(JSONObject row, String key) {
@@ -135,10 +135,16 @@ public final class Challenges {
         return sum;
     }
 
-    /** True when every required rule is at full level and positive rules are within the limit. */
+    /**
+     * True when every required rule is at full level, positive rules are within the limit, and no rule that
+     * blocks challenges (Delayed Potential) is on.
+     */
     public static boolean conditionsMet(ChallengeSpec spec, Levels levels) {
         for (ChallengeSpec.Requirement r : spec.requirements) {
             if (levels.level(r.rule) < r.level) return false;
+        }
+        for (RuleSpec rule : RuleCatalog.all()) {
+            if (rule.effect.blocksChallenges() && levels.level(rule) > 0) return false;
         }
         return spec.helpfulLimit < 0 || positivePoints(levels) <= spec.helpfulLimit;
     }
@@ -160,17 +166,9 @@ public final class Challenges {
         return (Map<String, String>) stored;
     }
 
-    /** Days since the campaign started, or -1 when the save is older than the start record. */
-    public static float campaignDays() {
-        long start = RuleState.campaignStart();
-        if (start < 0) return -1f;
-        return Global.getSector().getClock().getElapsedDaysSince(start);
-    }
-
-    /** True while a challenge may still start in this save. */
-    public static boolean startWindowOpen() {
-        float days = campaignDays();
-        return days >= 0f && days <= START_DAYS;
+    /** True while a challenge may still start in this save: the player is still at the starting level. */
+    public static boolean canStart() {
+        return Global.getSector().getPlayerStats().getLevel() <= START_LEVEL;
     }
 
     public static boolean isRunning(ChallengeSpec spec) {
@@ -184,23 +182,16 @@ public final class Challenges {
     /** True when the challenge can still be won in this save. */
     public static boolean possible(ChallengeSpec spec) {
         if (Global.getSector() == null || isComplete(spec) || isFailed(spec)) return false;
-        return isRunning(spec) || startWindowOpen();
+        return isRunning(spec) || canStart();
     }
 
-    /** Short state for a challenge that is not complete, e.g. "Running, 120 days left". */
+    /** Short state for a challenge that is not complete: "Running", "Failed in this campaign", and so on. */
     public static String statusText(ChallengeSpec spec) {
         if (Global.getSector() == null) return "";
         if (isFailed(spec)) return "Failed in this campaign";
-        float days = campaignDays();
-        if (isRunning(spec)) {
-            if (spec.deadlineDays <= 0) return "Running";
-            int left = Math.max(0, spec.deadlineDays - (int) days);
-            return "Running, " + left + (left == 1 ? " day left" : " days left");
-        }
-        if (days < 0f) return "Only in a campaign started with Rule Book 0.10.0 or later";
-        if (days > START_DAYS) return "Only in the first " + START_DAYS + " days of a campaign";
-        int left = Math.max(0, START_DAYS - (int) days);
-        return left + (left == 1 ? " day left to start" : " days left to start");
+        if (isRunning(spec)) return "Running";
+        if (!canStart()) return "Only at level " + START_LEVEL;
+        return "Not started";
     }
 
     /** Suspends the checks while the picker applies several changes; the last end runs one check. */
@@ -215,6 +206,7 @@ public final class Challenges {
 
     public static void dropOldState() {
         Global.getSector().getPersistentData().remove(OLD_STATE_KEY);
+        Global.getSector().getPersistentData().remove(OLD_START_KEY);
         // Battle counts of Rule Book 0.10.3 and older; Achievements - Renewed counts battles now.
         Global.getSector().getPersistentData().remove("rbr_counters");
     }
@@ -239,12 +231,12 @@ public final class Challenges {
         if (FAILED.equals(state)) return false;
         boolean met = conditionsMet(spec, LIVE);
         if (RUNNING.equals(state)) {
-            if (!met || (spec.deadlineDays > 0 && campaignDays() > spec.deadlineDays)) {
+            if (!met) {
                 runs.put(spec.id, FAILED);
                 return false;
             }
         } else {
-            if (!met || !startWindowOpen()) return false;
+            if (!met || !canStart()) return false;
             runs.put(spec.id, RUNNING);
         }
         if (Global.getSector().getPlayerStats().getLevel() < maxLevel()) return false;

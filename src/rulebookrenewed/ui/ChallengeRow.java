@@ -92,7 +92,7 @@ public final class ChallengeRow extends BaseCustomUIPanelPlugin {
             text = Challenges.statusText(spec);
             color = Misc.getNegativeHighlightColor();
         } else if (Challenges.conditionsMet(spec, working)) {
-            text = Challenges.isRunning(spec) ? Challenges.statusText(spec) : "Rules met   " + Challenges.statusText(spec);
+            text = Challenges.isRunning(spec) ? Challenges.statusText(spec) : "Starts on Confirm";
             color = RulePickerPanel.GOLD;
         } else {
             text = Challenges.isRunning(spec) ? "Fails on Confirm" : Challenges.statusText(spec);

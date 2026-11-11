@@ -3,17 +3,17 @@
 Rules for one Starsector campaign. Negative rules make the game harder and give points; positive rules make
 it easier and cost points. Every rule has its own level.
 
-- **Opening it**: the Rule Book opens a few seconds after a new game starts (LunaLib setting). Open it again
-  from the **Rule Book** entry under Personal on the intel screen.
+- **Opening it**: a few seconds after a new game starts, a message offers to open the Rule Book (LunaLib
+  setting). Open it at any time from the **Rule Book** entry under Personal on the intel screen.
 - **Picking**: left click increases a rule's intensity, right click diminishes it. Most rules have three
   levels: 1x, 1.5x and 2.5x. A negative rule and its positive mirror are never on together: picking one
   greys out the other. Only one golden rule can be picked. Nothing changes until you press **Confirm**.
 - **Presets**: four slots next to the tabs save and load whole rule sets, across campaigns.
 - **Point budget**: with the LunaLib setting "Point budget" on (the default), you cannot confirm a set that
   costs more points than it gives.
-- **Challenges**: a challenge names negative rules. Have them at full level by day 90 of the campaign and
-  keep them until you reach level 15. A challenge starts by itself when its rules are on in time, and
-  fails for that campaign if you lower them. "Enable required rules" in the Challenges tab switches on
+- **Challenges**: a challenge names negative rules. Switch them on at full level while you are level 1 and
+  keep them until you reach level 15. There is no time limit. A challenge starts by itself when its rules
+  are on at level 1, and fails for that campaign if you lower them. "Enable required rules" in the Challenges tab switches on
   exactly the rules a challenge needs. Finishing one unlocks a reward rule for every campaign.
 - **Achievements**: some rules are unlocked by achievements, kept by the mod Achievements - Renewed. A locked
   rule shows as **[ ? ]**; point at it to see what unlocks it. The LunaLib setting "Every rule unlocked"
@@ -95,7 +95,7 @@ The numbers are the values of level I up to the highest level.
 | Dead Weight | negative | Maximum combat readiness of your ships decreased by 2/3/5% for each mothballed ship in your fleet. | gives 3/6/10 |  |
 | Pristine Foes | negative | Ship quality of fleets from markets that are not yours increased by 20/30/50%. | gives 4/9/15 |  |
 | Junker Foes | positive | Ship quality of fleets from markets that are not yours decreased by 20/30/50%. | costs 4/9/15 |  |
-| Abyss Ward | positive | Energy damage taken by your ships decreased by 20/30/50%. | costs 4/9/15 | Achievement: Defeat an Omega, Threat or Dweller fleet |
+| Abyss Ward | positive | Energy damage taken by your ships decreased by 20/30/50%. | costs 4/9/15 | Achievement: Defeat a Shrouded Dweller fleet |
 | Phase Hunter | positive | Damage taken by enemy phase ships increased by 20/30/50%. | costs 5/12/20 | Challenge: The Ziggurat Gambit |
 | Iron Hulls | positive | Armor and hull damage taken by your ships and your allies' ships decreased by 6/9/15%. | costs 5/11/18 | Challenge: Iron Gauntlet |
 | Lone Legend | positive | Damage dealt by your flagship increased by 10/15/25%, damage taken decreased by 10/15/25%. | costs 5/12/20 | Challenge: The Lone Admiral |
@@ -104,7 +104,7 @@ The numbers are the values of level I up to the highest level.
 | Station Breaker | positive | Damage taken by enemy stations increased by 20/30/50%. | costs 3/6/10 | Challenge: Fortress Breaker |
 | Giant Killer | positive | Damage taken by enemy capital ships increased by 20/30/50%. | costs 5/12/20 | Challenge: Big Game |
 | Living Plating | positive | In combat, the ship you fly repairs 1/1.5/2.5% of its maximum armor per second. | costs 5/12/20 |  |
-| Phase Ghosts | negative | Enemy ships are invisible while phased. | gives 6 |  |
+| Phase Ghosts | negative | Enemy ships are invisible while phased and cannot be targeted. | gives 8 |  |
 | Fireworks | positive | Destroyed ships explode with fireworks. No other effect. | free |  |
 | Flagship | positive | Hull, armor, flux capacity, flux dissipation, weapon damage and rate of fire of your flagship increased by 20%. Its speed and maneuverability increased by 30%, shield upkeep decreased by 50%, shield unfold and turn rate increased by 50%, maximum combat readiness increased by 10%. | costs 30 |  |
 | Shield Specialization | positive | Damage taken by your shields and their upkeep decreased by 10/15/25%, their turn and unfold rates increased by 10/15/25%. | costs 8/18/30 |  |
@@ -139,6 +139,10 @@ The numbers are the values of level I up to the highest level.
 | V for Vent | positive | While the ship you fly vents, each press of the vent key raises its vent rate by 25% for a third of a second, up to twice. | costs 3 |  |
 | Let there be Light! | positive | Damage dealt to shields by beams of the ship you fly increased by 10/15/25%. | costs 4/9/15 |  |
 | Symbol Perseus | positive | When the ship you fly destroys its third enemy ship within 8 seconds, and with each further kill in that time, 10/15/25% of its maximum flux is removed. | costs 3/6/10 |  |
+| Deathless | negative | Once per battle, enemy destroyers, cruisers and fleet flagships survive a fatal hit and recover: hull, armor and missile ammunition back to 40/60/100%, flux emptied, peak performance time gone. Capital ships recover half as much. | gives 10/22/37 |  |
+| Dazing Pilotage | negative | Every 7 seconds, each of your ships has a 8/12/20% chance to lose control for 1 to 5 seconds, longer for larger ships. | gives 8/18/30 |  |
+| Full Throttle | positive | Your ships moving at 90% of their top speed or more have 40% more mass. | costs 7 |  |
+| MSS Garuda | positive | While your flagship is a Conquest, its ship system cooldown is halved, its vent rate increased by 50%, its weapon range by 30% and its maximum combat readiness by 10%. | costs 30 |  |
 
 ### Fleet
 
@@ -182,6 +186,10 @@ The numbers are the values of level I up to the highest level.
 | Logistics Overhaul | positive | Number of logistics hullmods each of your ships can have increased by 1/2/3. | costs 3/7/12 |  |
 | Birthday Present | positive | One cycle after this rule is switched on, it is replaced by a random positive rule at level I. | costs 2 |  |
 | Entropius Mind | positive | Every 7 days, all your other rules are replaced by 1 to 12 random rules at random levels. | free |  |
+| Celebrity | negative | Your flagship is known everywhere: other fleets know who you are even with the transponder off. | gives 15 |  |
+| Same Old Story | negative | Every day, 2% of your bonus experience is lost. | gives 8 |  |
+| Delayed Potential | negative | When first switched on, you gain 4 levels without their skill and story points. You get those points at the maximum level. No challenge can run with this rule. | gives 22 |  |
+| Weeping Fungus | positive | After your fleet moves faster than burn 15 for 2 days, the repair rate of your ships is increased by 25% and their supply use decreased by 25% until it slows down. | costs 7 |  |
 
 ### Colonies
 
@@ -206,6 +214,7 @@ The numbers are the values of level I up to the highest level.
 | GLaDOS | positive | Industries run by an Alpha Core at your colonies produce 1/2/3 more of each commodity. | costs 10/20/30 |  |
 | Industrial Zone | positive | Maximum number of industries at your colonies increased by 1. A colony of size 5 or smaller over its old limit has the output of each industry decreased by 1. | costs 15 |  |
 | Make an Exception | positive | Each AI inspection sent against you while you are not hostile to its faction has a 40/60/100% chance to be bribed away at no cost. | costs 3/7/12 |  |
+| Criminal Imperium | positive | Each of your free port colonies decreases the accessibility of hostile markets within 10 light-years by 4/6/10%. | costs 8/18/30 |  |
 
 ### Economy
 
@@ -253,6 +262,7 @@ The numbers are the values of level I up to the highest level.
 | Thermodynamics | positive | While Emergency Burn is on, your fleet moves at the highest burn level. | costs 10 |  |
 | Tachyon Labour | positive | The first time this rule is switched on, your standing with the Remnants becomes Cooperative. | costs 6 |  |
 | Full of Company | positive | The first time this rule is switched on, your standing with the independents and the pirates becomes Friendly. | costs 4 |  |
+| Wish Upon a Star | positive | In star coronas and event horizons, your ships lose 40% less combat readiness, and in battles there their maneuverability is increased by 100% and their top speed by 20 to 60, more for smaller ships. | costs 15 |  |
 
 Armor and hull rules are a percent of each ship's own armor and hull. Combat rules apply only in campaign
 battles, not in missions or the simulator. Bounty rules change bounties posted after you pick them. Enemy
@@ -265,7 +275,7 @@ officer rules change each officer once, the first time you meet their fleet.
 | The Ziggurat Gambit | Phase Shadows III, Phase Ghosts, Plated Foes III | - | none | Phase Hunter |
 | Iron Gauntlet | Hardened Foes III, Deadly Foes III, Plated Foes III | - | none | Iron Hulls |
 | The Lone Admiral | Short-Staffed II, Garbled Orders III, Green Crews III | - | none | Lone Legend |
-| Blitz | Hasty Foes III, Deadly Foes III, Rapid Loaders III | Reach level 15 by day 730 | none | Blitz Doctrine |
+| Blitz | Hasty Foes III, Deadly Foes III, Rapid Loaders III | - | none | Blitz Doctrine |
 | Big Game | Seasoned Officers III, Antagonism III, Swelling Ranks III | - | none | Giant Killer |
 | Junkyard Baron | Festering Damage III, Shattering Hulls III, Slow Repairs III | - | up to 10 points | Scarred Veterans |
 | The Long Night | Swelling Ranks III, Pristine Foes III, Swift Pursuers III | - | none | Shadow Fleet |
@@ -276,9 +286,9 @@ officer rules change each officer once, the first time you meet their fleet.
 | Fortress Breaker | Century War III, Plated Foes III, Thick-Hulled Foes III | - | none | Station Breaker |
 | Pilgrim's Ordeal | Heavy Drives III, Deep Space Phobia III, Raging Storms III | - | none | Pilgrim's Blessing |
 
-Every challenge: have its rules at full level by day 90 of the campaign and keep them on until you reach
-level 15. Lowering one of them, or going over the positive rule limit, fails the challenge for that
-campaign. Saves started before 0.10.0 and already past level 1 cannot start challenges.
+Every challenge: switch its rules on at full level while you are level 1 and keep them on until you reach
+level 15. There is no time limit. Lowering one of them, or going over the positive rule limit, fails the
+challenge for that campaign.
 
 ## Achievements
 
