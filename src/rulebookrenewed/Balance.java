@@ -10,6 +10,9 @@ import com.fs.starfarer.api.Global;
  */
 public final class Balance {
 
+    /** Career multiplier percent per point under or over budget. */
+    public static final float PERCENT_PER_POINT = 3f;
+
     private Balance() {}
 
     /** Net points of the rules active in this save. */
@@ -19,7 +22,7 @@ public final class Balance {
         return sum;
     }
 
-    /** "You're 20 points over budget - Slightly overpowered", in Andrzej's wording. */
+    /** "You're 7 points over budget - Slightly overpowered", in Andrzej's wording. */
     public static String describe(int net) {
         if (net == 0) return "Balanced";
         int size = Math.abs(net);
@@ -29,23 +32,24 @@ public final class Balance {
     }
 
     private static String overLabel(int size) {
-        if (size <= 25) return "Slightly overpowered";
-        if (size <= 60) return "Overpowered";
+        if (size <= 8) return "Slightly overpowered";
+        if (size <= 20) return "Overpowered";
         return "Wildly overpowered";
     }
 
     private static String underLabel(int size) {
-        if (size <= 25) return "Slightly harder";
-        if (size <= 60) return "Hard";
+        if (size <= 8) return "Slightly harder";
+        if (size <= 20) return "Hard";
         return "Brutal";
     }
 
     /**
-     * Career point multiplier for New Game Plus - Renewed: each point under budget adds 1 percent, each
-     * point over budget takes 1 percent away, never below 0.1.
+     * Career point multiplier for New Game Plus - Renewed: each point under budget adds 3 percent, each
+     * point over budget takes 3 percent away, never below 0.1. (Points were a third of the size before
+     * 0.13.0, at 1 percent each.)
      */
     public static float ngpMultiplier(int net) {
-        return Math.max(0.1f, 1f - net / 100f);
+        return Math.max(0.1f, 1f - net * PERCENT_PER_POINT / 100f);
     }
 
     public static String formatMultiplier(float mult) {

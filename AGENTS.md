@@ -34,9 +34,11 @@ lines, no explaining paragraphs (Andrzej, 2026-11-10).
 
 - At most three levels. Values go 1x, 1.5x, 2.5x of the level 1 number (20/30/50, 10/15/25). Count rules
   (burn level, officers, stability) go 1/2/3. Points grow by steps that never shrink: from the top points P,
-  level 2 is 0.6 P and level 1 is 0.27 P (4/9/15, 7/15/25); a two-level rule has 0.4 P at level 1. "Instead
-  of +2, +1, +2, do +1, +2, +2" (Andrzej, 2026-11-10). The build checks the steps.
-- Numbers are measured against Unofficial New Game Plus (Andrzej finds it well balanced): about 7.5 of our
+  level 2 is 0.6 P and level 1 is 0.27 P, each at least 1 (1/3/5, 2/5/8, 3/6/10); a two-level rule has 0.4 P
+  at level 1. "Instead of +2, +1, +2, do +1, +2, +2" (Andrzej, 2026-11-10). The build checks the steps.
+- Points of one level go from 1 to 10: "10 per level is super strong, 1 is super weak" (Andrzej,
+  2026-11-12, "Slightly closer to UNGP scale, but not fully"). Before 0.13.0 they were three times larger.
+- Numbers are measured against Unofficial New Game Plus (Andrzej finds it well balanced): about 2.5 of our
   level III points per UNGP cost point, its Gamma/Beta/Omega values as our levels I/II/III.
 - A minor effect is not worth three small levels: make it one strong single-level rule (Calm Currents: no
   storm damage; Greedy Crews: wages doubled), or two levels where the top one has a price (Loyal Hands).
@@ -120,7 +122,7 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   build reads Achievements - Renewed's CSV (next door or the installed copy) to check every
   `achievement:` id.
 - `Balance` - meter text and the New Game Plus - Renewed multiplier, written to sector memory
-  `$rbr_ngpMultiplier` (1 + net points under budget / 100, at least 0.1).
+  `$rbr_ngpMultiplier` (1 + 3% per net point under budget, at least 0.1).
 - `ui/RulePickerPanel` - UNGP's picker layout with native UI: positive grid over negative grid (or the
   challenge list) on the left; on the right the hovered rule (only the effect that applies, large), the
   picked rules, challenges whose rules are met, points, problems, Confirm / Cancel. Picks go to a working

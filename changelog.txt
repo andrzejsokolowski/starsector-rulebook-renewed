@@ -1,3 +1,7 @@
+Version 0.13.0 (2026-11-12)
+- Rule points are on a smaller scale: one level is worth 1 to 10 points instead of up to 37. Every rule keeps its place on the scale (old points divided by 3).
+- The New Game Plus - Renewed career multiplier moves 3 percent per point instead of 1, and the budget labels and Junkyard Baron's limit (3 points) follow the new scale.
+
 Version 0.12.2 (2026-11-12)
 - Rule names that do not fit on one line of a tile use a smaller font, and a name that still takes two lines makes the icon smaller instead of covering it.
 - The Rule Book intel entry no longer shows the heading "Rules in force".
