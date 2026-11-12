@@ -1,3 +1,6 @@
+Version 0.12.1 (2026-11-12)
+- Challenge goals and the "Unlocked by" lists name the achievement's condition, for example "Own five colonies at the same time", not its title.
+
 Version 0.12.0 (2026-11-12)
 - The Rule Book intel entry is marked important. A new game shows a short message that offers to open the Rule Book.
 - Challenges have no time limits. Switch a challenge's rules on while you are level 1 and keep them until level 15. Blitz no longer has a deadline.

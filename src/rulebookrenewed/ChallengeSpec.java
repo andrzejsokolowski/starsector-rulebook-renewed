@@ -3,14 +3,10 @@ package rulebookrenewed;
 import java.util.Collections;
 import java.util.List;
 
-import achievementsrenewed.api.AchievementSpec;
-import achievementsrenewed.api.Achievements;
-
 /**
- * One line of data/config/rulebook/challenges.csv: hard rules that must be at full level from the first
- * days of the campaign until the maximum level, an optional cap on positive rules, an optional time limit
- * and an optional goal that must hold at the end. Finishing it unlocks every rule whose unlock column
- * says challenge:&lt;id&gt;.
+ * One line of data/config/rulebook/challenges.csv: hard rules that must be at full level from level 1
+ * until the maximum level, an optional cap on positive rules and an optional goal that must hold at the end.
+ * Finishing it unlocks every rule whose unlock column says challenge:&lt;id&gt;.
  */
 public final class ChallengeSpec {
 
@@ -56,10 +52,11 @@ public final class ChallengeSpec {
         return PREFIX + id;
     }
 
-    /** The goal achievement's name, or its id while Achievements - Renewed does not know it. */
+    /** The goal achievement's condition (its how-to, without the full stop), as the picker names unlocks. */
     private String goalName() {
-        AchievementSpec spec = Achievements.get(goalId);
-        return spec == null || spec.name.isEmpty() ? goalId : spec.name;
+        String text = Unlocks.label(goalId).trim();
+        while (text.endsWith(".")) text = text.substring(0, text.length() - 1);
+        return text.isEmpty() ? goalId : text;
     }
 
     public String goalText() {

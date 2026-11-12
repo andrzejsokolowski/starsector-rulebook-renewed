@@ -95,7 +95,7 @@ The numbers are the values of level I up to the highest level.
 | Dead Weight | negative | Maximum combat readiness of your ships decreased by 2/3/5% for each mothballed ship in your fleet. | gives 3/6/10 |  |
 | Pristine Foes | negative | Ship quality of fleets from markets that are not yours increased by 20/30/50%. | gives 4/9/15 |  |
 | Junker Foes | positive | Ship quality of fleets from markets that are not yours decreased by 20/30/50%. | costs 4/9/15 |  |
-| Abyss Ward | positive | Energy damage taken by your ships decreased by 20/30/50%. | costs 4/9/15 | Achievement: Defeat a Shrouded Dweller fleet |
+| Abyss Ward | positive | Energy damage taken by your ships decreased by 20/30/50%. | costs 4/9/15 | Achievement: Win a battle with a Shrouded Dweller fleet on the enemy side |
 | Phase Hunter | positive | Damage taken by enemy phase ships increased by 20/30/50%. | costs 5/12/20 | Challenge: The Ziggurat Gambit |
 | Iron Hulls | positive | Armor and hull damage taken by your ships and your allies' ships decreased by 6/9/15%. | costs 5/11/18 | Challenge: Iron Gauntlet |
 | Lone Legend | positive | Damage dealt by your flagship increased by 10/15/25%, damage taken decreased by 10/15/25%. | costs 5/12/20 | Challenge: The Lone Admiral |
@@ -175,7 +175,7 @@ The numbers are the values of level I up to the highest level.
 | Iron Quartermaster | positive | Maintenance supply use of your ships decreased by 10/15/25%, fuel use decreased by 10/15/25%. | costs 3/6/10 | Challenge: Lean Years |
 | Blitz Doctrine | positive | Deployment cost of your ships, in combat readiness and supplies, decreased by 20/30/50%. | costs 4/9/15 | Challenge: Blitz |
 | Pilgrim's Blessing | positive | Repair and combat readiness recovery rates of your ships increased by 20/30/50%. | costs 4/9/15 | Challenge: Pilgrim's Ordeal |
-| Omega Shard | positive | Grants 1 Omega core, once per campaign. | costs 12 | Achievement: Train an officer under an Omega core |
+| Omega Shard | positive | Grants 1 Omega core, once per campaign. | costs 12 | Achievement: Install an Omega core in an Academy (Industrial Evolution) on one of your colonies while an officer is in your fleet. Mercenaries do not count |
 | Technological Revolution | positive | Ordnance points of your ships increased by 8/12/20%. Above 240 deployment points of combat ships in your fleet the bonus shrinks, down to half at 480. | costs 7/15/25 |  |
 | Still Growing Up | positive | After 3 months a random positive rule is switched on at level I, the next one 6 months later, then 9, and so on. | costs 20 |  |
 | The Detente | negative | Maintenance supply use of your ships increased by 10/15/25% for each ship in your fleet above 15. | gives 5/12/20 |  |
@@ -205,10 +205,10 @@ The numbers are the values of level I up to the highest level.
 | Loyal Colonists | positive | Stability of your colonies increased by 1/2/3. | costs 2/5/9 |  |
 | Remote Colonies | negative | Accessibility of your colonies decreased by 10/15/25%. | gives 4/9/15 |  |
 | Busy Lanes | positive | Accessibility of your colonies increased by 10/15/25%. | costs 4/9/15 |  |
-| Charter of Governors | positive | Number of administrators you can employ increased by 1/2. | costs 5/12 | Achievement: Grow a colony to size 6 |
+| Charter of Governors | positive | Number of administrators you can employ increased by 1/2. | costs 5/12 | Achievement: Own a colony of size 6 or larger |
 | Imperial Charter | positive | Stability of your colonies increased by 1/2/3. | costs 2/5/9 | Challenge: Colonial Empire |
-| Super Sol | positive | One random resource deposit on every planet in the Sol system improved by one grade. Once per campaign. | costs 8 | Achievement: Bring Sol into the Sector |
-| Ascendant Worlds | positive | Stability of your colonies above size 10 increased by 3 and their income by 10/15/25%. | costs 2/5/9 | Achievement: Grow a colony past size 10 |
+| Super Sol | positive | One random resource deposit on every planet in the Sol system improved by one grade. Once per campaign. | costs 8 | Achievement: Finish the quest Transferring Sol. From level 10, with the Transverse Jump ability, accept the researcher's lead in any bar, talk to Glasya-Labolas on Eochu Bres, destroy a shrouded ship, then use the Translocator at the signal beyond the northern edge of the map. Skipping the quest at Glasya-Labolas also counts |
+| Ascendant Worlds | positive | Stability of your colonies above size 10 increased by 3 and their income by 10/15/25%. | costs 2/5/9 | Achievement: Make an Omega core the administrator of a colony of size 10 and let it grow to size 11 |
 | Trade Embargo | negative | Accessibility of your colonies decreased by 10/15/25% for each hostile market within 15 light-years. | gives 7/15/25 |  |
 | Spy | negative | Stability of your colonies decreased by 1/2/3 for each hostile market within 15 light-years. | gives 4/9/15 |  |
 | GLaDOS | positive | Industries run by an Alpha Core at your colonies produce 1/2/3 more of each commodity. | costs 10/20/30 |  |
@@ -229,7 +229,7 @@ The numbers are the values of level I up to the highest level.
 | Inflated Prices | negative | Purchase price of ships, weapons and fighter wings increased by 20/30/50%. | gives 3/6/10 |  |
 | Bargain Yards | positive | Purchase price of ships, weapons and fighter wings decreased by 20/30/50%. | costs 3/6/10 |  |
 | Merchant Prince | positive | Tariffs at markets that are not yours decreased by 6/9/15 percentage points. Income of your colonies increased by 6/9/15%. | costs 3/7/12 | Challenge: Merchant's Gauntlet |
-| Lucky Streak | positive | Every Gambling Den slot machine win pays 10000/15000/25000 extra credits. | costs 2/5/8 | Achievement: Win at the slot machine |
+| Lucky Streak | positive | Every Gambling Den slot machine win pays 10000/15000/25000 extra credits. | costs 2/5/8 | Achievement: Win a prize on a pull of the slot machine in a gambling den |
 | Fraudulent | negative | Each sale has a 15/22.5/37.5% chance, doubled at black markets, to lose 20% of what it earned. | gives 3/6/10 |  |
 | Inflation | negative | Every month you lose 2/3/5% of your credits. | gives 4/9/15 |  |
 | Black in Black | positive | Trade on black markets raises no suspicion. | costs 8 |  |
@@ -254,7 +254,7 @@ The numbers are the values of level I up to the highest level.
 | Thin Patrols | positive | Fleet size of markets that are not yours decreased by 20/30/50%. | costs 7/15/25 |  |
 | Raging Storms | negative | Damage from hyperspace storm strikes increased by 40/60/100%. | gives 3/6/10 |  |
 | Calm Currents | positive | Your fleet takes no damage from hyperspace storms. | costs 12 |  |
-| Ludd's Song | positive | Gate travel costs no fuel. | costs 15 | Achievement: Finish At The Gates |
+| Ludd's Song | positive | Gate travel costs no fuel. | costs 15 | Achievement: Finish the mission At The Gates. Academician Sebestyen hails you when you dock at the Galatia Academy once you have scanned the Ziggurat for Project Ziggurat. It ends when you return to the Academy with Elissa Zal and the working Janus Device |
 | Shadow Fleet | positive | Range at which your fleet can be detected decreased by 20/30/50%, sensor range increased by 20/30/50%. | costs 4/9/15 | Challenge: The Long Night |
 | Deep Space Phobia | negative | In hyperspace, the sensor range of your fleet is halved and the range at which it can be detected is increased by 80/120/200%. | gives 3/6/10 |  |
 | Dangerous Sector | negative | Combat readiness lost by your ships in star coronas and similar terrain increased by 200%. | gives 5 |  |
