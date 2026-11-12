@@ -27,6 +27,10 @@ public final class RuleTile extends BaseCustomUIPanelPlugin {
 
     public static final float SIZE = 112f;
     private static final float ICON = 64f;
+    /** Space above the name. */
+    private static final float NAME_TOP = SIZE * 0.08f;
+    /** Lowest edge of the icon: just above the cost. */
+    private static final float ICON_BOTTOM = SIZE * 0.5f - ICON * 0.5f;
 
     public interface Listener {
         void tilePressed(RuleTile tile);
@@ -39,6 +43,8 @@ public final class RuleTile extends BaseCustomUIPanelPlugin {
     private ButtonAPI button;
     private LabelAPI name, cost;
     private int level;
+    /** Distance from the tile's top to the bottom of the name. */
+    private float nameBottom;
     private boolean locked;
 
     public RuleTile(RuleSpec rule, Listener listener) {
@@ -62,17 +68,41 @@ public final class RuleTile extends BaseCustomUIPanelPlugin {
         button.setButtonPressedSound(null);
         panel.addUIElement(element);
 
-        TooltipMakerAPI nameElement = panel.createUIElement(SIZE, SIZE, false);
-        nameElement.addSpacer(SIZE * 0.08f);
-        name = nameElement.addPara(rule.name, color, 0f);
+        // The default font when the name fits on one line, else the small one; a name that still wraps
+        // makes the icon smaller (render) so the two never overlap.
+        TooltipMakerAPI nameElement = null;
+        for (int pass = 0; pass < 2; pass++) {
+            nameElement = panel.createUIElement(SIZE, SIZE, false);
+            if (pass == 1) nameElement.setParaSmallInsignia();
+            nameElement.addSpacer(NAME_TOP);
+            name = nameElement.addPara(rule.name, color, 0f);
+            if (name.computeTextWidth(rule.name) <= SIZE - 8f) break;
+        }
         name.setAlignment(Alignment.MID);
         panel.addUIElement(nameElement);
+        float lineHeight = name.computeTextHeight("Ag");
+        nameBottom = NAME_TOP + Math.max(name.getPosition().getHeight(), lines(name, rule.name, SIZE - 8f) * lineHeight);
 
         TooltipMakerAPI costElement = panel.createUIElement(SIZE, 22f, false);
         costElement.setParaOrbitronLarge();
         cost = costElement.addPara("", color, 0f);
         cost.setAlignment(Alignment.MID);
         panel.addUIElement(costElement).inBL(0f, 2f);
+    }
+
+    /** How many lines the text takes when wrapped at word breaks to the width. */
+    private static int lines(LabelAPI label, String text, float width) {
+        int lines = 1;
+        String line = "";
+        for (String word : text.split(" ")) {
+            String next = line.isEmpty() ? word : line + " " + word;
+            if (!line.isEmpty() && label.computeTextWidth(next) > width) {
+                lines++;
+                next = word;
+            }
+            line = next;
+        }
+        return lines;
     }
 
     /** The cost of a level the way the picker shows it: positive rules cost points, negative rules give them. */
@@ -118,12 +148,16 @@ public final class RuleTile extends BaseCustomUIPanelPlugin {
     public void render(float alphaMult) {
         if (p == null) return;
         float cx = p.getX() + p.getWidth() * 0.5f;
-        float cy = p.getY() + p.getHeight() * 0.5f;
         if (!locked) {
+            // The icon sits between the name and the cost, at most ICON square.
+            float top = p.getY() + p.getHeight() - nameBottom;
+            float bottom = p.getY() + ICON_BOTTOM;
+            float size = Math.max(16f, Math.min(ICON, top - bottom));
+            float iconY = Math.min(p.getY() + p.getHeight() * 0.5f, top - size * 0.5f);
             sprite.setColor(button.isEnabled() ? Color.white : Color.gray);
             sprite.setAlphaMult(alphaMult * (level > 0 || !button.isEnabled() ? 1f : 0.75f));
-            sprite.setSize(ICON, ICON);
-            sprite.renderAtCenter(cx, cy);
+            sprite.setSize(size, size);
+            sprite.renderAtCenter(cx, iconY);
         }
         if (locked || rule.levels <= 1) return;
 

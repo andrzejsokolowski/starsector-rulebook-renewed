@@ -1,3 +1,7 @@
+Version 0.12.2 (2026-11-12)
+- Rule names that do not fit on one line of a tile use a smaller font, and a name that still takes two lines makes the icon smaller instead of covering it.
+- The Rule Book intel entry no longer shows the heading "Rules in force".
+
 Version 0.12.1 (2026-11-12)
 - Challenge goals and the "Unlocked by" lists name the achievement's condition, for example "Own five colonies at the same time", not its title.
 

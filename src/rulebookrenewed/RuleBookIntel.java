@@ -59,19 +59,19 @@ public final class RuleBookIntel extends BaseIntelPlugin {
             info.addPara("Career points " + Balance.formatMultiplier(Balance.ngpMultiplier(net)), Misc.getGrayColor(), 3f);
         }
 
-        info.addSectionHeading("Rules in force", Alignment.MID, pad);
         boolean any = false;
         for (RuleSpec rule : RuleCatalog.all()) {
             int level = RuleState.level(rule);
             if (level <= 0) continue;
+            float gap = any ? 5f : pad;
             any = true;
             String levelText = rule.levels > 1 ? " " + RuleSpec.roman(level) : "";
             int points = rule.points(level);
             String pointText = points > 0 ? "+" + points : String.valueOf(points);
-            info.addPara(rule.name + levelText + "   " + pointText, rule.hard ? hardColor() : helpfulColor(), 5f);
+            info.addPara(rule.name + levelText + "   " + pointText, rule.hard ? hardColor() : helpfulColor(), gap);
             info.addPara(rule.describe(level), Misc.getGrayColor(), 1f);
         }
-        if (!any) info.addPara("None.", Misc.getGrayColor(), 5f);
+        if (!any) info.addPara("No rules are on.", Misc.getGrayColor(), pad);
 
         boolean anyChallenge = false;
         for (ChallengeSpec spec : Challenges.all()) {

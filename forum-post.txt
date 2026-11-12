@@ -296,6 +296,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.12.2[/b]
+[list][li]Rule names that do not fit on one line of a tile use a smaller font, and a name that still takes two lines makes the icon smaller instead of covering it.[/li][li]The Rule Book intel entry no longer shows the heading "Rules in force".[/li][/list]
 [b]0.12.1[/b]
 [list][li]Challenge goals and the "Unlocked by" lists name the achievement's condition, for example "Own five colonies at the same time", not its title.[/li][/list]
 [b]0.12.0[/b]
