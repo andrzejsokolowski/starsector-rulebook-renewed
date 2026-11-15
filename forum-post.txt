@@ -9,6 +9,10 @@ Every rule has its own level, so you tune each one instead of one difficulty sli
 Change them whenever you like, mid-campaign included.
 Needs LunaLib and Achievements - Renewed 0.3.0 or newer.
 [/b][/center]
+[spoiler=Screenshots]
+[center][img]https://github.com/andrzejsokolowski/starsector-rulebook-renewed/blob/main/screenshots/01-rule-book-screen.webp?raw=true[/img]
+[img]https://github.com/andrzejsokolowski/starsector-rulebook-renewed/blob/main/screenshots/02-challenges-in-achievements-renewed.webp?raw=true[/img][/center]
+[/spoiler]
 
 [hr][center][size=12pt][b]How it works[/b][/size][/center][hr]
 [list]
@@ -251,6 +255,7 @@ The numbers are the values of level I up to the highest level.
 [li][b]Wish Upon a Star[/b] (positive, costs 5): In star coronas and event horizons, your ships lose 40% less combat readiness, and in battles there their maneuverability is increased by 100% and their top speed by 20 to 60, more for smaller ships.[/li]
 [/list]
 [hr][center][size=12pt][b]Challenges[/b][/size][/center][hr]
+Your challenges and your progress on them are listed in [b]Achievements - Renewed[/b], in its Rule Book - Renewed tab.
 Every challenge: switch its negative rules on at full level while you are level 1 and keep them until you reach level 15. There is no time limit. Lowering one fails the challenge for that campaign. Finishing one unlocks a reward rule for every later campaign.
 [list]
 [li][b]The Ziggurat Gambit[/b]: Phase Shadows III, Phase Ghosts, Plated Foes III. Positive rules: none. Reward: [b]Phase Hunter[/b].[/li]
