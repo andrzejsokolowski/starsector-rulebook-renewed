@@ -301,6 +301,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]1.0.0[/b]
+[list][li]Version 1.0.0: the mod is now considered stable. No gameplay changes.[/li][/list]
 [b]0.15.0[/b]
 [list][li]Updated for Starsector 0.98.5a.[/li][/list]
 [b]0.14.0[/b]
