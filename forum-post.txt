@@ -301,6 +301,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.15.0[/b]
+[list][li]Updated for Starsector 0.98.5a.[/li][/list]
 [b]0.14.0[/b]
 [list][li]New Rule Book ability: it opens the Rule Book. Put it on the ability bar from the ability list.[/li][li]The Peerless rule works with Peerless Skills - Renewed, which replaced Peerless Skills. It still grants 1 Peerless point, once per campaign.[/li][/list]
 [b]0.13.0[/b]

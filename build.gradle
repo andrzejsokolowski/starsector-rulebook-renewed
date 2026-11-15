@@ -27,6 +27,7 @@ dependencies {
     compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/AchievementsRenewed.jar')
     // Peerless Skills - Renewed is optional. Only rulebookrenewed.compat.peerless may name its classes, and that
     // package is loaded only when the Peerless rule is in the catalog, which needs the mod enabled.
+    compileOnly files('../Peerless Skills - Renewed/jars/PeerlessSkillsRenewed.jar')
     compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/PeerlessSkillsRenewed.jar')
 }
 

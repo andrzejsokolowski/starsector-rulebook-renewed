@@ -1,3 +1,6 @@
+Version 0.15.0 (2026-11-15)
+- Updated for Starsector 0.98.5a.
+
 Version 0.14.0 (2026-11-15)
 - New Rule Book ability: it opens the Rule Book. Put it on the ability bar from the ability list.
 - The Peerless rule works with Peerless Skills - Renewed, which replaced Peerless Skills. It still grants 1 Peerless point, once per campaign.
