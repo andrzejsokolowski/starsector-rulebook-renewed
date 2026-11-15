@@ -3,24 +3,27 @@ package rulebookrenewed.compat.peerless;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.util.Misc;
 
-import peerless.api.PeerlessSkills;
+import peerlessrenewed.PeerlessData;
 import rulebookrenewed.RuleSpec;
 import rulebookrenewed.rules.RuleEffect;
 
 /**
- * Helpful, only with Peerless Skills: switching it on grants a Peerless point, once per campaign.
- * Peerless Skills keeps the "once" itself: awardOnce pays each memory key a single time.
- * The rule catalog leaves this row out when Peerless Skills is not enabled, so this class is never
- * loaded without it.
+ * Helpful, only with Peerless Skills - Renewed: switching it on grants Peerless points (the rule's value),
+ * once per campaign. The rule catalog leaves this row out when that mod is not enabled, so this class is
+ * never loaded without it.
  */
 public final class PeerlessRule implements RuleEffect {
 
-    private static final String AWARD_KEY = "$rbr_peerlessRulePoint";
+    /** Sector persistent data: set once the points were given in this campaign. */
+    private static final String PAID_KEY = "rbr_peerlessRulePaid";
 
     @Override
     public void onSwitchedOn(RuleSpec rule, int level, float value) {
-        if (PeerlessSkills.awardOnce(AWARD_KEY)) {
-            Global.getSector().getCampaignUI().addMessage("Gained a Peerless point", Misc.getHighlightColor());
-        }
+        if (Global.getSector().getPersistentData().containsKey(PAID_KEY)) return;
+        int points = Math.max(1, Math.round(value));
+        Global.getSector().getPersistentData().put(PAID_KEY, true);
+        PeerlessData.addPoints(points);
+        Global.getSector().getCampaignUI().addMessage("Gained " + points + (points == 1 ? " Peerless point" : " Peerless points"),
+                Misc.getHighlightColor());
     }
 }

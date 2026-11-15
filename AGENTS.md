@@ -53,7 +53,7 @@ Never give a dependency on a 0.x mod a version in `mod_info.json`: the 0.98a lau
 met and disables this mod (0.9.1 shipped like that). `checkVersionMetadata` refuses it.
 
 `./gradlew releaseZip` compiles against the game, LunaLib, Achievements - Renewed (its jar in the folder next
-door) and Peerless Skills (`gradle.properties` names the
+door) and Peerless Skills - Renewed (`gradle.properties` names the
 game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
 
 ## Layout
@@ -137,4 +137,7 @@ game folder), runs the checks and writes `RuleBookRenewed.zip` in this folder.
   `RuleBookIntel` is the permanent intel entry with the open button, under the tag Personal and marked
   important once per save. On a new game `RuleBookDialog(true)` shows the message "You have installed Rule
   Book - Renewed." with "Open it now" / "Later" (LunaLib setting "Ask on a new game").
-- `compat/peerless` - the only package that may name Peerless Skills (`checkPeerlessIsolated`).
+- `RuleBookAbility` - the Rule Book ability (`data/campaign/abilities.csv`, id `rbr_rulebook`): opens the picker,
+  like the Achievements ability of Achievements - Renewed ("Add a player skill like achievements renewed",
+  Andrzej, 2026-11-15). Every save gets it on load; the mod never puts it on the bar.
+- `compat/peerless` - the only package that may name Peerless Skills - Renewed (`checkPeerlessIsolated`; its API is `peerlessrenewed.PeerlessData`).

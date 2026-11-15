@@ -12,7 +12,7 @@ Needs LunaLib and Achievements - Renewed 0.3.0 or newer.
 
 [hr][center][size=12pt][b]How it works[/b][/size][/center][hr]
 [list]
-[li]A few seconds into a new game, a message offers to open the Rule Book. Open it any time from the Rule Book entry under Personal on the intel screen.[/li]
+[li]A few seconds into a new game, a message offers to open the Rule Book. Open it any time from the Rule Book entry under Personal on the intel screen, or with the Rule Book ability: put it on the ability bar from the ability list.[/li]
 [li]Left click increases a rule's intensity, right click diminishes it. Most rules have three levels: 1x, 1.5x and 2.5x. Nothing changes until you press Confirm.[/li]
 [li]Only one golden rule can be picked.[/li]
 [li]Four preset slots save and load whole rule sets, across campaigns.[/li]
@@ -162,7 +162,7 @@ The numbers are the values of level I up to the highest level.
 [li][b]Slow Learners[/b] (negative, gives 1/3/5): Experience gained from battles decreased by 20/30/50%.[/li]
 [li][b]Quick Learners[/b] (positive, costs 1/3/5): Experience gained from battles increased by 20/30/50%.[/li]
 [li][b]Ironman[/b] (negative, gives 5): Ships you lose in battle cannot be recovered.[/li]
-[li][b]Peerless[/b] (positive, costs 3): Grants 1 Peerless point, once per campaign. Unlocked by: Peerless Skills installed.[/li]
+[li][b]Peerless[/b] (positive, costs 3): Grants 1 Peerless point, once per campaign. Unlocked by: Peerless Skills - Renewed installed.[/li]
 [li][b]Mentor's Legacy[/b] (positive, costs 3/7): Maximum level of your officers increased by 1/2. Unlocked by: Achievement: Reach level 15.[/li]
 [li][b]Iron Quartermaster[/b] (positive, costs 1/2/3): Maintenance supply use of your ships decreased by 10/15/25%, fuel use decreased by 10/15/25%. Unlocked by: Challenge: Lean Years.[/li]
 [li][b]Blitz Doctrine[/b] (positive, costs 1/3/5): Deployment cost of your ships, in combat readiness and supplies, decreased by 20/30/50%. Unlocked by: Challenge: Blitz.[/li]
@@ -296,6 +296,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]0.14.0[/b]
+[list][li]New Rule Book ability: it opens the Rule Book. Put it on the ability bar from the ability list.[/li][li]The Peerless rule works with Peerless Skills - Renewed, which replaced Peerless Skills. It still grants 1 Peerless point, once per campaign.[/li][/list]
 [b]0.13.0[/b]
 [list][li]Rule points are on a smaller scale: one level is worth 1 to 10 points instead of up to 37. Every rule keeps its place on the scale (old points divided by 3).[/li][li]The New Game Plus - Renewed career multiplier moves 3 percent per point instead of 1, and the budget labels and Junkyard Baron's limit (3 points) follow the new scale.[/li][/list]
 [b]0.12.2[/b]

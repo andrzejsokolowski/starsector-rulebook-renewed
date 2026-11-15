@@ -32,6 +32,7 @@ public final class RuleBookModPlugin extends BaseModPlugin {
     public void onGameLoad(boolean newGame) {
         Challenges.dropOldState();
         RuleBookIntel.ensure();
+        RuleBookAbility.give();
         Global.getSector().addTransientScript(new RuleBookScript());
         Global.getSector().addTransientListener(new RuleBattleListener());
         // Applies this save's rules and undoes the last save's (Ludd's Song changes a game-wide value).

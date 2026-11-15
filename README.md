@@ -4,7 +4,8 @@ Rules for one Starsector campaign. Negative rules make the game harder and give 
 it easier and cost points. Every rule has its own level.
 
 - **Opening it**: a few seconds after a new game starts, a message offers to open the Rule Book (LunaLib
-  setting). Open it at any time from the **Rule Book** entry under Personal on the intel screen.
+  setting). Open it at any time from the **Rule Book** entry under Personal on the intel screen, or with the
+  **Rule Book** ability: put it on the ability bar from the ability list.
 - **Picking**: left click increases a rule's intensity, right click diminishes it. Most rules have three
   levels: 1x, 1.5x and 2.5x. A negative rule and its positive mirror are never on together: picking one
   greys out the other. Only one golden rule can be picked. Nothing changes until you press **Confirm**.
@@ -170,7 +171,7 @@ The numbers are the values of level I up to the highest level.
 | Slow Learners | negative | Experience gained from battles decreased by 20/30/50%. | gives 1/3/5 |  |
 | Quick Learners | positive | Experience gained from battles increased by 20/30/50%. | costs 1/3/5 |  |
 | Ironman | negative | Ships you lose in battle cannot be recovered. | gives 5 |  |
-| Peerless | positive | Grants 1 Peerless point, once per campaign. | costs 3 | Peerless Skills installed |
+| Peerless | positive | Grants 1 Peerless point, once per campaign. | costs 3 | Peerless Skills - Renewed installed |
 | Mentor's Legacy | positive | Maximum level of your officers increased by 1/2. | costs 3/7 | Achievement: Reach level 15 |
 | Iron Quartermaster | positive | Maintenance supply use of your ships decreased by 10/15/25%, fuel use decreased by 10/15/25%. | costs 1/2/3 | Challenge: Lean Years |
 | Blitz Doctrine | positive | Deployment cost of your ships, in combat readiness and supplies, decreased by 20/30/50%. | costs 1/3/5 | Challenge: Blitz |

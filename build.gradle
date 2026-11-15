@@ -25,9 +25,9 @@ dependencies {
     // Achievements - Renewed keeps the achievements. Built next door, or found among the installed mods.
     compileOnly files('../Achievements - Renewed/jars/AchievementsRenewed.jar')
     compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/AchievementsRenewed.jar')
-    // Peerless Skills is optional. Only rulebookrenewed.compat.peerless may name its classes, and that
+    // Peerless Skills - Renewed is optional. Only rulebookrenewed.compat.peerless may name its classes, and that
     // package is loaded only when the Peerless rule is in the catalog, which needs the mod enabled.
-    compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/PeerlessSkills*.jar')
+    compileOnly fileTree(dir: "${starsectorPath}/mods", include: '**/PeerlessSkillsRenewed.jar')
 }
 
 jar {
@@ -59,7 +59,7 @@ tasks.register('checkNoForbiddenApis') {
     }
 }
 
-// Peerless Skills is optional: only the compat package may name it, or the mod breaks without it.
+// Peerless Skills - Renewed is optional: only the compat package may name it, or the mod breaks without it.
 tasks.register('checkPeerlessIsolated') {
     dependsOn tasks.named('classes')
     outputs.upToDateWhen { false }
@@ -70,10 +70,10 @@ tasks.register('checkPeerlessIsolated') {
             def path = root.toPath().relativize(f.toPath()).toString().replace('\\', '/')
             if (path.startsWith('rulebookrenewed/compat/peerless/')) return
             def text = new String(f.bytes, 'ISO-8859-1')
-            if (text.contains('peerless/api/') || text.contains('rulebookrenewed/compat/peerless/')) offenders << path
+            if (text.contains('peerlessrenewed/') || text.contains('rulebookrenewed/compat/peerless/')) offenders << path
         }
         if (!offenders.isEmpty()) {
-            throw new GradleException("Only rulebookrenewed.compat.peerless may refer to Peerless Skills:\n  " +
+            throw new GradleException("Only rulebookrenewed.compat.peerless may refer to Peerless Skills - Renewed:\n  " +
                     offenders.join('\n  '))
         }
     }
