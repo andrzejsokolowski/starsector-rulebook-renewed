@@ -279,7 +279,7 @@ Some rules are unlocked by achievements of Achievements - Renewed. They count fo
 [hr][center][size=12pt][b]Works with[/b][/size][/center][hr]
 [list]
 [li][b]New Game Plus - Renewed[/b]: active rules change the career points you earn. Each point under budget adds 3 percent, each point over budget takes 3 percent away.[/li]
-[li][b]Oddisz's other mods[/b]: Sol Renewed, Gambling Den, Starsector Cloning, Reverse Engineered Private Arsenal, StarterPack, Missions - Renewed, Astral Ascension Renewed, Omega Core Everywhere, Chicken's Tech Shop and Extra Submarkets add feats, and some add challenges.[/li]
+[li][b]Oddisz's other mods[/b]: Sol Renewed, Gambling Den, Starsector Cloning, Reverse Engineered Private Arsenal, StarterPack, Missions - Renewed, Colonial Hypergrowth, Omega Core Everywhere, Chicken's Tech Shop and Extra Submarkets add feats, and some add challenges.[/li]
 [li][b]Peerless Skills[/b]: adds the Peerless rule.[/li]
 [li]Other mods can add their own rules and challenges with one line each in data/config/rulebook/rules.csv and challenges.csv.[/li]
 [/list]

@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import rulebookrenewed.RuleSpec;
 
 /**
- * Positive, only with Astral Ascension Renewed: the player's ascended colonies (past size 10, marked by
+ * Positive, only with Colonial Hypergrowth: the player's ascended colonies (past size 10, marked by
  * that mod with $aar_ascended) gain a fixed 3 stability and a share more income.
  */
 public final class AscendedStability extends MarketRule {

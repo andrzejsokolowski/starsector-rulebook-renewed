@@ -7,7 +7,7 @@ import com.fs.starfarer.api.ModSpecAPI;
  * The 0.98a launcher never counts a 0.x dependency with a version as met, so mod_info.json names
  * Achievements - Renewed without one and the lowest version is checked here instead. 0.3.0 is the first
  * that holds and checks the achievements that unlock rules (the ids rbr_*); with an older one those rules
- * could never be unlocked. Same check as Astral Ascension Renewed's OddiszCommonsVersion.
+ * could never be unlocked. Same check as Colonial Hypergrowth's OddiszCommonsVersion.
  */
 final class AchievementsVersion {
 
