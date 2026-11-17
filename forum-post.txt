@@ -301,6 +301,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]1.0.1[/b]
+[list][li]Loyal Hands and Greedy Crews now change the wages of your crew and marines. The fleet screen and the income report show the new wages. Before, the wage change did not happen.[/li][li]Slow Learners, Quick Learners, Stingy Bounties, Generous Bounties, Inflated Prices and Bargain Yards are no longer undone by their mirror rule.[/li][/list]
 [b]1.0.0[/b]
 [list][li]Version 1.0.0: the mod is now considered stable. No gameplay changes.[/li][/list]
 [b]0.15.0[/b]

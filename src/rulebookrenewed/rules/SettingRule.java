@@ -16,11 +16,11 @@ public abstract class SettingRule implements RuleEffect {
     @Override
     public void applyCampaign(RuleSpec rule, int level, float value) {
         float sign = RuleEffect.playerSign(rule) * (higherHelps() ? 1f : -1f);
-        SettingScale.apply(keys(), Scale.mult(value, sign));
+        SettingScale.apply(keys(), Scale.mult(value, sign), rule.id);
     }
 
     @Override
     public void unapplyCampaign(RuleSpec rule) {
-        SettingScale.restore(keys());
+        SettingScale.restore(keys(), rule.id);
     }
 }

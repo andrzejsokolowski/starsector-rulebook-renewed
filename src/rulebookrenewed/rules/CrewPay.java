@@ -1,59 +1,47 @@
 package rulebookrenewed.rules;
 
-import java.util.Map;
-
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignClockAPI;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.combat.MutableShipStatsAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 
 import rulebookrenewed.RuleSpec;
 
 /**
- * Crew and marines want more pay (hard) or settle for less (helpful). At the start of every month the
- * difference to the game's own wages (settings crewSalary and marineSalary) is taken from, or paid back
- * to, the player's credits.
+ * Crew and marines want more pay (hard) or settle for less (helpful), through the game's own wages, so the
+ * fleet screen, the income report and the money taken all agree.
+ *
+ * The game pays active-duty crew per ship (the hull's crew salary times the ship's crew salary multiplier),
+ * crew beyond what the ships need at the crewSalary setting, and marines at the marineSalary setting
+ * (CoreScript.reportEconomyTick in 0.98.5a). So the rule puts a multiplier on every player ship's crew
+ * salary and scales those two settings.
  */
-public final class CrewPay implements RuleEffect {
+public class CrewPay extends MemberStatRule {
 
-    private static final String MONTH_KEY = "rbr_crewPayMonth";
+    private static final String[] KEYS = {"crewSalary", "marineSalary"};
+
+    /** Left in saves by 1.0.0 and older, which paid the difference once a month. */
+    private static final String OLD_MONTH_KEY = "rbr_crewPayMonth";
 
     @Override
     public void applyCampaign(RuleSpec rule, int level, float value) {
-        CampaignClockAPI clock = Global.getSector().getClock();
-        int month = clock.getCycle() * 12 + clock.getMonth();
-        Map<String, Object> data = Global.getSector().getPersistentData();
-        Object last = data.get(MONTH_KEY);
-        data.put(MONTH_KEY, month);
-        if (last instanceof Integer && (Integer) last != month) settle(rule, value);
+        Global.getSector().getPersistentData().remove(OLD_MONTH_KEY);
+        super.applyCampaign(rule, level, value);
+        SettingScale.apply(KEYS, wageMult(value, RuleEffect.playerSign(rule)), rule.id);
     }
 
     @Override
     public void unapplyCampaign(RuleSpec rule) {
-        Global.getSector().getPersistentData().remove(MONTH_KEY);
+        super.unapplyCampaign(rule);
+        SettingScale.restore(KEYS, rule.id);
     }
 
-    private static void settle(RuleSpec rule, float percent) {
-        CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
-        if (fleet == null) return;
-        CargoAPI cargo = fleet.getCargo();
-        float wages = cargo.getCrew() * Global.getSettings().getFloat("crewSalary")
-                + cargo.getMarines() * Global.getSettings().getFloat("marineSalary");
-        int amount = Math.round(wages * percent / 100f);
-        if (amount <= 0) return;
-        String text;
-        if (rule.hard) {
-            cargo.getCredits().subtract(amount);
-            text = "Your crew demanded " + Misc.getDGSCredits(amount) + " more pay this month.";
-        } else {
-            cargo.getCredits().add(amount);
-            text = "Your crew took " + Misc.getDGSCredits(amount) + " less pay this month.";
-        }
-        try {
-            Global.getSector().getCampaignUI().addMessage(text, rule.hard ? Misc.getNegativeHighlightColor() : Misc.getPositiveHighlightColor());
-        } catch (Throwable ignored) {
-            // No campaign UI yet.
-        }
+    @Override
+    protected void modify(MutableShipStatsAPI stats, String id, float value, float sign, String source) {
+        stats.getDynamic().getStat(Stats.SHIP_CREW_SALARY_MULT).modifyMult(id, wageMult(value, sign), source);
+    }
+
+    /** sign -1 (hard) raises wages by value percent, +1 (helpful) cuts them; 100 percent off is no pay. */
+    private static float wageMult(float value, float sign) {
+        return sign < 0f ? 1f + value / 100f : Math.max(0f, 1f - value / 100f);
     }
 }

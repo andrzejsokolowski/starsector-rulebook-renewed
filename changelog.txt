@@ -1,3 +1,7 @@
+Version 1.0.1 (2026-11-18)
+- Loyal Hands and Greedy Crews now change the wages of your crew and marines. The fleet screen and the income report show the new wages. Before, the wage change did not happen.
+- Slow Learners, Quick Learners, Stingy Bounties, Generous Bounties, Inflated Prices and Bargain Yards are no longer undone by their mirror rule.
+
 Version 1.0.0 (2026-11-15)
 - Version 1.0.0: the mod is now considered stable. No gameplay changes.
 
