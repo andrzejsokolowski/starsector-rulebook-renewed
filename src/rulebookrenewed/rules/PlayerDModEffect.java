@@ -12,5 +12,6 @@ public final class PlayerDModEffect extends MemberStatRule {
     @Override
     protected void modify(MutableShipStatsAPI stats, String id, float value, float sign, String source) {
         Scale.by(stats.getDynamic().getStat(Stats.DMOD_EFFECT_MULT), id, value, -sign, source);
+        DModRefresh.reapply(stats);
     }
 }

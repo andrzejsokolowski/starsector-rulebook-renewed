@@ -5,7 +5,7 @@
 	"modVersion": {
 		"major":1,
 		"minor":0,
-		"patch":2
+		"patch":3
 	},
 	"starsectorVersion":"0.98.5a-RC4",
 	"directDownloadURL":"https://github.com/andrzejsokolowski/starsector-rulebook-renewed/releases/latest/download/RuleBookRenewed.zip"

@@ -25,5 +25,6 @@ public final class ScarredVeterans extends MemberStatRule {
         }
         Scale.by(stats.getArmorBonus(), id, value * dmods, 1f, source);
         Scale.by(stats.getDynamic().getStat(Stats.DMOD_EFFECT_MULT), id, value * dmods, -1f, source);
+        DModRefresh.reapply(stats);
     }
 }

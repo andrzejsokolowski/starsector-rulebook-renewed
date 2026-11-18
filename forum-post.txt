@@ -301,6 +301,8 @@ The rule picker parts taken from Unofficial New Game Plus by Originem (layout co
 [/spoiler]
 
 [spoiler=Version log]
+[b]1.0.3[/b]
+[list][li]Festering Damage, Patchwork Pride and Scarred Veterans now change how strong D-mods are. Before, the D-mod strength part did nothing.[/li][li]Hungry Guns and Efficient Guns now change beam weapons by the stated amount. Before, beams got the change twice.[/li][/list]
 [b]1.0.2[/b]
 [list][li]Raging Storms keeps its stronger storm strikes. Before, it was undone a few hours after it applied.[/li][li]Calm Currents now protects only your fleet from storm strikes. It no longer removes the damage of campaign explosions or of storms on other fleets.[/li][li]Price Gouging, Free Trade and Swelling Ranks now change tariffs and fleet sizes. Before, they did nothing.[/li][li]MSS Garuda now gives its bonuses to a Conquest flagship. Before, it did nothing.[/li][li]Rich Wrecks and Picked Clean now also change salvage from derelicts and debris fields, not only from battles.[/li][li]Enemy officer, armor, hull and Antagonism rules no longer change friendly or neutral fleets you only talk to. Their changes are also removed from enemy fleets once the rule is off.[/li][li]Changing the level of Make an Exception, Monotonous Teller, Blood Lust, Same Old Story, Famine, Inflation or Still Growing Up no longer restarts its timer. Same Old Story now takes its loss once a day.[/li][li]Entropius Mind and Birthday Present no longer pick Delayed Potential, Omega Shard or Super Sol.[/li][li]Industrial Zone no longer leaves a colony output 1 lower after the colony stops being crowded.[/li][li]Danger Zone keeps its limit of 10 mines per burst in large battles.[/li][/list]
 [b]1.0.1[/b]
