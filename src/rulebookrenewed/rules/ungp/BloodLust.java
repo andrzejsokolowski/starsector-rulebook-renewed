@@ -40,7 +40,7 @@ public final class BloodLust extends ConditionalMemberRule {
 
     @Override
     public void unapplyCampaign(RuleSpec rule) {
-        Tools.forget(SINCE_KEY);
+        if (rulebookrenewed.rules.RuleEffect.isOff(rule)) Tools.forget(SINCE_KEY);
         restless = false;
         super.unapplyCampaign(rule);
     }

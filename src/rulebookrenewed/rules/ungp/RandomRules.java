@@ -15,7 +15,9 @@ final class RandomRules {
     /** Rules that hand out rules themselves, or act once when chosen. */
     private static final Set<String> NEVER = new HashSet<>(Arrays.asList(
             "rbr_still_growing_up", "rbr_birthday_present", "rbr_entropius_mind", "rbr_tach_labour",
-            "rbr_full_of_company", "rbr_peerless"));
+            "rbr_full_of_company", "rbr_peerless", "rbr_omega_shard", "rbr_super_sol",
+            // Gives levels without their points and pays them only if still on at the maximum level.
+            "rbr_delayed_potential"));
 
     private RandomRules() {}
 

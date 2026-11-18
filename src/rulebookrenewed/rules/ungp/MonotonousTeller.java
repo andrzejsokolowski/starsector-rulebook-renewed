@@ -27,6 +27,6 @@ public final class MonotonousTeller implements RuleEffect {
 
     @Override
     public void unapplyCampaign(RuleSpec rule) {
-        Tools.forget(SINCE_KEY);
+        if (RuleEffect.isOff(rule)) Tools.forget(SINCE_KEY);
     }
 }

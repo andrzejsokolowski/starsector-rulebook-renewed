@@ -1,5 +1,6 @@
 package rulebookrenewed.rules;
 
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -20,6 +21,12 @@ public final class MssGaruda extends ConditionalMemberRule {
     private static final float VENT_PERCENT = 50f;
     private static final float RANGE_PERCENT = 30f;
     private static final float MAX_CR = 0.1f;
+
+    /** The rule's value is 0 (it has no level number), and a fleet factor of 0 would switch every ship off. */
+    @Override
+    protected float fleetFactor(RuleSpec rule, CampaignFleetAPI fleet, int level, float value) {
+        return 1f;
+    }
 
     @Override
     protected float strength(RuleSpec rule, FleetMemberAPI member, float fleetFactor) {

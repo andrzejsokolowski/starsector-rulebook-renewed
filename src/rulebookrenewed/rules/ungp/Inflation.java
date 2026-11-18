@@ -28,6 +28,6 @@ public final class Inflation implements RuleEffect {
 
     @Override
     public void unapplyCampaign(RuleSpec rule) {
-        Tools.forget(MONTH_KEY);
+        if (RuleEffect.isOff(rule)) Tools.forget(MONTH_KEY);
     }
 }

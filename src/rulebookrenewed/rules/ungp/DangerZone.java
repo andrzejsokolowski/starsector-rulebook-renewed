@@ -39,9 +39,10 @@ public final class DangerZone implements RuleEffect {
             engine.getCustomData().put(KEY, burst);
         }
         float rate = FRIGATE_SECONDS / Math.max(1f, value);
+        // Once per frame, not once per enemy ship, or the burst limit would melt away in large battles.
+        burst[0] = Math.max(0f, burst[0] - amount * rate);
         for (ShipAPI ship : engine.getShips()) {
             if (ship.getOwner() != 1 || !ship.isAlive() || !canFight(ship)) continue;
-            burst[0] = Math.max(0f, burst[0] - amount * rate);
             float[] timer = (float[]) ship.getCustomData().get(KEY);
             if (timer == null) {
                 timer = new float[1];

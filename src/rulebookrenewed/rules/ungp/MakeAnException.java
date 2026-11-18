@@ -61,7 +61,8 @@ public final class MakeAnException implements RuleEffect {
 
     @Override
     public void unapplyCampaign(RuleSpec rule) {
-        Tools.forget(DAY_KEY);
-        Tools.forget(SEEN_KEY);
+        // The seen list is kept: forgetting it would roll every live inspection again after a switch.
+        // It drops finished inspections by itself.
+        if (RuleEffect.isOff(rule)) Tools.forget(DAY_KEY);
     }
 }

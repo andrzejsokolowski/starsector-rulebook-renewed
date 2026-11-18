@@ -35,7 +35,7 @@ public final class Famine implements RuleEffect {
 
     @Override
     public void unapplyCampaign(RuleSpec rule) {
-        Global.getSector().getPersistentData().remove(MONTH_KEY);
+        if (RuleEffect.isOff(rule)) Global.getSector().getPersistentData().remove(MONTH_KEY);
     }
 
     private static void feed(float perHundred) {

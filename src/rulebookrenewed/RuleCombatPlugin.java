@@ -44,6 +44,7 @@ public final class RuleCombatPlugin extends BaseEveryFrameCombatPlugin {
     private final Set<FleetMemberAPI> preparedMembers = new HashSet<>();
     private boolean prepareReserves;
     private CombatEngineAPI engine;
+    private boolean started;
 
     @Override
     public void init(CombatEngineAPI engine) {
@@ -52,7 +53,19 @@ public final class RuleCombatPlugin extends BaseEveryFrameCombatPlugin {
         seen.clear();
         preparedMembers.clear();
         prepareReserves = false;
-        if (Global.getCurrentState() != GameState.COMBAT) return; // title screen battle
+        started = false;
+        start();
+    }
+
+    /**
+     * Reads the active rules. Tried in init and again on the first frames: whether the game state already
+     * reads COMBAT while a campaign battle's plugins are created is not certain, and a miss there would
+     * silently switch off every combat rule for the battle.
+     */
+    private void start() {
+        if (started || engine == null) return;
+        if (Global.getCurrentState() != GameState.COMBAT) return; // title screen battle, or not yet
+        started = true;
         if (engine == null || !engine.isInCampaign() || engine.isInCampaignSim() || Global.getSector() == null) return;
         for (RuleSpec rule : RuleCatalog.all()) {
             int level = RuleState.level(rule);
@@ -86,6 +99,7 @@ public final class RuleCombatPlugin extends BaseEveryFrameCombatPlugin {
 
     @Override
     public void advance(float amount, List<InputEventAPI> events) {
+        if (!started) start();
         if (active.isEmpty() || engine == null) return;
         prepareEnemyReserves();
         if (!engine.isPaused()) {

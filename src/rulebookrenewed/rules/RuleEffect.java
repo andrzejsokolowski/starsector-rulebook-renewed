@@ -74,6 +74,15 @@ public interface RuleEffect {
     }
 
     /** For rules about the player: +1 when the rule helps the player (a helpful rule), -1 otherwise. */
+    /**
+     * True when the rule is really off. RuleManager.setLevel also unapplies a rule when only its level
+     * changes, so a rule that keeps a timer or a "seen" list forgets it only when this is true; otherwise
+     * moving between levels would reset the timer.
+     */
+    static boolean isOff(RuleSpec rule) {
+        return rulebookrenewed.RuleState.level(rule) <= 0;
+    }
+
     static float playerSign(RuleSpec rule) {
         return rule.hard ? -1f : 1f;
     }

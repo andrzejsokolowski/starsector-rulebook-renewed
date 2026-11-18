@@ -26,9 +26,13 @@ public final class SameOldStory implements RuleEffect {
             data.put(LAST_KEY, clock.getTimestamp()); // switched on now: the first loss comes in a day
             return;
         }
-        int days = (int) clock.getElapsedDaysSince((Long) last);
+        long lastTime = (Long) last;
+        float elapsed = clock.getElapsedDaysSince(lastTime);
+        int days = (int) elapsed;
         if (days < 1) return;
-        data.put(LAST_KEY, clock.getTimestamp());
+        // Move the mark forward by whole days only, so the part of a day left over is not lost each time.
+        long now = clock.getTimestamp();
+        data.put(LAST_KEY, lastTime + (long) ((now - lastTime) * (days / elapsed)));
         MutableCharacterStatsAPI stats = Global.getSector().getPlayerStats();
         long bonus = stats.getBonusXp();
         if (bonus <= 0L) return;
@@ -38,6 +42,6 @@ public final class SameOldStory implements RuleEffect {
 
     @Override
     public void unapplyCampaign(RuleSpec rule) {
-        Global.getSector().getPersistentData().remove(LAST_KEY);
+        if (RuleEffect.isOff(rule)) Global.getSector().getPersistentData().remove(LAST_KEY);
     }
 }

@@ -44,8 +44,17 @@ public final class BattlePrep {
      */
     public static void prepareBattle(BattleAPI battle) {
         if (battle == null || Global.getSector() == null) return;
-        List<CampaignFleetAPI> enemies = battle.getNonPlayerSide();
-        if (enemies == null) return;
+        CampaignFleetAPI player = Global.getSector().getPlayerFleet();
+        List<CampaignFleetAPI> side = battle.getNonPlayerSide();
+        if (side == null || player == null) return;
+        // The game makes a battle for every fleet the player talks to, friendly or not. Only fleets hostile
+        // to the player are changed here; ships of a fleet the player turns on later are still buffed in
+        // combat, from the enemy reserve.
+        List<CampaignFleetAPI> enemies = new ArrayList<>();
+        for (CampaignFleetAPI fleet : side) {
+            if (fleet != null && !fleet.isPlayerFleet() && fleet.isHostileTo(player)) enemies.add(fleet);
+        }
+        if (enemies.isEmpty()) return;
         for (RuleSpec rule : RuleCatalog.all()) {
             int level = RuleState.level(rule);
             if (level <= 0) continue;
@@ -59,7 +68,6 @@ public final class BattlePrep {
             }
         }
         List<RuleSpec> rules = activeEnemyRules();
-        if (rules.isEmpty()) return;
         for (CampaignFleetAPI fleet : enemies) {
             if (fleet == null || fleet.isPlayerFleet()) continue;
             for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) prepare(member, rules);
@@ -79,6 +87,13 @@ public final class BattlePrep {
         boolean changed = false;
         try {
             BuffManagerAPI buffs = member.getBuffManager();
+            // A buff left from an earlier encounter whose rule has been switched off since.
+            for (BuffManagerAPI.Buff buff : new ArrayList<>(buffs.getBuffs())) {
+                if (buff instanceof EnemyMemberBuff && !isActive(((EnemyMemberBuff) buff).ruleId(), rules)) {
+                    buffs.removeBuff(buff.getId());
+                    changed = true;
+                }
+            }
             for (RuleSpec rule : rules) {
                 int level = RuleState.level(rule);
                 float value = rule.value(level);
@@ -94,6 +109,13 @@ public final class BattlePrep {
             LOG.error("Rule Book: could not prepare an enemy ship", t);
         }
         return changed;
+    }
+
+    private static boolean isActive(String ruleId, List<RuleSpec> rules) {
+        for (RuleSpec rule : rules) {
+            if (rule.id.equals(ruleId)) return true;
+        }
+        return false;
     }
 
     /** Takes the enemy-ship buffs off every fleet in a finished battle. */

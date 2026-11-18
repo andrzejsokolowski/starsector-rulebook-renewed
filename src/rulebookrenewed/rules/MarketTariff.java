@@ -14,9 +14,10 @@ public final class MarketTariff extends MarketRule {
 
     @Override
     protected void modify(MarketAPI market, String id, float value, RuleSpec rule) {
-        // A cut is capped at 100%, so a tariff never goes below zero.
-        float percent = RuleEffect.playerSign(rule) > 0 ? -Math.min(value, 100f) : value;
-        market.getTariff().modifyPercent(id, percent, rule.name);
+        // A market's tariff is a flat amount on a base of 0, so a percent change would add nothing: use a
+        // multiplier. A cut is capped at 100%, so a tariff never goes below zero.
+        float mult = RuleEffect.playerSign(rule) > 0 ? 1f - Math.min(value, 100f) / 100f : 1f + value / 100f;
+        market.getTariff().modifyMult(id, mult, rule.name);
     }
 
     @Override

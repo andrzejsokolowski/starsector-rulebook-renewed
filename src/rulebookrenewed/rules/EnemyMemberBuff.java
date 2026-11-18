@@ -38,6 +38,10 @@ public final class EnemyMemberBuff implements BuffManagerAPI.Buff {
         if (rule != null) rule.effect.applyToEnemyMember(rule, member, level, value);
     }
 
+    public String ruleId() {
+        return ruleId;
+    }
+
     @Override
     public String getId() {
         return buffId;
